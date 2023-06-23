@@ -19,6 +19,9 @@ const AuthStack = createStackNavigator();
 const MainStack = createStackNavigator();
 const options = {
     ...TransitionPresets.SlideFromRightIOS,
+    headerStyle: {
+        backgroundColor: '#090903',
+    }
 }
 export function RouteMain(){
     return (

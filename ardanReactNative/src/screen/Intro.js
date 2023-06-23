@@ -48,8 +48,8 @@ const Feed = ({ navigation }) => {
     }
     let pagination = (activeIndex) => {
       return (
-        <View style={[theme.absolute, theme.bottom0,theme.left0,theme.right0, theme.w%100, theme.px20, theme.pb60]}>
-          <View style={[theme.fRow, theme.w%100, theme.mb70]}>
+        <View style={[theme.absolute, theme.bottom0,theme.left0,theme.right0, theme.wp100, theme.px20, theme.pb60]}>
+          <View style={[theme.fRow, theme.wp100, theme.mb70]}>
           {introItems.length > 1 &&
               introItems.map((_, i) => (
                 <TouchableOpacity
@@ -64,7 +64,7 @@ const Feed = ({ navigation }) => {
                 />
               ))}
           </View>
-          <View style={[theme.faCenter, theme.w%100]}>
+          <View style={[theme.faCenter, theme.wp100]}>
             <TouchableOpacity style={btnStyle} onPress={() => {navigation.navigate('Login');}}>
               <Text style={[theme['h20-600'], theme.cblack]}>Lanjutkan</Text>
             </TouchableOpacity>
@@ -74,7 +74,7 @@ const Feed = ({ navigation }) => {
     }
     let elementItems = ({item}) => {
       return (
-        <ImageBackground source={item.image} resizeMode="cover" style={[theme.w%100, theme.h%100, theme.bgblack, {flex: 1}]}>
+        <ImageBackground source={item.image} resizeMode="cover" style={[theme.wp100, theme.hp100, theme.bgblack, {flex: 1}]}>
           <View style={[ theme.px20, theme.py20, theme.absolute, theme.bottom200 ]}>
             <Text style={[theme['h27-700'], theme.cwhite]}>{item.title}</Text>
             <Text style={[theme['h18-500'], theme.cwhite]}>{item.text}</Text>

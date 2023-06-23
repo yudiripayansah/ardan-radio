@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 let color = {
     black: '#090903',
     black_chocolate: '#191A03',
+    black_green: '#4F4F3F',
     yellow: '#F8C303',
     yellow_bold: '#FFB500',
     blue_grey: '#8189B0',
@@ -41,11 +42,13 @@ for (let i = 1; i < 200; i++) {
 }
 let width = []
 let height = []
+let flexbasis = []
 for(let w=0;w<1001;w++){
     width[`w${w}`] = { width: w}
     height[`h${w}`] = { height: w}
-    width[`w%${w}`] = { width: `${w}%`}
-    height[`h%${w}`] = { height: `${w}%`}
+    width[`wp${w}`] = { width: `${w}%`}
+    height[`hp${w}`] = { height: `${w}%`}
+    flexbasis[`fbp${w}`] = { flexBasis: `${w}%`}
 }
 let positions = []
 for(let i=0;i<=1000;i++){
@@ -76,13 +79,15 @@ for(let i=0;i<borderStyle.length;i++){
 const base = {
     ...width,
     ...height,
+    ...flexbasis,
     ...marginPadding,
     ...colors,
     ...positions,
     ...typo,
     ...border,
     fRow: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     },
     fColumn: {
         flexDirection: 'column'
