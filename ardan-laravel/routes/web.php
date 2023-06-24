@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\MainController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,5 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/dashboard');
 });
+Route::get('/dashboard', [MainController::class, 'index']);
+Route::get('/member', [MainController::class, 'member']);
+Route::get('/radio', [MainController::class, 'radio']);
+Route::get('/feed', [MainController::class, 'feed']);
+Route::get('/music', [MainController::class, 'music']);
+Route::get('/live-streaming', [MainController::class, 'liveStreaming']);
+Route::get('/notification', [MainController::class, 'notification']);
+Route::get('/banner', [MainController::class, 'banner']);
+Route::get('/news', [MainController::class, 'news']);
+Route::get('/event', [MainController::class, 'event']);
+Route::get('/user', [MainController::class, 'user']);
