@@ -22,9 +22,9 @@ const App = ({}) => {
       } else {
         return (
           <RootStack.Screen name={'RouteMain'}>
-            {() => (
+            {({navigation}) => (
               <UserContext.Provider value={state.user}>
-                <RouteMain />
+                <RouteMain navigation={navigation}/>
               </UserContext.Provider>
             )}
           </RootStack.Screen>

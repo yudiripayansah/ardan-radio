@@ -12,6 +12,12 @@ const Login = ({navigation}) => {
   useEffect(() => {
     
   },[])
+  const doLogin = () => {
+    let userData = {
+      name: username
+    }
+    setUser(userData)
+  }
   return (
     <KeyboardAvoidingView style={[theme.w%100,theme.h%100, theme.bgblack, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
       <View style={[theme.faCenter]}>
@@ -25,11 +31,11 @@ const Login = ({navigation}) => {
         <Text style={[theme.cblue_grey,theme['p14-500'], theme.tCenter]}>Please enter your account here</Text>
         <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt20, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/envelope.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500']]} placeholder='Email or phone number'/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Username' onChangeText={setUsername} value={username} placeholderTextColor={'#fff'}/>
         </View>
         <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt15, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500']]} placeholder='Password' secureTextEntry={true}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Password' secureTextEntry={true} onChangeText={setPassword} value={password} placeholderTextColor={'#fff'}/>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.right20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/eye.png')}/>
         </View>
         <View style={[theme.fRow, theme.mt5, theme.fjBetween]}>
@@ -40,7 +46,7 @@ const Login = ({navigation}) => {
           <Text style={[theme.cindian_red, theme['p14-500']]}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={[theme.bgyellow, theme.faCenter, theme.py15, theme.br52, theme.mt20]}>
+        <TouchableOpacity style={[theme.bgyellow, theme.faCenter, theme.py15, theme.br52, theme.mt20]} onPress={() => {doLogin()}}>
           <Text style={[theme['p14-500'], theme.cblack]}>Login</Text>
         </TouchableOpacity>
         <View style={[theme.relative,theme.mt15, theme.faCenter]}>

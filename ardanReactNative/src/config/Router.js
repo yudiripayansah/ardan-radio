@@ -1,5 +1,7 @@
 
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import {useState} from 'react';
+import ArdanContent from '../screen/ArdanContent';
 import Collections from '../screen/Collections';
 import Event from '../screen/Event';
 import Feed from '../screen/Feed';
@@ -12,48 +14,108 @@ import Music from '../screen/Music';
 import News from '../screen/News';
 import NewsDetails from '../screen/NewsDetails';
 import Notifications from '../screen/Notifications';
+import Profile from '../screen/Profile';
+import Penyiar from '../screen/Penyiar';
+import Program from '../screen/Program';
+import ProgramDetails from '../screen/ProgramDetails';
 import Radio from '../screen/Radio';
+import RadioDetails from '../screen/RadioDetails';
 import Register from '../screen/Register';
 import Search from '../screen/Search';
+import Social from '../screen/Social';
+import SocialSharingDetails from '../screen/SocialSharingDetails';
+import Nav from '../components/Navigation';
+import Header from '../components/Header';
 const AuthStack = createStackNavigator();
 const MainStack = createStackNavigator();
 const options = {
-    ...TransitionPresets.SlideFromRightIOS,
-    headerStyle: {
-        backgroundColor: '#090903',
-    }
+    ...TransitionPresets.SlideFromRightIOS
 }
-export function RouteMain(){
+export function RouteMain({navigation}){
+    let [activeHeader, setActiveHeader] = useState('Home')
     return (
-        <MainStack.Navigator
-            screenOptions={{
-                headerShown: false,
-            }}>
-            <MainStack.Screen name={'Home'} component={Home} />
-            <MainStack.Screen name={'Collections'} component={Collections} />
-            <MainStack.Screen name={'Event'} component={Event} />
-            <MainStack.Screen name={'Feed'} component={Feed} />
-            <MainStack.Screen name={'LiveStreaming'} component={LiveStreaming} />
-            <MainStack.Screen name={'Music'} component={Music} />
-            <MainStack.Screen name={'News'} component={News} />
-            <MainStack.Screen name={'NewsDetails'} component={NewsDetails} />
-            <MainStack.Screen name={'Notifications'} component={Notifications} />
-            <MainStack.Screen name={'Radio'} component={Radio} />
-            <MainStack.Screen name={'Search'} component={Search} />
-        </MainStack.Navigator>
+        <>
+            <Header navigation={navigation} currentScreen={activeHeader}/>
+            <MainStack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                }}
+                screenListeners={({ navigation }) => ({
+                    state: (e) => {
+                        let index = e.data.state.index
+                        let routes = e.data.state.routes
+                        let routeName = routes[index].name
+                        if(
+                            routeName == 'Radio'
+                            || routeName == 'RadioDetails'
+                            ){
+                            routeName = 'Ardan Radio'
+                        }
+                        if(
+                            routeName == 'Penyiar'
+                            ){
+                            routeName = 'Ardan Announcher'
+                        }
+                        if(
+                            routeName == 'ProgramDetails'
+                            ){
+                            routeName = 'Program'
+                        }
+                        if(
+                            routeName == 'ArdanContent'
+                            ){
+                            routeName = 'Ardan Content'
+                        }
+                        if(
+                            routeName == 'Social'
+                            ){
+                            routeName = 'Ardan Social'
+                        }
+                        if(
+                            routeName == 'SocialSharingDetails'
+                            ){
+                            routeName = 'Forum'
+                        }
+                        setActiveHeader(routeName)
+                    },
+                })}
+                >
+                <MainStack.Screen name={'Home'} component={Home} options={options}/>
+                <MainStack.Screen name={'ArdanContent'} component={ArdanContent} options={options}/>
+                <MainStack.Screen name={'Collections'} component={Collections} options={options}/>
+                <MainStack.Screen name={'Event'} component={Event} options={options}/>
+                <MainStack.Screen name={'Feed'} component={Feed} options={options}/>
+                <MainStack.Screen name={'LiveStreaming'} component={LiveStreaming} options={options}/>
+                <MainStack.Screen name={'Music'} component={Music} options={options}/>
+                <MainStack.Screen name={'News'} component={News} options={options}/>
+                <MainStack.Screen name={'NewsDetails'} component={NewsDetails} options={options}/>
+                <MainStack.Screen name={'Notifications'} component={Notifications} options={options}/>
+                <MainStack.Screen name={'Profile'} component={Profile} options={options}/>
+                <MainStack.Screen name={'Penyiar'} component={Penyiar} options={options}/>
+                <MainStack.Screen name={'Program'} component={Program} options={options}/>
+                <MainStack.Screen name={'ProgramDetails'} component={ProgramDetails} options={options}/>
+                <MainStack.Screen name={'Radio'} component={Radio} options={options}/>
+                <MainStack.Screen name={'RadioDetails'} component={RadioDetails} options={options}/>
+                <MainStack.Screen name={'Search'} component={Search} options={options}/>
+                <MainStack.Screen name={'Social'} component={Social} options={options}/>
+                <MainStack.Screen name={'SocialSharingDetails'} component={SocialSharingDetails} options={options}/>
+            </MainStack.Navigator>
+            <Nav navigation={navigation} currentScreen={activeHeader}/>
+        </>
     );
 }
-export const RouteAuth = () => {
+export const RouteAuth = ({navigation}) => {
     return (
-        <AuthStack.Navigator
-            screenOptions={{
-                headerShown: false,
-            }}>
-            <AuthStack.Screen name={'Home'} component={Home} options={options}/>
-            <AuthStack.Screen name={'Intro'} component={Intro} options={options}/>
-            <AuthStack.Screen name={'Login'} component={Login} options={options}/>
-            <AuthStack.Screen name={'Register'} component={Register} options={options}/>
-            <AuthStack.Screen name={'Forgot'} component={Forgot} options={options}/>
-        </AuthStack.Navigator>
+        <>
+            <AuthStack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                }}>
+                <AuthStack.Screen name={'Intro'} component={Intro} options={options}/>
+                <AuthStack.Screen name={'Login'} component={Login} options={options}/>
+                <AuthStack.Screen name={'Register'} component={Register} options={options}/>
+                <AuthStack.Screen name={'Forgot'} component={Forgot} options={options}/>
+            </AuthStack.Navigator>
+        </>
     );
 }

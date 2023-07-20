@@ -70,17 +70,17 @@ const Register = ({navigation}) => {
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt20]}>Nama Lengkap</Text>
         <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/user.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500']]} placeholder='Nama lengkap kamu'/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Nama lengkap kamu'placeholderTextColor={'#fff'}/>
         </View>
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt15]}>Email</Text>
         <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/envelope.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500']]} placeholder='Alamat Email'/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Alamat Email' placeholderTextColor={'#fff'}/>
         </View>
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt15]}>Password</Text>
         <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500']]} placeholder='Password' secureTextEntry={true}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Password' secureTextEntry={true} placeholderTextColor={'#fff'}/>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.right20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/eye.png')}/>
         </View>
         <TouchableOpacity style={[theme.bgyellow, theme.faCenter, theme.py15, theme.br52, theme.mt30]}>
