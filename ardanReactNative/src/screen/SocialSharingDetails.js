@@ -1,8 +1,65 @@
-import React, { useEffect, useContext } from 'react'
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
+import React, { useEffect, useContext, useState } from 'react'
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, ActivityIndicator} from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 import { ThemeContext } from '../context/ThemeContext';
-const SocialSharingDetails = ({ navigation }) => {
+import Api from '../config/Api'
+import Helper from '../config/Helper'
+import RenderHtml from 'react-native-render-html';
+const SocialSharingDetails = ({ route, navigation }) => {
+  const imageWidth = Dimensions.get('window').width - 60;
   const theme = useContext(ThemeContext)
+  const [feedsItem,setFeedsItem] = useState({
+    data: {
+      image: 'https://placehold.co/600x400',
+      title: null,
+      text: null,
+      user: {
+        name: null
+      }
+    },
+    loading: false
+  })
+  const {id} = route.params
+  const getFeeds = async () => {
+    setFeedsItem({
+      data: {
+        image: 'https://placehold.co/600x400',
+        title: null,
+        text: null,
+        user: {
+          name: null
+        }
+      },
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        id: id
+      }
+      let req = await Api.feedsGet(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = data
+        }
+      }
+      setFeedsItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setFeedsItem({
+        data: {
+          image: 'https://placehold.co/600x400',
+          title: null,
+          text: null
+        },
+        loading: false
+      })
+    }
+  }
   const commentsItems = [
     {
       image: require('../assets/images/user/1.png'),
@@ -26,28 +83,38 @@ const SocialSharingDetails = ({ navigation }) => {
     }
   ]
   useEffect(() => {
-    
-  }, [])
+    let mounted = true;
+    navigation.addListener('focus', () => {
+      if (mounted) {
+        getFeeds()
+      }
+    });
+    return () => (mounted = false);
+  }, []);
 
   return (
     <SafeAreaView style={[theme.bgblack,{flexGrow: 1},theme.pt60, theme.relative]}>
       <ScrollView style={[theme.px15]}>
         <View style={[theme.mt25,{backgroundColor:'#444548'},theme.p15,theme.br12]}>
           <View style={[theme.fRow, theme.faCenter, theme.me10]}>
-            <Image source={require('../assets/images/user/1.png')} style={[theme.w55,theme.h55,theme.br100,theme.me15]}/>
+            <Image source={(feedsItem.data.user.image_url) ? {uri:feedsItem.data.user.image_url} : {uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'}} style={[theme.w55,theme.h55,theme.br100,theme.me15]}/>
             <View>
-              <Text style={[theme['h20-500'],theme.cwhite]}>Rezky Zakiri</Text>
+              <Text style={[theme['h20-500'],theme.cwhite]}>{feedsItem.data.user.name}</Text>
               <View style={[theme.fRow,theme.faCenter]}>
-                <Text style={[theme['p12-400'],theme.cyellow,theme.me3]}>Musik -</Text>
-                <Text style={[theme['p12-400'],theme.cyellow,theme.me5]}>Sep 25</Text>
+                {/* <Text style={[theme['p12-400'],theme.cyellow,theme.me3]}>Musik -</Text> */}
+                <Text style={[theme['p12-400'],theme.cyellow,theme.me5]}>{Helper.dateIndo(feedsItem.data.created_at)}</Text>
               </View>
             </View>
           </View>
-          <Text style={[theme['h22-700'],theme.cwhite,theme.mt15]}>Football New Pandemic-Related Rules for 2021</Text>
-          <Image source={require('../assets/images/forum.png')} style={[theme.wp100,theme.h190,theme.br24,theme.mt5]}/>
-          <Text style={[theme['p14-400'],{color:'#9DA3AF'},theme.mt25]}>
-          These are among the many new wrinkles in the 108-page operations manual governing the 2021 Major League Baseball season. After the players’ union rejected a recent effort by the league to push back the start of the season and shave off eight games in response to the continuing threat from the coronavirus, the standard 162-game schedule, starting on April 1 with normal travel, will be used. With pitchers and catchers reporting to spring training in Arizona and Florida in just over a week, the union and the league agreed late Monday on new health and safety protocols that build on the regulations and the lessons learned from last season
-          </Text>
+          <Text style={[theme['h22-700'],theme.cwhite,theme.mt15,theme.mb5]}>{feedsItem.data.title}</Text>
+          <AutoHeightImage
+            width={imageWidth}
+            source={{uri:feedsItem.data.image}}
+          />
+          <RenderHtml
+            contentWidth={imageWidth}
+            source={{html:`<div style="color:#9DA3AF;">${feedsItem.data.text}</div>`}}
+          />
           <View style={[theme.fRow,theme.fjBetween,theme.mt25]}>
             <View style={[theme.fRow,theme.faCenter]}>
               <Image source={require('../assets/images/user/1.png')} style={[theme.w17,theme.h17]}/>

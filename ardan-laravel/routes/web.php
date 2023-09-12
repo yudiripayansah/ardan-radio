@@ -18,12 +18,15 @@ Route::get('/', function () {
 });
 Route::get('/dashboard', [MainController::class, 'index']);
 Route::get('/member', [MainController::class, 'member']);
-Route::get('/radio', [MainController::class, 'radio']);
+Route::get('/program', [MainController::class, 'program']);
+Route::get('/penyiar', [MainController::class, 'penyiar']);
 Route::get('/feed', [MainController::class, 'feed']);
 Route::get('/music', [MainController::class, 'music']);
 Route::get('/live-streaming', [MainController::class, 'liveStreaming']);
 Route::get('/notification', [MainController::class, 'notification']);
 Route::get('/banner', [MainController::class, 'banner']);
+Route::get('/category', [MainController::class, 'category']);
 Route::get('/news', [MainController::class, 'news']);
 Route::get('/event', [MainController::class, 'event']);
 Route::get('/user', [MainController::class, 'user']);
+Route::get('/login', [MainController::class, 'login'])->name('login');

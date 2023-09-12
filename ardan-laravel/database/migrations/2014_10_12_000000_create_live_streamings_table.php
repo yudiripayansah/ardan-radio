@@ -15,10 +15,10 @@ class CreateLivestreamingsTable extends Migration
     {
         Schema::create('livestreamings', function (Blueprint $table) {
             $table->id();
-            $table->text('title');
-            $table->text('text');
-            $table->text('target');
-            $table->text('status');
+            $table->text('title')->nullable();
+            $table->text('url');
+            $table->date('date')->nullable();
+            $table->text('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -15,12 +15,11 @@ class CreateRadiosTable extends Migration
     {
         Schema::create('radios', function (Blueprint $table) {
             $table->id();
-            $table->text('image');
+            $table->text('image')->nullable();
             $table->text('title');
             $table->text('text');
-            $table->text('schedule')->nullable();
             $table->text('url');
-            $table->text('status');
+            $table->text('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -20,7 +20,7 @@ class CreateCommentsTable extends Migration
             $table->text('target_type');
             $table->text('name');
             $table->text('comment');
-            $table->text('status');
+            $table->text('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

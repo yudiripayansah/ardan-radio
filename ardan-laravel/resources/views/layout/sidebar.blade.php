@@ -5,11 +5,11 @@
           <div class="nav-logo">
               <div class="nav-item theme-logo">
                   <a href="./index.html">
-                      <img src="/resources/assets/img/logo.svg" class="navbar-logo" alt="logo">
+                      <img src="/resources/assets/img/ardan/logo.png" class="navbar-logo-new" alt="logo">
                   </a>
               </div>
               <div class="nav-item theme-text">
-                  <a href="./index.html" class="nav-link"> CORK </a>
+                  <a href="./index.html" class="nav-link"> Ardan </a>
               </div>
           </div>
           <div class="nav-item sidebar-toggle">

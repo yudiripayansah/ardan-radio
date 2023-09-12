@@ -17,9 +17,13 @@ class MainController extends Controller
     $data['menu'] = $this->menu;
     return view('pages.member',$data);
   }
-  public function radio(Request $request) {
+  public function program(Request $request) {
     $data['menu'] = $this->menu;
-    return view('pages.radio',$data);
+    return view('pages.program',$data);
+  }
+  public function penyiar(Request $request) {
+    $data['menu'] = $this->menu;
+    return view('pages.penyiar',$data);
   }
   public function feed(Request $request) {
     $data['menu'] = $this->menu;
@@ -41,6 +45,10 @@ class MainController extends Controller
     $data['menu'] = $this->menu;
     return view('pages.banner',$data);
   }
+  public function category(Request $request) {
+    $data['menu'] = $this->menu;
+    return view('pages.category',$data);
+  }
   public function news(Request $request) {
     $data['menu'] = $this->menu;
     return view('pages.news',$data);
@@ -52,5 +60,9 @@ class MainController extends Controller
   public function user(Request $request) {
     $data['menu'] = $this->menu;
     return view('pages.user',$data);
+  }
+  public function login(Request $request) {
+    $data['menu'] = $this->menu;
+    return view('pages.login',$data);
   }
 }

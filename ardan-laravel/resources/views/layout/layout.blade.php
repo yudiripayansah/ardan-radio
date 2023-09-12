@@ -4,8 +4,8 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-		<title>CORK Admin - Multipurpose Bootstrap Dashboard Template </title>
-		<link rel="icon" type="image/x-icon" href="/resources/assets/img/favicon.ico"/>
+		<title>Ardan Radio</title>
+		<link rel="icon" type="image/x-icon" href="/resources/assets/img/ardan/logo.png"/>
 		<link href="/resources/vertical-light-menu/css/light/loader.css" rel="stylesheet" type="text/css" />
 		<link href="/resources/vertical-light-menu/css/dark/loader.css" rel="stylesheet" type="text/css" />
 		<script src="/resources/vertical-light-menu/loader.js"></script>
@@ -21,23 +21,36 @@
 		<link href="/resources/plugins/src/apex/apexcharts.css" rel="stylesheet" type="text/css">
 		<link href="/resources/assets/css/light/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
 		<link href="/resources/assets/css/dark/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="/resources/assets/css/light/elements/alert.css">
-    <link rel="stylesheet" type="text/css" href="/resources/assets/css/dark/elements/alert.css">
-    <link rel="stylesheet" type="text/css" href="/resources/plugins/src/table/datatable/datatables.css">
-    <link rel="stylesheet" type="text/css" href="/resources/plugins/css/light/table/datatable/dt-global_style.css">
-    <link rel="stylesheet" type="text/css" href="/resources/plugins/css/light/table/datatable/custom_dt_miscellaneous.css">
+    <link href="/resources/assets/css/light/elements/alert.css" rel="stylesheet" type="text/css">
+    <link href="/resources/assets/css/dark/elements/alert.css" rel="stylesheet" type="text/css">
+    <link href="/resources/plugins/src/table/datatable/datatables.css" rel="stylesheet" type="text/css">
+    <link href="/resources/plugins/css/light/table/datatable/dt-global_style.css" rel="stylesheet" type="text/css">
+    <link href="/resources/plugins/css/light/table/datatable/custom_dt_miscellaneous.css" rel="stylesheet" type="text/css">
     <link href="/resources/assets/css/light/scrollspyNav.css" rel="stylesheet" type="text/css" />
     <link href="/resources/assets/css/light/components/carousel.css" rel="stylesheet" type="text/css">
     <link href="/resources/assets/css/light/components/modal.css" rel="stylesheet" type="text/css" />
     <link href="/resources/assets/css/light/components/tabs.css" rel="stylesheet" type="text/css">
-		<!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-
+    <link href="/resources/assets/css/custom.css" rel="stylesheet" type="text/css">
+		@yield('customStyle')
+		<!-- Mandatory Vue -->
+		<script src="{{ url('/resources/plugins/vue2/vue.js') }}"></script>
+		<script src="https://unpkg.com/vuex@4.0.0/dist/vuex.global.js"></script>
+		<script src="{{ url('/resources/plugins/axios/axios.js') }}"></script>
+		<script src="{{ url('/resources/assets/js/store.js') }}"></script>
+		<script src="{{ url('/resources/assets/js/helper.js') }}"></script>
+		<script src="{{ url('/resources/assets/js/Api.js') }}"></script>
+		<script src="{{ url('node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js') }}"></script>
+		<script src="{{ url('node_modules/@ckeditor/ckeditor5-vue2/dist/ckeditor.js') }}"></script>
 </head>
 <body class="layout-boxed">
 		<!-- BEGIN LOADER -->
-		<div id="load_screen"> <div class="loader"> <div class="loader-content">
-				<div class="spinner-grow align-self-center"></div>
-		</div></div></div>
+		<div id="load_screen"> 
+			<div class="loader"> 
+				<div class="loader-content">
+					<div class="spinner-grow align-self-center"></div>
+				</div>
+			</div>
+		</div>
 		<!--  END LOADER -->
 		@include('layout.navbar')
 

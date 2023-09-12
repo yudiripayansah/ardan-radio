@@ -1,64 +1,212 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import {
   View,
   Text,
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
-import Navigation from '../components/Navigation';
-import Header from '../components/Header';
+import Api from '../config/Api'
+import Helper from '../config/Helper'
 const Home = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const {removeUser} = useContext(AuthContext);
+  const [bannerItem,setBannerItem] = useState({
+    data: [],
+    loading: false
+  })
+  const [bannerAdsItem,setBannerAdsItem] = useState({
+    data: [],
+    loading: false
+  })
+  const [newsItem,setNewsItem] = useState({
+    data: [],
+    loading: false
+  })
+  const [eventsItem,setEventsItem] = useState({
+    data: [],
+    loading: false
+  })
+  const [programsItem,setProgramsItem] = useState({
+    data: [],
+    loading: false
+  })
+  const getBanner = async () => {
+    setBannerItem({
+      data: [],
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        page : 1,
+        perPage : 5,
+        sortDir : 'DESC',
+        sortBy : 'id',
+        search : null,
+        cta: 'MAIN BANNER'
+      }
+      let req = await Api.bannerRead(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = [...data]
+        }
+      }
+      setBannerItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setBannerItem({
+        data: [],
+        loading: false
+      })
+    }
+  }
+  const getBannerAds = async () => {
+    setBannerAdsItem({
+      data: [],
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        page : 1,
+        perPage : 5,
+        sortDir : 'DESC',
+        sortBy : 'id',
+        search : null,
+        cta: 'HOMEPAGE'
+      }
+      let req = await Api.bannerRead(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = [...data]
+        }
+      }
+      setBannerAdsItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setBannerAdsItem({
+        data: [],
+        loading: false
+      })
+    }
+  }
+  const getNews = async () => {
+    setNewsItem({
+      data: [],
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        page : 1,
+        perPage : 5,
+        sortDir : 'DESC',
+        sortBy : 'id',
+        search : null,
+      }
+      let req = await Api.newsRead(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = [...data]
+        }
+      }
+      setNewsItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setNewsItem({
+        data: [],
+        loading: false
+      })
+    }
+  }
+  const getEvents = async () => {
+    setEventsItem({
+      data: [],
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        page : 1,
+        perPage : 5,
+        sortDir : 'DESC',
+        sortBy : 'id',
+        search : null,
+      }
+      let req = await Api.eventsRead(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = [...data]
+        }
+      }
+      setEventsItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setEventsItem({
+        data: [],
+        loading: false
+      })
+    }
+  }
+  const getPrograms = async () => {
+    setProgramsItem({
+      data: [],
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        page : 1,
+        perPage : 5,
+        sortDir : 'DESC',
+        sortBy : 'id',
+        search : null,
+      }
+      let req = await Api.programsRead(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = [...data]
+        }
+      }
+      setProgramsItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setProgramsItem({
+        data: [],
+        loading: false
+      })
+    }
+  }
   const doLogout = () => {
     removeUser();
   };
-  const bannerItem = [
-    {
-      image: require('../assets/images/ardan-banner.png')
-    },
-    {
-      image: require('../assets/images/ardan-banner-2.png')
-    }
-  ]
-  const newsItem = [
-    {
-      image: require('../assets/images/news-1.png'),
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-    {
-      image: require('../assets/images/news-2.png'),
-      time: '4 Minutes ago',
-      title: 'News of marathon matches during this pandemic'
-    },
-    {
-      image: require('../assets/images/news-3.png'),
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-    {
-      image: require('../assets/images/news-1.png'),
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-    {
-      image: require('../assets/images/news-2.png'),
-      time: '4 Minutes ago',
-      title: 'News of marathon matches during this pandemic'
-    },
-    {
-      image: require('../assets/images/news-3.png'),
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-  ]
   const contentItem = [
     {
       image: require('../assets/images/content-1.png'),
@@ -91,58 +239,6 @@ const Home = ({navigation}) => {
       title: 'NIGHTMARESIDE TESTIMYSTERY #121 | NGOBROLIN JURNALRISA THE SERIES'
     },
   ]
-  const programItem = [
-    {
-      image: require('../assets/images/program-1.png')
-    },
-    {
-      image: require('../assets/images/program-2.png')
-    },
-    {
-      image: require('../assets/images/program-3.png')
-    },
-    {
-      image: require('../assets/images/program-4.png')
-    },
-    {
-      image: require('../assets/images/program-1.png')
-    },
-    {
-      image: require('../assets/images/program-2.png')
-    },
-    {
-      image: require('../assets/images/program-3.png')
-    },
-    {
-      image: require('../assets/images/program-4.png')
-    },
-  ]
-  const eventItem = [
-    {
-      image: require('../assets/images/event-1.png')
-    },
-    {
-      image: require('../assets/images/event-2.png')
-    },
-    {
-      image: require('../assets/images/event-3.png')
-    },
-    {
-      image: require('../assets/images/event-4.png')
-    },
-    {
-      image: require('../assets/images/event-1.png')
-    },
-    {
-      image: require('../assets/images/event-2.png')
-    },
-    {
-      image: require('../assets/images/event-3.png')
-    },
-    {
-      image: require('../assets/images/event-4.png')
-    },
-  ]
   const menuItem = [
     {
       title: 'Ardan Content',
@@ -165,35 +261,67 @@ const Home = ({navigation}) => {
       target: () => {navigation.navigate('Event')}
     }
   ]
+  const goToBanner = (id) => {
+    navigation.navigate('BannerDetails', {
+      id: id
+    });
+  }
+  const goToNews = (id) => {
+    navigation.navigate('NewsDetails', {
+      id: id
+    });
+  }
+  const goToEvents = (id) => {
+    navigation.navigate('EventsDetails', {
+      id: id
+    });
+  }
+  const goToProgram = (id) => {
+    navigation.navigate('ProgramDetails', {
+      id: id
+    });
+  }
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {
-        
+        getBanner()
+        getNews()
+        getEvents()
+        getPrograms()
+        getBannerAds()
       }
     });
     return () => (mounted = false);
   }, []);
   const MainBanner = () => {
-    return (
-      <View style={[ theme.mt20, theme.wp100, {flexGrow: 1}]}>
-        <Text style={[theme['h18-600'], theme.cwhite, theme.ps10]}>Hi, {user.name}</Text>
-        <TouchableOpacity onPress={() => {doLogout()}}>
-          <Text style={[theme['h12-600'], theme.cwhite, theme.ps10]}>Logout</Text>
-        </TouchableOpacity>
-        <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
-          {
-            bannerItem.map((item,i) => {
-              return (
-              <TouchableOpacity style={[theme.me10]} key={i}>
-                <Image source={item.image} style={[theme.w300, theme.h140,theme.br30, {objectFit: 'cover'}]}/>
-              </TouchableOpacity>
-              )
-            })
-          }
-        </ScrollView>
-      </View>
-    )
+    if(bannerItem.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
+        </View>
+      )
+    } else {
+      return (
+        <View style={[ theme.mt20, theme.wp100, {flexGrow: 1}]}>
+          <Text style={[theme['h18-600'], theme.cwhite, theme.ps10]}>Hi, {user.name}</Text>
+          <TouchableOpacity onPress={() => {doLogout()}}>
+            <Text style={[theme['h12-600'], theme.cwhite, theme.ps10]}>Logout</Text>
+          </TouchableOpacity>
+          <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
+            {
+              bannerItem.data.map((item,i) => {
+                return (
+                <TouchableOpacity style={[theme.me10]} key={i} onPress={() => {goToBanner(item.id)}}>
+                  <Image source={{uri:item.image_url}} style={[theme.w300, theme.h140,theme.br30, {objectFit: 'cover'}]}/>
+                </TouchableOpacity>
+                )
+              })
+            }
+          </ScrollView>
+        </View>
+      )
+    }
   }
   const HomeMenu = () => {
     return (
@@ -216,31 +344,39 @@ const Home = ({navigation}) => {
     )
   }
   const News = () => {
-    return (
-      <View style={[theme.mt35]}>
-        <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
-          <Text style={[theme['h14-600'], theme.cwhite]}>News</Text>
-          <TouchableOpacity style={[theme.bgblack_chocolate, theme.fjCenter, theme.py5, theme.px10, theme.br40]}>
-            <Text style={[theme['h14-500'], theme.cwhite]}>See More</Text>
-          </TouchableOpacity>
+    if(newsItem.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
         </View>
-        <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
-        {
-            newsItem.map((item,i) => {
-              return (
-              <TouchableOpacity style={[theme.me15, theme.w230, theme.br24, theme.bgblack_chocolate]} key={i}>
-                <Image source={item.image} style={[theme.wp100, theme.h150,theme.brtl24,theme.brtr24, {objectFit: 'cover'}]}/>
-                <View style={[theme.p10]}>
-                  <Text style={[theme.tRight, theme['h10-400'], theme.cwhite]}>{item.time}</Text>
-                  <Text style={[theme['h12-500'], theme.cwhite]}>{item.title}</Text>
-                </View>
-              </TouchableOpacity>
-              )
-            })
-          }
-        </ScrollView>
-      </View>
-    )
+      )
+    } else {
+      return (
+        <View style={[theme.mt35]}>
+          <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
+            <Text style={[theme['h14-600'], theme.cwhite]}>News</Text>
+            <TouchableOpacity style={[theme.bgblack_chocolate, theme.fjCenter, theme.py5, theme.px10, theme.br40]}>
+              <Text style={[theme['h14-500'], theme.cwhite]}>See More</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
+          {
+              newsItem.data.map((item,i) => {
+                return (
+                <TouchableOpacity style={[theme.me15, theme.w230, theme.br24, theme.bgblack_chocolate]} key={i} onPress={() => {goToNews(item.id)}}>
+                  <Image source={{uri:item.image_url}} style={[theme.wp100, theme.h150,theme.brtl24,theme.brtr24, {objectFit: 'cover'}]}/>
+                  <View style={[theme.p10]}>
+                    <Text style={[theme.tRight, theme['h10-400'], theme.cwhite]}>{Helper.dateIndo(item.created_at)}</Text>
+                    <Text style={[theme['h12-500'], theme.cwhite]}>{item.title}</Text>
+                  </View>
+                </TouchableOpacity>
+                )
+              })
+            }
+          </ScrollView>
+        </View>
+      )
+    }
   }
   const Content = () => {
     return (
@@ -270,52 +406,87 @@ const Home = ({navigation}) => {
     )
   }
   const ProgramPopuler = () => {
-    return (
-      <View style={[theme.mt35]}>
-        <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
-          <Text style={[theme['h14-600'], theme.cwhite]}>Program Terpopuler</Text>
-          <TouchableOpacity 
-            style={[theme.bgblack_chocolate, theme.fjCenter, theme.py5, theme.px10, theme.br40]}
-            onPress={()=>{navigation.navigate('Program')}}>
-            <Text style={[theme['h14-500'], theme.cwhite]}>See More</Text>
-          </TouchableOpacity>
+    if(programsItem.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
         </View>
-        <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
-        {
-            programItem.map((item,i) => {
-              return (
-              <TouchableOpacity style={[theme.me15]} key={i}>
-                <Image source={item.image} style={[theme.w90, theme.h95,theme.br5, {objectFit: 'cover'}]}/>
-              </TouchableOpacity>
-              )
-            })
-          }
-        </ScrollView>
-      </View>
-    )
+      )
+    } else {
+      return (
+        <View style={[theme.mt35]}>
+          <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
+            <Text style={[theme['h14-600'], theme.cwhite]}>Program Terpopuler</Text>
+            <TouchableOpacity 
+              style={[theme.bgblack_chocolate, theme.fjCenter, theme.py5, theme.px10, theme.br40]}
+              onPress={()=>{navigation.navigate('Program')}}>
+              <Text style={[theme['h14-500'], theme.cwhite]}>See More</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
+          {
+              programsItem.data.map((item,i) => {
+                return (
+                <TouchableOpacity style={[theme.me15]} key={i} onPress={() => {goToProgram(item.id)}}>
+                  <Image source={{uri:item.image_url}} style={[theme.w90, theme.h95,theme.br5, {objectFit: 'cover'}]}/>
+                </TouchableOpacity>
+                )
+              })
+            }
+          </ScrollView>
+        </View>
+      )
+    }
   }
   const Event = () => {
-    return (
-      <View style={[theme.mt25]}>
-        <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
-          <Text style={[theme['h14-600'], theme.cwhite]}>Upcoming Event</Text>
-          <TouchableOpacity style={[theme.bgblack_chocolate, theme.fjCenter, theme.py5, theme.px10, theme.br40]}>
-            <Text style={[theme['h14-500'], theme.cwhite]}>See More</Text>
-          </TouchableOpacity>
+    if(eventsItem.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
         </View>
-        <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
-        {
-            eventItem.map((item,i) => {
-              return (
-              <TouchableOpacity style={[theme.me15]} key={i}>
-                <Image source={item.image} style={[theme.w90, theme.h95,theme.br5, {objectFit: 'cover'}]}/>
-              </TouchableOpacity>
-              )
-            })
-          }
-        </ScrollView>
-      </View>
-    )
+      )
+    } else {
+      return (
+        <View style={[theme.mt25]}>
+          <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
+            <Text style={[theme['h14-600'], theme.cwhite]}>Upcoming Event</Text>
+            <TouchableOpacity style={[theme.bgblack_chocolate, theme.fjCenter, theme.py5, theme.px10, theme.br40]}>
+              <Text style={[theme['h14-500'], theme.cwhite]}>See More</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
+          {
+              eventsItem.data.map((item,i) => {
+                return (
+                <TouchableOpacity style={[theme.me15]} key={i} onPress={() => {goToEvents(item.id)}}>
+                  <Image source={{uri:item.image_url}} style={[theme.w90, theme.h95,theme.br5, {objectFit: 'cover'}]}/>
+                </TouchableOpacity>
+                )
+              })
+            }
+          </ScrollView>
+        </View>
+      )
+    }
+  }
+  const Ads = () => {
+    if(bannerAdsItem.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
+        </View>
+      )
+    } else {
+      return bannerAdsItem.data.map((item,i) => {
+        return (
+          <View style={[theme.mt35, theme.px10, theme.wp100]} key={i}>
+            <TouchableOpacity onPress={() => {goToBanner(item.id)}}>
+              <Image source={{uri:item.image_url}} style={[theme.wp100,theme.h150,{objectFit: 'contain'}]}/>
+            </TouchableOpacity>
+          </View>
+        )
+      })
+    }
   }
   return (
     <SafeAreaView style={[theme.bgblack,{flexGrow: 1},theme.pt60]}>
@@ -324,9 +495,7 @@ const Home = ({navigation}) => {
         <HomeMenu/>
         <News/>
         <Content/>
-        <View style={[theme.mt35, theme.px10, theme.wp100]}>
-          <Image source={require('../assets/images/ads-1.png')} style={[theme.wp100,{objectFit: 'contain'}]}/>
-        </View>
+        <Ads/>
         <Event/>
         <ProgramPopuler/>
         <View style={[theme.h180]}></View>

@@ -203,7 +203,7 @@ var App = function() {
                         document.body.classList.remove('dark')
                         ifStarterKit = document.body.getAttribute('page') === 'starter-pack' ? true : false;
                         if (ifStarterKit) {
-                            document.querySelector('.navbar-logo').setAttribute('src', '/resources/assets/img/logo2.svg')
+                            document.querySelector('.navbar-logo').setAttribute('src', '/resources/assets/img/ardan/logo.png')
                         } else {
                             document.querySelector('.navbar-logo').setAttribute('src', getUpdatedParseObject.settings.layout.logo.lightLogo)
                         }

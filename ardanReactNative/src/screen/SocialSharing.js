@@ -1,77 +1,61 @@
-import React, { useEffect, useContext } from 'react'
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
+import React, { useEffect, useContext, useState } from 'react'
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, ActivityIndicator} from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
 import { ThemeContext } from '../context/ThemeContext';
+import Api from '../config/Api'
+import Helper from '../config/Helper'
+import RenderHtml from 'react-native-render-html';
 const SocialSharing = ({ navigation }) => {
+  const imageWidth = Dimensions.get('window').width - 60;
   const theme = useContext(ThemeContext)
-  useEffect(() => {
-    
-  }, []) 
-  let postItem = [
-    {
-      profile: require('../assets/images/user/1.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '204',
-      comments: '30',
-      title: 'Any Nomad’s want to live in Austin; April, May or June?'
-    },
-    {
-      profile: require('../assets/images/user/2.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '304',
-      comments: '30',
-      title: 'Where do you spend winter?'
-    },
-    {
-      profile: require('../assets/images/user/3.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '304',
-      comments: '30',
-      title: 'How do you avoid settling in one place?'
-    },
-    {
-      profile: require('../assets/images/user/4.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '304',
-      comments: '30',
-      title: 'Where do you spend winter?'
-    },
-    {
-      profile: require('../assets/images/user/1.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '204',
-      comments: '30',
-      title: 'Any Nomad’s want to live in Austin; April, May or June?'
-    },
-    {
-      profile: require('../assets/images/user/2.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '304',
-      comments: '30',
-      title: 'Where do you spend winter?'
-    },
-    {
-      profile: require('../assets/images/user/3.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '304',
-      comments: '30',
-      title: 'How do you avoid settling in one place?'
-    },
-    {
-      profile: require('../assets/images/user/4.png'),
-      name: 'Lucas Mokmana',
-      time: '2m ago',
-      likes: '304',
-      comments: '30',
-      title: 'Where do you spend winter?'
+  const [feedsItem,setFeedsItem] = useState({
+    data: [],
+    loading: false
+  })
+  const getFeeds = async () => {
+    setFeedsItem({
+      data: [],
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        page : 1,
+        perPage : 5,
+        sortDir : 'DESC',
+        sortBy : 'id',
+        search : null,
+        type: 'SHARING',
+        status: 'PUBLISHED'
+      }
+      let req = await Api.feedsRead(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = [...data]
+        }
+      }
+      setFeedsItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setFeedsItem({
+        data: [],
+        loading: false
+      })
     }
-  ]
+  }
+  useEffect(() => {
+    let mounted = true;
+    navigation.addListener('focus', () => {
+      if (mounted) {
+        getFeeds()
+      }
+    });
+    return () => (mounted = false);
+  }, []);
   let categoryItem = ["Terbaru","Musik","Film","Hiburan","Jalan-Jalan","Kuliner","Dunia","Fashion"]
   return (
     <SafeAreaView style={[theme.bgblack,{flexGrow: 1}, theme.relative, theme.pb120]}>
@@ -92,12 +76,17 @@ const SocialSharing = ({ navigation }) => {
       </ScrollView>
       <ScrollView style={[theme.mb100]} showsVerticalScrollIndicator={false}>
         {
-          postItem.map((item,i) => {
+          (feedsItem.loading) ? (
+            <View style={[theme.py100]}>
+              <ActivityIndicator size="large" color="#F8C303" />
+            </View>
+          ) :
+          feedsItem.data.map((item,i) => {
             return (
               <View style={[theme.mb20,{backgroundColor:'#444548'},theme.py12,theme.px15,theme.br12,theme.fRow]} key={i}>
-                <Image source={item.profile} style={[theme.h55,theme.w55,theme.br12,theme.me15]}/>
+                <Image source={(item.user.image_url) ? {uri:item.user.image_url} : {uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'}} style={[theme.h55,theme.w55,theme.br12,theme.me15]}/>
                 <View style={[theme.fRow,theme.wp70]}>
-                  <TouchableOpacity onPress={() => {navigation.navigate('SocialSharingDetails')}}>
+                  <TouchableOpacity onPress={() => {navigation.navigate('SocialSharingDetails',{id:item.id})}}>
                     <Text style={[theme['p16-500'],theme.cwhite]}>{item.title}</Text>
                   </TouchableOpacity>
                   <View style={[theme.fRow, theme.faCenter,theme.mb15]}>

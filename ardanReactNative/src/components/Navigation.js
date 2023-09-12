@@ -3,7 +3,6 @@ import {Text, View, Image, ImageBackground, TouchableWithoutFeedback } from 'rea
 import {ThemeContext} from '../context/ThemeContext';
 import TrackPlayer from 'react-native-track-player';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-TrackPlayer.registerPlaybackService(() => require('../services/TrackPlayer.js'));
 const Nav = ({navigation, ...props}) => {
   const theme = useContext(ThemeContext);
   const [radio,setRadio] = useState('paused')
@@ -15,29 +14,44 @@ const Nav = ({navigation, ...props}) => {
     bg: require('../assets/images/nav-bg.png')
   };
   const setupTrackPlayer = async () => {
-    await TrackPlayer.setupPlayer();
-    await TrackPlayer.add({
-      id: '1',
-      url: 'https://n09.rcs.revma.com/1q762wy5a9hvv.m4a?1675997040=&rj-tok=AAABhjk-eo4Aj03-Z03mDUOA_A&rj-ttl=5',
-      title: 'Ardan FM',
-      artist: 'Ardan Radio',
-      artwork: 'https://api.radiosworld.info/files/radio/logo/1411605f0a94430b873a6d09580d02cc1c151725.jpeg',
-    })
+    try {
+      await TrackPlayer.registerPlaybackService(() => require('../services/TrackPlayer.js'));
+      await TrackPlayer.setupPlayer();
+      await TrackPlayer.add({
+        id: '1',
+        url: 'https://n09.rcs.revma.com/1q762wy5a9hvv.m4a?1675997040=&rj-tok=AAABhjk-eo4Aj03-Z03mDUOA_A&rj-ttl=5',
+        title: 'Ardan FM',
+        artist: 'Ardan Radio',
+        artwork: 'https://api.radiosworld.info/files/radio/logo/1411605f0a94430b873a6d09580d02cc1c151725.jpeg',
+      })
+      const playerState = await TrackPlayer.getState();
+      if (playerState === 'paused' || playerState === 'ready' || playerState === 'idle' || playerState === 'connecting' || playerState === 'stopped') {
+        setRadio('paused')
+      } else {
+        setRadio('playing')
+      }
+    } catch (error) {
+      console.log('error init', error)
+    }
   };
   const handlePlayPause = async () => {
-    const currentTrack = await TrackPlayer.getCurrentTrack();
-    const playerState = await TrackPlayer.getState();
-    if(playerState === 'stopped'){
-      await TrackPlayer.reset();
+    try {
+      const playerState = await TrackPlayer.getState();
+      console.log(playerState)
+      if(playerState === 'stopped'){
+        await TrackPlayer.reset();
+      }
+      if (playerState === 'paused' || playerState === 'ready' || playerState === 'idle' || playerState === 'connecting' || playerState === 'stopped' || playerState === 'idle') {
+        await TrackPlayer.play();
+        setRadio('playing')
+      } else {
+        await TrackPlayer.pause();
+        setRadio('paused')
+      }
+      console.log('Radio State',radio)
+    } catch (error) {
+      console.log('error toggled',error)
     }
-    if (playerState === 'paused' || playerState === 'ready' || playerState === 'idle' || playerState === 'connecting' || playerState === 'stopped') {
-      await TrackPlayer.play();
-      setRadio('paused')
-    } else {
-      await TrackPlayer.pause();
-      setRadio('playing')
-    }
-    console.log('Radio State',radio)
   };
   useEffect(() => {
     setupTrackPlayer();
@@ -60,7 +74,7 @@ const Nav = ({navigation, ...props}) => {
       ) : ''
     }
     {
-      (currentScreen != 'Ardan Radio' && currentScreen != 'LiveStreaming' && (radio == 'paused')) ? (
+      (currentScreen != 'Ardan Radio' && currentScreen != 'LiveStreaming' && (radio == 'playing')) ? (
         <View style={[theme.absolute,theme.bgblack,theme.p10,theme.bottom0,theme.wp100,theme.fRow,theme.faStart,theme.fjBetween,theme.pb110,theme.bsolid,theme.btw1,theme.byellow]}>
           <Image source={require('../assets/images/icons/played-banner.png')} style={[theme.w60,theme.h35]}/>
           <View style={[theme.mx15]}>

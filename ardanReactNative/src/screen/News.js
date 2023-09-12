@@ -1,10 +1,49 @@
-import React, { useEffect, useContext } from 'react'
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
+import React, { useEffect, useContext, useState } from 'react'
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, ActivityIndicator } from 'react-native';
 import { ThemeContext } from '../context/ThemeContext';
+import Api from '../config/Api'
+import Helper from '../config/Helper'
 const News = ({ navigation }) => {
   const theme = useContext(ThemeContext)
+  const [newsItem,setNewsItem] = useState({
+    data: [],
+    loading: false
+  })
+  const getNews = async () => {
+    setNewsItem({
+      data: [],
+      loading: true
+    })
+    try {
+      let theData = []
+      let payload = {
+        page : 1,
+        perPage : 10,
+        sortDir : 'DESC',
+        sortBy : 'id',
+        search : null,
+      }
+      let req = await Api.newsRead(payload)
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        if(status) {
+          theData = [...data]
+        }
+      }
+      setNewsItem({
+        data: theData,
+        loading: false
+      })
+    } catch (error) {
+      console.error(error)
+      setNewsItem({
+        data: [],
+        loading: false
+      })
+    }
+  }
   useEffect(() => {
-    
+    getNews()
   }, [])
   let categoryItem = [
     {
@@ -40,44 +79,7 @@ const News = ({ navigation }) => {
       title:"Fashion"
     },
   ]
-  const newsItem = [
-    {
-      image: require('../assets/images/news-1.png'),
-      category: 'Music',
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-    {
-      image: require('../assets/images/news-2.png'),
-      category: 'Music',
-      time: '4 Minutes ago',
-      title: 'News of marathon matches during this pandemic'
-    },
-    {
-      image: require('../assets/images/news-3.png'),
-      category: 'Music',
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-    {
-      image: require('../assets/images/news-1.png'),
-      category: 'Music',
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-    {
-      image: require('../assets/images/news-2.png'),
-      category: 'Music',
-      time: '4 Minutes ago',
-      title: 'News of marathon matches during this pandemic'
-    },
-    {
-      image: require('../assets/images/news-3.png'),
-      category: 'Music',
-      time: '4 Minutes ago',
-      title: 'Is walking 10,000 steps every day really necessary?'
-    },
-  ]
+  
   const Recomended = () => {
     return (
       <View style={[]}>
@@ -89,10 +91,14 @@ const News = ({ navigation }) => {
         </View>
         <ScrollView horizontal style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.px10, theme.mt10]} showsHorizontalScrollIndicator={false}>
         {
-            newsItem.map((item,i) => {
+            newsItem.data.map((item,i) => {
               return (
-              <TouchableOpacity style={[theme.me15, theme.w230, theme.br24, {backgroundColor:'#504B4B'}]} key={i}>
-                <Image source={item.image} style={[theme.wp100, theme.h150,theme.brtl24,theme.brtr24, {objectFit: 'cover'}]}/>
+              <TouchableOpacity style={[theme.me15, theme.w230, theme.br24, {backgroundColor:'#504B4B'}]} key={i} onPress={() => {
+                navigation.navigate('NewsDetails', {
+                  id: item.id
+                });
+              }}>
+                <Image source={{uri:item.image_url}} style={[theme.wp100, theme.h150,theme.brtl24,theme.brtr24, {objectFit: 'cover'}]}/>
                 <View style={[theme.p10]}>
                   <Text style={[theme['h12-500'], theme.cwhite]}>{item.title}</Text>
                 </View>
@@ -112,15 +118,19 @@ const News = ({ navigation }) => {
         </View>
         <View style={[theme.px15]}>
         {
-          newsItem.map((item,i) => {
+          newsItem.data.map((item,i) => {
             return (
-            <TouchableOpacity style={[theme.me15, theme.wp100, theme.br24, {backgroundColor:'#504B4B'}, theme.fRow,theme.p15, theme.mb10]} key={i}>
-              <Image source={item.image} style={[theme.w100, theme.h100,theme.br12, {objectFit: 'cover'}]}/>
+            <TouchableOpacity style={[theme.me15, theme.wp100, theme.br24, {backgroundColor:'#504B4B'}, theme.fRow,theme.p15, theme.mb10]} key={i} onPress={() => {
+              navigation.navigate('NewsDetails', {
+                id: item.id
+              });
+            }}>
+              <Image source={{uri:item.image_url}} style={[theme.w100, theme.h100,theme.br12, {objectFit: 'cover'}]}/>
               <View style={[theme.ps15, theme.wp68]}>
                 <Text style={[theme['h16-500'], theme.cwhite]}>{item.title}</Text>
                 <View style={[theme.fRow,theme.faCenter,theme.fjBetween]}>
-                  <Text style={[theme['h10-400'], theme.cwhite, theme.bgyellow,theme.px10,theme.py3,theme.br100,theme.fjCenter]}>{item.category}</Text>
-                  <Text style={[theme['h10-400'], theme.cyellow]}>{item.time}</Text>
+                  {/* <Text style={[theme['h10-400'], theme.cwhite, theme.bgyellow,theme.px10,theme.py3,theme.br100,theme.fjCenter]}>{item.category}</Text> */}
+                  <Text style={[theme['h10-400'], theme.cyellow]}>{Helper.dateIndo(item.created_at)}</Text>
                 </View>
               </View>
             </TouchableOpacity>

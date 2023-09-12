@@ -1,209 +1,304 @@
 import axios from 'axios'
-const ApiAxios = axios.create({
-  baseURL: 'http://arabiangamingguild.com/endpoint/api/'
-});
+const defAxios = axios.create({
+  // baseURL: "http://localhost:8000/api/"
+  baseURL: "https://mobileapps.ardanradio.com/api/"
+})
 const Api = {
   login(payload) {
-    let url = 'member/login'
-    return ApiAxios.post(url, payload)
+    let url = '/auth/login'
+    return defAxios.post(url, payload);
   },
-  gameMember(payload, token){
-    let url = 'member/listGame'
+  logout(payload) {
+    let url = '/auth/logout'
+    return defAxios.post(url, payload);
+  },
+  // banner
+  bannerRead(payload) {
+    let url = '/banner/read'
+    return defAxios.post(url, payload);
+  },
+  bannerGet(payload) {
+    let url = '/banner/get'
+    return defAxios.post(url, payload);
+  },
+  bannerCreate(payload, token) {
+    let url = '/banner/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  gameMemberAdd(payload, token){
-    let url = 'member/addGame'
+  bannerUpdate(payload, token) {
+    let url = '/banner/update'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  listMember(payload, token){
-    let url = 'member/list'
+  bannerDelete(payload, token) {
+    let url = '/banner/delete'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  createMember(payload, token){
-    let url = 'member/create'
+  // category
+  categoryRead(payload) {
+    let url = '/category/read'
+    return defAxios.post(url, payload);
+  },
+  categoryGet(payload) {
+    let url = '/category/get'
+    return defAxios.post(url, payload);
+  },
+  categoryCreate(payload, token) {
+    let url = '/category/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  updateMember(payload, token){
-    let url = 'member/update'
+  categoryUpdate(payload, token) {
+    let url = '/category/update'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  detailMember(payload, token){
-    let url = 'member/detail'
+  categoryDelete(payload, token) {
+    let url = '/category/delete'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  deleteMember(payload, token){
-    let url = 'member/delete'
+  // news
+  newsRead(payload) {
+    let url = '/news/read'
+    return defAxios.post(url, payload);
+  },
+  newsGet(payload) {
+    let url = '/news/get'
+    return defAxios.post(url, payload);
+  },
+  newsCreate(payload, token) {
+    let url = '/news/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  listNews(payload, token){
-    let url = 'news/list'
+  newsUpdate(payload, token) {
+    let url = '/news/update'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  createNews(payload, token){
-    let url = 'news/create'
+  newsDelete(payload, token) {
+    let url = '/news/delete'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  updateNews(payload, token){
-    let url = 'news/update'
+  // events
+  eventsRead(payload) {
+    let url = '/events/read'
+    return defAxios.post(url, payload);
+  },
+  eventsGet(payload) {
+    let url = '/events/get'
+    return defAxios.post(url, payload);
+  },
+  eventsCreate(payload, token) {
+    let url = '/events/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  detailNews(payload, token){
-    let url = 'news/detail'
+  eventsUpdate(payload, token) {
+    let url = '/events/update'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  deleteNews(payload, token){
-    let url = 'news/delete'
+  eventsDelete(payload, token) {
+    let url = '/events/delete'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  listGames(payload, token){
-    let url = 'games/list'
+  // programs
+  programsRead(payload) {
+    let url = '/programs/read'
+    return defAxios.post(url, payload);
+  },
+  programsGet(payload) {
+    let url = '/programs/get'
+    return defAxios.post(url, payload);
+  },
+  programsCreate(payload, token) {
+    let url = '/programs/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  createGames(payload, token){
-    let url = 'games/create'
+  programsUpdate(payload, token) {
+    let url = '/programs/update'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  updateGames(payload, token){
-    let url = 'games/update'
+  programsDelete(payload, token) {
+    let url = '/programs/delete'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  detailGames(payload, token){
-    let url = 'games/detail'
+  // penyiar
+  penyiarRead(payload) {
+    let url = '/penyiar/read'
+    return defAxios.post(url, payload);
+  },
+  penyiarGet(payload) {
+    let url = '/penyiar/get'
+    return defAxios.post(url, payload);
+  },
+  penyiarCreate(payload, token) {
+    let url = '/penyiar/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  deleteGames(payload, token){
-    let url = 'games/delete'
+  penyiarUpdate(payload, token) {
+    let url = '/penyiar/update'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  listWithdraw(payload, token){
-    let url = 'withdraw/list'
+  penyiarDelete(payload, token) {
+    let url = '/penyiar/delete'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  createWithdraw(payload, token){
-    let url = 'withdraw/create'
+  // feeds
+  feedsRead(payload) {
+    let url = '/feeds/read'
+    return defAxios.post(url, payload);
+  },
+  feedsGet(payload) {
+    let url = '/feeds/get'
+    return defAxios.post(url, payload);
+  },
+  feedsCreate(payload, token) {
+    let url = '/feeds/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  updateWithdraw(payload, token){
-    let url = 'withdraw/update'
+  feedsUpdate(payload, token) {
+    let url = '/feeds/update'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  detailWithdraw(payload, token){
-    let url = 'withdraw/detail'
+  feedsDelete(payload, token) {
+    let url = '/feeds/delete'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
-  deleteWithdraw(payload, token){
-    let url = 'withdraw/delete'
+  // livestreamings
+  livestreamingsRead(payload) {
+    let url = '/livestreamings/read'
+    return defAxios.post(url, payload);
+  },
+  livestreamingsGet(payload) {
+    let url = '/livestreamings/get'
+    return defAxios.post(url, payload);
+  },
+  livestreamingsCreate(payload, token) {
+    let url = '/livestreamings/create'
     let config = {
       headers: {
-        'token': token
-      }
-    }
-    return ApiAxios.post(url, payload, config)
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  livestreamingsUpdate(payload, token) {
+    let url = '/livestreamings/update'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  livestreamingsDelete(payload, token) {
+    let url = '/livestreamings/delete'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
   },
 }
 export default Api

@@ -2,8 +2,10 @@
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import {useState} from 'react';
 import ArdanContent from '../screen/ArdanContent';
+import BannerDetails from '../screen/BannerDetails';
 import Collections from '../screen/Collections';
 import Event from '../screen/Event';
+import EventsDetails from '../screen/EventsDetails';
 import Feed from '../screen/Feed';
 import Forgot from '../screen/Forgot';
 import Home from '../screen/Home';
@@ -31,11 +33,13 @@ const MainStack = createStackNavigator();
 const options = {
     ...TransitionPresets.SlideFromRightIOS
 }
-export function RouteMain({navigation}){
+export const RouteMain = ({navigation}) => {
     let [activeHeader, setActiveHeader] = useState('Home')
     return (
         <>
+            {(activeHeader != 'LiveStreaming') ? (
             <Header navigation={navigation} currentScreen={activeHeader}/>
+            ) : null}
             <MainStack.Navigator
                 screenOptions={{
                     headerShown: false,
@@ -76,14 +80,31 @@ export function RouteMain({navigation}){
                             ){
                             routeName = 'Forum'
                         }
+                        if(
+                            routeName == 'BannerDetails'
+                            ){
+                            routeName = 'Ads'
+                        }
+                        if(
+                            routeName == 'NewsDetails'
+                            ){
+                            routeName = 'News'
+                        }
+                        if(
+                            routeName == 'EventsDetails'
+                            ){
+                            routeName = 'Event'
+                        }
                         setActiveHeader(routeName)
                     },
                 })}
                 >
                 <MainStack.Screen name={'Home'} component={Home} options={options}/>
                 <MainStack.Screen name={'ArdanContent'} component={ArdanContent} options={options}/>
+                <MainStack.Screen name={'BannerDetails'} component={BannerDetails} options={options}/>
                 <MainStack.Screen name={'Collections'} component={Collections} options={options}/>
                 <MainStack.Screen name={'Event'} component={Event} options={options}/>
+                <MainStack.Screen name={'EventsDetails'} component={EventsDetails} options={options}/>
                 <MainStack.Screen name={'Feed'} component={Feed} options={options}/>
                 <MainStack.Screen name={'LiveStreaming'} component={LiveStreaming} options={options}/>
                 <MainStack.Screen name={'Music'} component={Music} options={options}/>
@@ -100,7 +121,9 @@ export function RouteMain({navigation}){
                 <MainStack.Screen name={'Social'} component={Social} options={options}/>
                 <MainStack.Screen name={'SocialSharingDetails'} component={SocialSharingDetails} options={options}/>
             </MainStack.Navigator>
+            {(activeHeader != 'LiveStreaming') ? (
             <Nav navigation={navigation} currentScreen={activeHeader}/>
+            ) : null}
         </>
     );
 }

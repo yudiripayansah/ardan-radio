@@ -18,7 +18,7 @@ class CreateNotificationsTable extends Migration
             $table->text('image')->nullable();
             $table->text('title');
             $table->text('text');
-            $table->text('target');
+            $table->text('target')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

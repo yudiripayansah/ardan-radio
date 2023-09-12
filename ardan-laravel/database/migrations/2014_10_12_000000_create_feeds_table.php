@@ -19,7 +19,9 @@ class CreateFeedsTable extends Migration
             $table->text('image')->nullable();
             $table->text('title');
             $table->text('text');
-            $table->text('status');
+            $table->text('category')->nullable();
+            $table->text('type')->nullable();
+            $table->text('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

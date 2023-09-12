@@ -38,6 +38,20 @@ const helper = {
       return null
     }
   },
+  dateIndo(date) {
+    if(date) {
+      let theDate = new Date(date)
+      let days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"]
+      let month = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+      let dy = theDate.getDay()
+      let d = theDate.getDate()
+      let m = theDate.getMonth()
+      let y = theDate.getFullYear()
+      return `${days[dy]},${d} ${month[m]} ${y}`
+    } else {
+      return null
+    }
+  },
   dateFormatEn(date) {
     if(date) {
       let theDate = new Date(date)

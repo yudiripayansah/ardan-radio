@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @section('screen')
-<div class="layout-px-spacing">
+<div class="layout-px-spacing" id="dashboardPage">
 
   <div class="middle-content container-xxl p-0">
 
@@ -545,4 +545,82 @@
 <script src="/resources/plugins/src/apex/apexcharts.min.js"></script>
 <script src="/resources/assets/js/dashboard/dash_1.js"></script>
 <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+<script>
+const vueDashboard = new Vue( {
+    el: '#dashboardPage',
+    data: {
+    form: {
+        data: {
+        email: 'superadmin@ardanradio.com',
+        password: 'superadmin'
+        },
+        loading: false
+    },
+    alert: {
+        show: 'hide',
+        bg: 'bg-primary',
+        title: null,
+        msg: null
+    }
+    },
+    methods: {
+    async doLogin() {
+        this.form.loading = true
+        let payload = {...this.form.data}
+        try {
+        if(payload.email && payload.password) {
+            let req = await Api.login(payload)
+            if(req.status == 200) {
+            let {data,status,msg} = req.data
+            if(status){
+                this.notify('success','Success',msg)
+                store.dispatch('setUsers', data)
+                window.location.href = '{{ url("/dashboard") }}'
+            } else {
+                this.notify('error','Error',msg)
+            }
+            } else {
+            this.notify('error','Error',req.message)
+            }
+        } else {
+            this.notify('error','Error','Email dan Password harus diisi')
+        }
+        this.form.loading = false
+        } catch (error) {
+        this.notify('error','Error',error.message)
+        this.form.loading = false
+        }
+    },
+    notify(type,title,msg){
+        let bg = 'bg-primary'
+        switch (type) {
+        case 'error':
+            bg = 'bg-danger'
+            break;
+        case 'success':
+            bg = 'bg-success'
+            break;
+        case 'warning':
+            bg = 'bg-warning'
+            break;
+        case 'info':
+            bg = 'bg-info'
+            break;
+        }
+        this.alert = {
+        show: 'show',
+        bg: bg,
+        title: title,
+        msg: msg
+        }
+        console.log(this.alert)
+        setTimeout(() => {
+        this.alert.show = 'hide'
+        }, 2000);
+    }
+    },
+    mounted() {
+    }
+});
+</script>
 @endsection

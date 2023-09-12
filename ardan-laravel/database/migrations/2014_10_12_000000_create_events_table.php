@@ -18,8 +18,8 @@ class CreateEventsTable extends Migration
             $table->text('image');
             $table->text('title');
             $table->text('text');
-            $table->text('tags')->nullable();
-            $table->text('status');
+            $table->text('category')->nullable();
+            $table->text('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
