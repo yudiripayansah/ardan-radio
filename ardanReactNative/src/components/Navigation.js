@@ -3,6 +3,8 @@ import {Text, View, Image, ImageBackground, TouchableWithoutFeedback } from 'rea
 import {ThemeContext} from '../context/ThemeContext';
 import TrackPlayer from 'react-native-track-player';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import ActionButton from 'react-native-circular-action-menu';
+import Icon from 'react-native-vector-icons/Ionicons';
 const Nav = ({navigation, ...props}) => {
   const theme = useContext(ThemeContext);
   const [radio,setRadio] = useState('paused')
@@ -10,6 +12,7 @@ const Nav = ({navigation, ...props}) => {
   const image = {
     home: require('../assets/images/icons/nav-home.png'),
     radio: require('../assets/images/icons/nav-radio.png'),
+    plus: require('../assets/images/icons/btn-plus.png'),
     profile: require('../assets/images/icons/nav-profile.png'),
     bg: require('../assets/images/nav-bg.png')
   };
@@ -53,13 +56,82 @@ const Nav = ({navigation, ...props}) => {
       console.log('error toggled',error)
     }
   };
+  const DefaultButton = () => {
+    return (
+      <TouchableWithoutFeedback onPress={()=>{
+        navigation.navigate('Radio')
+        handlePlayPause()
+      }}>
+        <View style={[theme.mx80, theme.fjCenter, theme.faCenter, theme.mmt35, theme.w70]}>
+          <View style={[theme.w70,theme.h70,theme.br100,theme.faCenter,theme.fjCenter,theme.bgblack_chocolate, theme.mb13,theme.relative]}>
+            <Image source={image.radio}/>
+            {
+              (currentScreen == 'Ardan Radio') ? (
+                <View style={[theme.absolute,theme.w70,theme.h70,theme.br100,{backgroundColor:'fill: rgba(248, 195, 3, 0.50);'},theme.faCenter,theme.fjCenter]}>
+                  {
+                    (radio == 'paused' || radio == 'buffering') ? (
+                      <Image source={require('../assets/images/icons/pause.png')}/>
+                    ) : (
+                      <Image source={require('../assets/images/icons/play-black.png')}/>
+                    )
+                  }
+                </View>
+              ) : ''
+            }
+            
+          </View>
+          <Text style={[theme['h10-500'], theme.cyellow]}>Radio Stream</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+  const SocialButton = () => {
+    return (
+      <TouchableWithoutFeedback onPress={()=>{
+        navigation.navigate('CreateFeed')
+      }}>
+        <View style={[theme.mx80, theme.fjCenter, theme.faCenter, theme.mmt35, theme.w70]}>
+          <TouchableOpacity style={[theme.w70,theme.h70,theme.br100,theme.faCenter,theme.fjCenter,theme.bgyellow, theme.mb13,theme.relative]}>
+            <Image source={image.plus}/>
+          </TouchableOpacity>
+          <Text style={[theme['h10-500'], theme.cyellow]}>Add</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+  const AnimetedSocialButton = () => {
+    return (
+      <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
+        <ActionButton buttonColor="rgba(231,76,60,1)">
+          <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => console.log("notes tapped!")}>
+            <Icon name="android-create" style={[theme['h12-400'],theme.h22,theme.cwhite]} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
+            <Icon name="android-notifications-none" style={[theme['h12-400'],theme.h22,theme.cwhite]} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => console.log("notes tapped!")}>
+            <Icon name="android-create" style={[theme['h12-400'],theme.h22,theme.cwhite]} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
+            <Icon name="android-notifications-none" style={[theme['h12-400'],theme.h22,theme.cwhite]} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#9b59b6' title="New Task" onPress={() => console.log("notes tapped!")}>
+            <Icon name="android-create" style={[theme['h12-400'],theme.h22,theme.cwhite]} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
+            <Icon name="android-notifications-none" style={[theme['h12-400'],theme.h22,theme.cwhite]} />
+          </ActionButton.Item>
+        </ActionButton>
+      </View>
+    )
+  }
   useEffect(() => {
     setupTrackPlayer();
   }, []);
   return (
     <>
     {
-      (currentScreen != 'LiveStreaming') ? (
+      (currentScreen == 'Home') ? (
         <View style={[theme.absolute,theme.right10,theme.bottom300]}>
           <TouchableOpacity onPress={()=>{navigation.navigate('LiveStreaming')}}>
             <View style={[theme.w70,theme.h70,theme.bgyellow,theme.faCenter,theme.fjCenter,theme.br200,{overflow:'hidden'}]}>
@@ -94,31 +166,10 @@ const Nav = ({navigation, ...props}) => {
           <Text style={[theme['h10-500'], theme.cyellow]}>Home</Text>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={()=>{
-        navigation.navigate('Radio')
-        handlePlayPause()
-      }}>
-        <View style={[theme.mx80, theme.fjCenter, theme.faCenter, theme.mmt35, theme.w70]}>
-          <View style={[theme.w70,theme.h70,theme.br100,theme.faCenter,theme.fjCenter,theme.bgblack_chocolate, theme.mb13,theme.relative]}>
-            <Image source={image.radio}/>
-            {
-              (currentScreen == 'Ardan Radio') ? (
-                <View style={[theme.absolute,theme.w70,theme.h70,theme.br100,{backgroundColor:'fill: rgba(248, 195, 3, 0.50);'},theme.faCenter,theme.fjCenter]}>
-                  {
-                    (radio == 'paused' || radio == 'buffering') ? (
-                      <Image source={require('../assets/images/icons/pause.png')}/>
-                    ) : (
-                      <Image source={require('../assets/images/icons/play-black.png')}/>
-                    )
-                  }
-                </View>
-              ) : ''
-            }
-            
-          </View>
-          <Text style={[theme['h10-500'], theme.cyellow]}>Radio Stream</Text>
-        </View>
-      </TouchableWithoutFeedback>
+      {
+        (currentScreen == 'Ardan Social') ?
+        <SocialButton/> : <DefaultButton/>
+      }
       <TouchableWithoutFeedback onPress={()=>{navigation.navigate('Profile')}}>
         <View style={[theme.faCenter, theme.fjCenter, theme.pt13, theme.w40]}>
           <Image source={image.profile}/>

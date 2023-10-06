@@ -12,6 +12,42 @@ const Api = {
     let url = '/auth/logout'
     return defAxios.post(url, payload);
   },
+  // user
+  userRead(payload) {
+    let url = '/user/read'
+    return defAxios.post(url, payload);
+  },
+  userGet(payload) {
+    let url = '/user/get'
+    return defAxios.post(url, payload);
+  },
+  userCreate(payload, token) {
+    let url = '/user/create'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  userUpdate(payload, token) {
+    let url = '/user/update'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  userDelete(payload, token) {
+    let url = '/user/delete'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
   // banner
   bannerRead(payload) {
     let url = '/banner/read'

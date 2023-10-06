@@ -23,12 +23,20 @@ class User extends Authenticatable implements JWTSubject
     ];
     public static function validate($validate)
     {
+      if($validate['id']) {
+        $rule = [
+          'email' => 'required',
+          'name' => 'required',
+          'role' => 'required',
+        ];
+      } else {
         $rule = [
           'email' => 'required',
           'name' => 'required',
           'password' => 'required',
           'role' => 'required',
         ];
+      }
         $validator = Validator::make($validate, $rule);
         if ($validator->fails()) {
             $errors =  $validator->errors()->all();

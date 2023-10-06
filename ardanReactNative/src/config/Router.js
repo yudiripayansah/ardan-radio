@@ -4,6 +4,7 @@ import {useState} from 'react';
 import ArdanContent from '../screen/ArdanContent';
 import BannerDetails from '../screen/BannerDetails';
 import Collections from '../screen/Collections';
+import CreateFeed from '../screen/CreateFeed';
 import Event from '../screen/Event';
 import EventsDetails from '../screen/EventsDetails';
 import Feed from '../screen/Feed';
@@ -95,6 +96,11 @@ export const RouteMain = ({navigation}) => {
                             ){
                             routeName = 'Event'
                         }
+                        if(
+                            routeName == 'CreateFeed'
+                            ){
+                            routeName = 'Create New'
+                        }
                         setActiveHeader(routeName)
                     },
                 })}
@@ -103,6 +109,7 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'ArdanContent'} component={ArdanContent} options={options}/>
                 <MainStack.Screen name={'BannerDetails'} component={BannerDetails} options={options}/>
                 <MainStack.Screen name={'Collections'} component={Collections} options={options}/>
+                <MainStack.Screen name={'CreateFeed'} component={CreateFeed} options={options}/>
                 <MainStack.Screen name={'Event'} component={Event} options={options}/>
                 <MainStack.Screen name={'EventsDetails'} component={EventsDetails} options={options}/>
                 <MainStack.Screen name={'Feed'} component={Feed} options={options}/>

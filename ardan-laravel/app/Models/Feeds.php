@@ -11,7 +11,7 @@ class Feeds extends Model
     use SoftDeletes;
     protected $table = 'feeds';
     protected $fillable = [
-      'id_user','image','title','text','category','type','status'
+      'id_user','image','title','text','category','type','status',
     ];
     public static function validate($validate)
     {

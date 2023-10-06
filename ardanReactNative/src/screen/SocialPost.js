@@ -5,6 +5,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import Api from '../config/Api'
 import Helper from '../config/Helper'
 import RenderHtml from 'react-native-render-html';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const SocialPost = ({ navigation }) => {
   const imageWidth = Dimensions.get('window').width - 60;
   const theme = useContext(ThemeContext)
@@ -90,10 +91,14 @@ const SocialPost = ({ navigation }) => {
                   source={{uri:item.image_url}}
                 />
                 <View style={[theme.fRow,theme.faCenter,theme.mt10]}>
-                  {/* <Image source={require('../assets/images/icons/likes.png')} style={[theme.h15,theme.w15,theme.me5,{objectFit:'contain'}]}/>
-                  <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{item.likes}</Text>
-                  <Image source={require('../assets/images/icons/comments.png')} style={[theme.h15,theme.w15,theme.me5,{objectFit:'contain'}]}/>
-                  <Text style={[theme['p12-400'],{color:'grey'}]}>{item.comments}</Text> */}
+                  <TouchableOpacity style={[theme.fRow,theme.faCenter,theme.me15]}>
+                    <Icon name="heart" size={20} color="#F8C303" />
+                    <Text style={[theme['p12-400'],theme.cwhite,theme.ms5]}>100</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[theme.fRow,theme.faCenter]}>
+                    <Icon name="comment" size={20} color="#F8C303" />
+                    <Text style={[theme['p12-400'],theme.cwhite,theme.ms5]}>100</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             )

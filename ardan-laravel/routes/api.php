@@ -11,6 +11,7 @@ use App\Http\Controllers\ProgramsController;
 use App\Http\Controllers\PenyiarController;
 use App\Http\Controllers\FeedsController;
 use App\Http\Controllers\LiveStreamingsController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,4 +117,14 @@ Route::group([
     Route::post('/create', [LiveStreamingsController::class, 'create']); 
     Route::post('/update', [LiveStreamingsController::class, 'update']); 
     Route::post('/delete', [LiveStreamingsController::class, 'delete']); 
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'user'
+], function ($router) {
+    Route::post('/read', [UserController::class, 'read']); 
+    Route::post('/get', [UserController::class, 'get']); 
+    Route::post('/create', [UserController::class, 'create']); 
+    Route::post('/update', [UserController::class, 'update']); 
+    Route::post('/delete', [UserController::class, 'delete']); 
 });

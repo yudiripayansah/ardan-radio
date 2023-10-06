@@ -1,5 +1,5 @@
 import React, {Component, useState, useEffect, useContext} from 'react';
-import {Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Image, ScrollView} from 'react-native';
+import {Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Image, ScrollView, Alert} from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api';
@@ -10,46 +10,49 @@ const Register = ({navigation}) => {
   const [email, setemail] = useState();
   const [password, setpassword] = useState();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState()
+  const makeid = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  }
   const doRegister = async () => {
+    setError(null);
     setLoading(true);
     try {
       let payload = {
-        address: null,
-        city: null,
-        dana_account: null,
-        discord: null,
-        email: email,
-        facebook: null,
         id: null,
-        image: null,
-        instagram: null,
-        job: null,
+        username: name+makeid(10),
+        email: email,
         name: name,
         password: password,
-        pc_brand: null,
-        pc_processor: null,
-        pc_ram: null,
-        pc_storage: null,
         phone: null,
-        phone_brand: null,
-        phone_os_version: null,
-        phone_ram: null,
-        provice: null,
-        skill: null,
-        telegram: null,
-        twitter: null,
-        type: 'member',
-        wallet_account: null,
+        image: null,
+        address: null,
+        gender: null,
+        dob: null,
+        role: 'member',
+        status: 'active',
       };
       
-      let req = await Api.createMember(payload, 'randomToken');
+      let req = await Api.userCreate(payload, 'randomToken');
       if (req.status == 200) {
         let {data, status, msg} = req.data;
-        setUser(data);
+        if(status) {
+          setUser(data);
+        } else {
+          setError(msg);
+        }
       }
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log('catch',error);
       setLoading(false);
     }
   };
@@ -70,22 +73,30 @@ const Register = ({navigation}) => {
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt20]}>Nama Lengkap</Text>
         <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/user.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Nama lengkap kamu'placeholderTextColor={'#fff'}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setname} placeholder='Nama lengkap kamu'placeholderTextColor={'#000'}/>
         </View>
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt15]}>Email</Text>
         <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/envelope.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Alamat Email' placeholderTextColor={'#fff'}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setemail} placeholder='Alamat Email' placeholderTextColor={'#000'}/>
         </View>
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt15]}>Password</Text>
         <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500'],theme.cwhite]} placeholder='Password' secureTextEntry={true} placeholderTextColor={'#fff'}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setpassword} placeholder='Password' secureTextEntry={true} placeholderTextColor={'#000'}/>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.right20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/eye.png')}/>
         </View>
-        <TouchableOpacity style={[theme.bgyellow, theme.faCenter, theme.py15, theme.br52, theme.mt30]}>
-          <Text style={[theme['p14-500'], theme.cblack]}>Daftar Sekarang</Text>
+        <TouchableOpacity style={[theme.bgyellow, theme.faCenter, theme.py15, theme.br52, theme.mt30]} onPress={() => {doRegister()}} disabled={loading}>
+          <Text style={[theme['p14-500'], theme.cblack]}>{(loading) ? 'Processing...' : 'Daftar Sekarang'}</Text>
         </TouchableOpacity>
+        {
+          (error) ? 
+          (
+            <View style={[theme.faCenter,theme.mt15]}>
+              <Text style={[theme['p12-400'],theme.cindian_red]}>{error}</Text>
+            </View>
+          ) : null
+        }
         <View style={[theme.relative,theme.mt30, theme.faCenter]}>
           <TouchableOpacity style={[theme.fRow]} onPress={() => {navigation.navigate('Login');}}>
             <Text style={[theme.cwhite, theme['p15-500'], theme.me5]}>Sudah punya akun?</Text>
