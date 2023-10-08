@@ -11,6 +11,7 @@ const Register = ({navigation}) => {
   const [password, setpassword] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState()
+  const [btnLabel, setbtnLabel] = useState('Daftar Sekarang')
   const makeid = (length) => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -45,7 +46,11 @@ const Register = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if(status) {
-          setUser(data);
+          // setUser(data);
+          setbtnLabel('Register Successful');
+          setTimeout(() => {
+            navigation.navigate('Login')
+          },1000)
         } else {
           setError(msg);
         }
@@ -87,7 +92,7 @@ const Register = ({navigation}) => {
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.right20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/eye.png')}/>
         </View>
         <TouchableOpacity style={[theme.bgyellow, theme.faCenter, theme.py15, theme.br52, theme.mt30]} onPress={() => {doRegister()}} disabled={loading}>
-          <Text style={[theme['p14-500'], theme.cblack]}>{(loading) ? 'Processing...' : 'Daftar Sekarang'}</Text>
+          <Text style={[theme['p14-500'], theme.cblack]}>{(loading) ? 'Processing...' : btnLabel}</Text>
         </TouchableOpacity>
         {
           (error) ? 
