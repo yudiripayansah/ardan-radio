@@ -14,6 +14,8 @@ import Intro from '../screen/Intro';
 import LiveStreaming from '../screen/LiveStreaming';
 import Login from '../screen/Login';
 import Music from '../screen/Music';
+import Message from '../screen/Message';
+import MessageDetail from '../screen/MessageDetail';
 import News from '../screen/News';
 import NewsDetails from '../screen/NewsDetails';
 import Notifications from '../screen/Notifications';
@@ -115,6 +117,8 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'Feed'} component={Feed} options={options}/>
                 <MainStack.Screen name={'LiveStreaming'} component={LiveStreaming} options={options}/>
                 <MainStack.Screen name={'Music'} component={Music} options={options}/>
+                <MainStack.Screen name={'Message'} component={Message} options={options}/>
+                <MainStack.Screen name={'MessageDetail'} component={MessageDetail} options={options}/>
                 <MainStack.Screen name={'News'} component={News} options={options}/>
                 <MainStack.Screen name={'NewsDetails'} component={NewsDetails} options={options}/>
                 <MainStack.Screen name={'Notifications'} component={Notifications} options={options}/>

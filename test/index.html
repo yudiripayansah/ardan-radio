@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    window.addEventListener("load", function() {
+        let ws = new WebSocket('ws://mobileapps.ardanradio.com:6001/app/ardanradiopusher');
+        ws.addEventListener('open', (event) => {
+            console.log('Connected to Laravel WebSocket');
+
+            // Subscribe to the channel you want to listen to
+            ws.send(JSON.stringify({
+                event: 'NewChatMessage',
+                action: 'subscribe',
+                channel: 'chat',
+            }));
+        });
+
+        ws.addEventListener('message', (event) => {
+            const msg = JSON.parse(event.data);
+            console.log(event)
+            if (msg.event) {
+                console.log('Received event:', msg.event);
+
+                // Handle the event data as needed
+                if (msg.data) {
+                    console.log('Event data:', msg.data);
+                }
+            }
+        });
+
+        ws.addEventListener('error', (event) => {
+            console.error('WebSocket error:', event);
+        });
+
+        ws.addEventListener('close', (event) => {
+            if (event.wasClean) {
+                console.log('WebSocket connection closed cleanly, code:', event.code, 'reason:', event.reason);
+            } else {
+                console.error('WebSocket connection abruptly closed');
+            }
+        });
+    });
+  </script>
+</body>
+</html>

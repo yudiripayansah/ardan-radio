@@ -94,10 +94,10 @@ const Profile = ({ navigation }) => {
             </View>
           </View>
           <View style={[theme.faCenter,theme.wp100,theme.fRow,theme.fjCenter]}>
-            <TouchableOpacity style={[theme.bw2,theme.bsolid,theme.byellow,theme.w100,theme.h40,theme.mx20,theme.faCenter,theme.fjCenter,theme.br100]}>
+            <TouchableOpacity style={[theme.bw2,theme.bsolid,theme.byellow,theme.w100,theme.h40,theme.mx20,theme.faCenter,theme.fjCenter,theme.br100]} onPress={()=>{navigation.navigate('ProfileUpdate')}}>
               <Text style={[theme.cwhite,theme['h16-600']]}>Edit</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[theme.bw2,theme.bsolid,theme.byellow,theme.w100,theme.h40,theme.mx20,theme.faCenter,theme.fjCenter,theme.br100]}>
+            <TouchableOpacity style={[theme.bw2,theme.bsolid,theme.byellow,theme.w100,theme.h40,theme.mx20,theme.faCenter,theme.fjCenter,theme.br100]} onPress={()=>{navigation.navigate('Message')}}>
               <Text style={[theme.cwhite,theme['h16-600']]}>Message</Text>
             </TouchableOpacity>
           </View>

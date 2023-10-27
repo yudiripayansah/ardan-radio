@@ -75,6 +75,7 @@ return [
             'allowed_origins' => [
                 // env('LARAVEL_WEBSOCKETS_DOMAIN'),
             ],
+            'perform_dns_lookup' => env('LARAVEL_WEBSOCKETS_PERFORM_DNS_LOOKUP', true),
         ],
     ],
 

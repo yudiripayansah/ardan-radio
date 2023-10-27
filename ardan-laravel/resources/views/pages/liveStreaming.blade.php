@@ -4,12 +4,12 @@
   <div class="middle-content container-xxl p-0">
     <!-- BREADCRUMB -->
     <div class="page-meta">
-        <nav class="breadcrumb-style-one" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">CMS</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Live Streaming</li>
-            </ol>
-        </nav>
+      <nav class="breadcrumb-style-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">CMS</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Live Streaming</li>
+        </ol>
+      </nav>
     </div>
     <!-- /BREADCRUMB -->
     <!-- CONTENT AREA -->
@@ -19,93 +19,101 @@
           <div class="widget-content widget-content-area">
             <div class="dataTables_wrapper container-fluid dt-bootstrap4">
               <div class="dt--top-section">
-                  <div class="row">
-                      <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                          <div class="dt-buttons"> 
-                            <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0" aria-controls="show-hide-col" data-bs-toggle="modal" data-bs-target="#modalForm" @click="clearForm()">
-                              <span>Add New</span>
-                            </button>
-                          </div>
-                      </div>
-                      <div class="col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3">
-                          <div id="show-hide-col_filter" class="dataTables_filter">
-                              <label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                <input type="search" class="form-control" placeholder="Search..." aria-controls="show-hide-col" v-model="paging.search">
-                              </label>
-                          </div>
-                      </div>
+                <div class="row">
+                  <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
+                    <div class="dt-buttons">
+                      <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
+                        aria-controls="show-hide-col" data-bs-toggle="modal" data-bs-target="#modalForm"
+                        @click="clearForm()">
+                        <span>Add New</span>
+                      </button>
+                    </div>
                   </div>
+                  <div class="col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3">
+                    <div id="show-hide-col_filter" class="dataTables_filter">
+                      <label>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-search">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="search" class="form-control" placeholder="Search..." aria-controls="show-hide-col"
+                          v-model="paging.search">
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="table-responsive">
-                  <table class="table table-hover table-striped table-bordered table-no-space">
-                      <thead>
-                          <tr>
-                            <th scope="col" width="20%">Title</th>
-                            <th scope="col" width="20%">Url</th>
-                            <th scope="col" width="20%">Date</th>
-                            <th scope="col" width="20%">Status</th>
-                            <th class="text-center" scope="col" width="20%"></th>
-                          </tr>
-                          <tr aria-hidden="true" class="mt-3 d-block table-row-hidden"></tr>
-                      </thead>
-                      <tbody v-if="table.items.length > 0">
-                        <tr v-for="(item,index) in table.items" :key="index">
-                          <td>
-                            <span v-text="(item.title) ? item.title : '-'"></span>
-                          </td>
-                          <td>
-                            <span v-text="(item.url) ? item.url : '-'"></span>
-                          </td>
-                          <td>
-                            <span v-text="(item.date) ? item.date : '-'"></span>
-                          </td>
-                          <td>
-                            <span v-text="(item.status) ? item.status : '-'"></span>
-                          </td>
-                          <td class="text-center">
-                            <div class="action-btns">
-                              <a href="javascript:void(0);" class="action-btn btn-edit bs-tooltip me-2" data-toggle="tooltip" data-placement="top" title="Edit" data-bs-toggle="modal" data-bs-target="#modalForm" @click="doUpdate(item.id)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="feather feather-edit-2">
-                                    <path
-                                        d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                    </path>
-                                </svg>
-                              </a>
-                              <a href="javascript:void(0);" class="action-btn btn-delete bs-tooltip" data-toggle="tooltip" data-placement="top" title="Delete" data-bs-toggle="modal" data-bs-target="#modalDelete" @click="form.delete = item.id">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="feather feather-trash-2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path
-                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                    </path>
-                                    <line x1="10" y1="11" x2="10"
-                                        y2="17"></line>
-                                    <line x1="14" y1="11" x2="14"
-                                        y2="17"></line>
-                                </svg>
-                              </a>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                      <tbody v-else>
-                        <tr>
-                          <td colspan="5" class="text-center" v-text="(form.loading) ? 'Loading...' : 'No data to show'"></td>
-                        </tr>
-                      </tbody>
-                  </table>
+                <table class="table table-hover table-striped table-bordered table-no-space">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="20%">Title</th>
+                      <th scope="col" width="20%">Url</th>
+                      <th scope="col" width="20%">Date</th>
+                      <th scope="col" width="20%">Status</th>
+                      <th class="text-center" scope="col" width="20%"></th>
+                    </tr>
+                    <tr aria-hidden="true" class="mt-3 d-block table-row-hidden"></tr>
+                  </thead>
+                  <tbody v-if="table.items.length > 0">
+                    <tr v-for="(item,index) in table.items" :key="index">
+                      <td>
+                        <span v-text="(item.title) ? item.title : '-'"></span>
+                      </td>
+                      <td>
+                        <span v-text="(item.url) ? item.url : '-'"></span>
+                      </td>
+                      <td>
+                        <span v-text="(item.date) ? item.date : '-'"></span>
+                      </td>
+                      <td>
+                        <span v-text="(item.status) ? item.status : '-'"></span>
+                      </td>
+                      <td class="text-center">
+                        <div class="action-btns">
+                          <a href="javascript:void(0);" class="action-btn btn-edit bs-tooltip me-2"
+                            data-toggle="tooltip" data-placement="top" title="Edit" data-bs-toggle="modal"
+                            data-bs-target="#modalForm" @click="doUpdate(item.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round" class="feather feather-edit-2">
+                              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
+                              </path>
+                            </svg>
+                          </a>
+                          <a href="javascript:void(0);" class="action-btn btn-delete bs-tooltip" data-toggle="tooltip"
+                            data-placement="top" title="Delete" data-bs-toggle="modal" data-bs-target="#modalDelete"
+                            @click="form.delete = item.id">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round" class="feather feather-trash-2">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                              </path>
+                              <line x1="10" y1="11" x2="10" y2="17"></line>
+                              <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody v-else>
+                    <tr>
+                      <td colspan="5" class="text-center" v-text="(form.loading) ? 'Loading...' : 'No data to show'">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
               <div class="dt--bottom-section d-sm-flex justify-content-sm-between text-center">
                 <div class="dt--pages-count  mb-sm-0 mb-3">
                   <div class="dataTables_length" id="example_length">
-                    <label>Results :  
-                      <select name="example_length" aria-controls="example" class="form-control" v-model="paging.perPage">
+                    <label>Results :
+                      <select name="example_length" aria-controls="example" class="form-control"
+                        v-model="paging.perPage">
                         <option value="10">10</option>
                         <option value="20">20</option>
                         <option value="50">50</option>
@@ -117,16 +125,29 @@
                   <div class="dataTables_paginate paging_simple_numbers" id="show-hide-col_paginate">
                     <ul class="pagination" v-if="table.totalPage > 0">
                       <li class="paginate_button page-item previous" id="show-hide-col_previous">
-                        <a href="#" aria-controls="show-hide-col" data-dt-idx="0" tabindex="0" class="page-link" @click="paging.page = paging.page-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        <a href="#" aria-controls="show-hide-col" data-dt-idx="0" tabindex="0" class="page-link"
+                          @click="paging.page = paging.page-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-arrow-left">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                          </svg>
                         </a>
                       </li>
                       <li class="paginate_button page-item active" v-for="page in table.totalPage">
-                        <a href="#" aria-controls="show-hide-col" class="page-link" v-text="page" @click="paging.page = page"></a>
+                        <a href="#" aria-controls="show-hide-col" class="page-link" v-text="page"
+                          @click="paging.page = page"></a>
                       </li>
                       <li class="paginate_button page-item next" id="show-hide-col_next">
-                        <a href="#" aria-controls="show-hide-col" data-dt-idx="8" tabindex="0" class="page-link" @click="paging.page = paging.page + 1">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        <a href="#" aria-controls="show-hide-col" data-dt-idx="8" tabindex="0" class="page-link"
+                          @click="paging.page = paging.page + 1">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-arrow-right">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                          </svg>
                         </a>
                       </li>
                     </ul>
@@ -137,67 +158,79 @@
           </div>
         </div>
       </div>
+      <div class="col-12 py-5">
+        <span v-for="(m,index) in messages" v-text="m.text"></span>
+      </div>
     </div>
     <!-- CONTENT AREA -->
   </div>
   <!-- Modal Form -->
-  <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true">
+  <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalFormLabel">Form</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-                  <path d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z"></path>
-                  </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="livestreamingsTitle" class="control-label">Title</label>
-                    <input type="text" class="form-control" v-model="form.data.title" id="livestreamingsTitle">
-                  </div>
-                  <div class="form-group mt-3">
-                    <label for="livestreamingsUrl" class="control-label">Url</label>
-                    <input type="text" class="form-control" v-model="form.data.url" id="livestreamingsUrl">
-                  </div>
-                  <div class="form-group mt-3">
-                    <label for="livestreamingsDate" class="control-label">Date</label>
-                    <input type="date" class="form-control" v-model="form.data.date" id="livestreamingsDate">
-                  </div>
-                </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalFormLabel">Form</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+              <path
+                d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z">
+              </path>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="livestreamingsTitle" class="control-label">Title</label>
+                <input type="text" class="form-control" v-model="form.data.title" id="livestreamingsTitle">
+              </div>
+              <div class="form-group mt-3">
+                <label for="livestreamingsUrl" class="control-label">Url</label>
+                <input type="text" class="form-control" v-model="form.data.url" id="livestreamingsUrl">
+              </div>
+              <div class="form-group mt-3">
+                <label for="livestreamingsDate" class="control-label">Date</label>
+                <input type="date" class="form-control" v-model="form.data.date" id="livestreamingsDate">
               </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
-                <button type="button" class="btn btn-secondary" @click="form.data.status='DRAFT';doSave()" v-text="(form.loading) ? 'Loading...' : 'Draft'" :disabled="form.loading"></button>
-                <button type="button" class="btn btn-primary" @click="form.data.status='PUBLISHED';doSave()" v-text="(form.loading) ? 'Loading...' : 'Publish'" :disabled="form.loading"></button>
-            </div>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button class="btn" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+          <button type="button" class="btn btn-secondary" @click="form.data.status='DRAFT';doSave()"
+            v-text="(form.loading) ? 'Loading...' : 'Draft'" :disabled="form.loading"></button>
+          <button type="button" class="btn btn-primary" @click="form.data.status='PUBLISHED';doSave()"
+            v-text="(form.loading) ? 'Loading...' : 'Publish'" :disabled="form.loading"></button>
+        </div>
+      </div>
     </div>
   </div>
   <!-- Modal Delete -->
-  <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+  <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalDeleteLabel">Delete Data</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-                  <path d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z"></path>
-                  </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-text">Are you sure to delete this data?</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
-                <button type="button" class="btn btn-danger" @click="doDelete(form.delete)" v-text="(form.loading) ? 'Loading...' : 'Delete!!!'" :disabled="form.loading"></button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalDeleteLabel">Delete Data</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+              <path
+                d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z">
+              </path>
+            </svg>
+          </button>
         </div>
+        <div class="modal-body">
+          <p class="modal-text">Are you sure to delete this data?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
+          <button type="button" class="btn btn-danger" @click="doDelete(form.delete)"
+            v-text="(form.loading) ? 'Loading...' : 'Delete!!!'" :disabled="form.loading"></button>
+        </div>
+      </div>
     </div>
   </div>
   <!-- Toaster -->
@@ -215,7 +248,12 @@
 </div>
 @endsection
 @section('customScript')
-<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js"
+  integrity="sha512-KGdD9Tf9LLS1w0LTOgilvMhXlybJK8pvB8ia6wrE3NrfwbNaSMlz+RrTpDej1W+DkbL3mnY2LSkX8Dwfh2MDgA=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" type="module"></script>
+<script src="https://js.pusher.com/4.0/pusher.min.js"></script>
+<script type="module">
+import Echo from 'https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js';
 let modalForm = new bootstrap.Modal(document.getElementById('modalForm'),{})
 const vueDashboard = new Vue( {
   el: '#livestreamingsPage',
@@ -250,7 +288,8 @@ const vueDashboard = new Vue( {
       },
       opt: {
         type: ['News','Events','Feeds']
-      }
+      },
+      messages: []
   },
   computed: {
     users() {
@@ -432,10 +471,47 @@ const vueDashboard = new Vue( {
         setTimeout(() => {
           this.alert.show = 'hide'
         }, 2000);
+      },
+      listenChat() {
+        window.Pusher = require('pusher-js');
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: 'ardanradiopusher',
+            cluster: 'mt1',
+            encrypted: false,
+            wsHost: 'localhost',
+            wsPort: 6001,
+            disableStats: false,
+            enabledTransports: ['ws']
+        });
+        window.Echo.connector.pusher.connection.bind('connected', () => {
+          console.log('connected');
+        });
+        let sample = window.Echo.channel('chat')
+        .listen('NewChatMessage', (e) => {
+          console.log('NewChatMessage', e);
+            this.messages.push({
+                text: e.message,
+                user: e.user
+            });
+        });
+        console.log(sample)
+      },
+      listens() {
+        let ws = new WebSocket('ws://localhost:6001/app/ardanradiopusher');
+        ws.onopen = function(){
+          //Subscribe to the channel
+          ws.send(JSON.stringify({"command": "subscribe","identifier":"{\"channel\":\"chat\"}"}))
+        }    
+
+        ws.onmessage = function(msg) {
+            console.log('hehe', msg);
+        }
       }
   },
   mounted() {
     this.doGet()
+    this.listenChat()
   }
 });
 </script>

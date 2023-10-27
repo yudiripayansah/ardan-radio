@@ -12,6 +12,7 @@ use App\Http\Controllers\PenyiarController;
 use App\Http\Controllers\FeedsController;
 use App\Http\Controllers\LiveStreamingsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,3 +129,5 @@ Route::group([
     Route::post('/update', [UserController::class, 'update']); 
     Route::post('/delete', [UserController::class, 'delete']); 
 });
+
+Route::post('/message', [MessageController::class, 'broadcast']);
