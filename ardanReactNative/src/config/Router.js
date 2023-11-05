@@ -107,6 +107,7 @@ export const RouteMain = ({navigation}) => {
                     },
                 })}
                 >
+                <MainStack.Screen name={'MessageDetail'} component={MessageDetail} options={options}/>
                 <MainStack.Screen name={'Home'} component={Home} options={options}/>
                 <MainStack.Screen name={'ArdanContent'} component={ArdanContent} options={options}/>
                 <MainStack.Screen name={'BannerDetails'} component={BannerDetails} options={options}/>
@@ -118,7 +119,6 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'LiveStreaming'} component={LiveStreaming} options={options}/>
                 <MainStack.Screen name={'Music'} component={Music} options={options}/>
                 <MainStack.Screen name={'Message'} component={Message} options={options}/>
-                <MainStack.Screen name={'MessageDetail'} component={MessageDetail} options={options}/>
                 <MainStack.Screen name={'News'} component={News} options={options}/>
                 <MainStack.Screen name={'NewsDetails'} component={NewsDetails} options={options}/>
                 <MainStack.Screen name={'Notifications'} component={Notifications} options={options}/>

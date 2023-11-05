@@ -19,6 +19,7 @@
     "axios": "^1.5.0",
     "google-auth-library": "^8.9.0",
     "laravel-echo": "^1.15.3",
+    "pusher-js": "^8.3.0",
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-native-app-intro-slider": "^4.0.4",

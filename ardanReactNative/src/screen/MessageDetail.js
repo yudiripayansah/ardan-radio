@@ -12,9 +12,6 @@ import {
   Text,
   SafeAreaView,
   ScrollView,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
@@ -22,55 +19,37 @@ import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 const MessageDetail = ({navigation}) => {
-  const listenChat = () => {
+  const listenChat = async () => {
+    const apiKey = 'ardanradiopusher'
+    const cluster = 'mt1'
+    const channelName = 'chat'
+    const pusher = Pusher.getInstance();
+    await pusher.init({
+      apiKey,
+      cluster
+    });
+
+    await pusher.connect();
+    await pusher.subscribe({ channelName });
     let echo = new Echo({
-      broadcaster: 'socket.io',
-      host: 'ws://mobileapps.ardanradio.com:6001/app/ardanradiopusher',
-      client: Socketio,
-    });
-    console.log(echo)
-    echo.private('chat').listen('NewChatMessage', event => {
-      console.log(event);
-    });
-    // Pusher.logToConsole = true;
-    // let PusherClient = new Pusher('ardanradiopusher', {
-    //   cluster: 'mt1',
-    //   wsHost: 'mobileapps.ardanradio.com',
-    //   wsPort: '6001',
-    //   enabledTransports: ['ws'],
-    //   forceTLS: false,
-    // });
-
-    // let echo = new Echo({
-    //   broadcaster: 'pusher',
-    //   client: PusherClient,
-    // });
-
-    // echo.channel('chat').listen('NewChatMessage', e => {
-    //   console.log('hello', e);
-    // });
-    // const pusher = Pusher.getInstance();
-
-    // try {
-    //   pusher.init({
-    //     apiKey: '<your_pusher_key>',
-    //     cluster: 'eu',
-    //     onAuthorizer: async (channelName, socketId) => {
-    //       const response = await axios.post('/api/broadcasting/auth', {
-    //         socket_id: socketId,
-    //         channel_name: channelName,
-    //       });
-    //       return response.data;
-    //     },
-    //     onError(message, code, e) {
-    //       console.log(
-    //         `onError: $message code: ${code} exception: ${e} message= ${message}`,
-    //       );
-    //     },
-    //   });
-    // } catch (e) {
-    //   console.log(`ERROR: ${e}`);
-    // }
+      broadcaster: 'pusher',
+      pusher, // sets the instance imported above
+  
+      // Tweak the options according to your settings
+      key: 'ardanradiopusher', // set the key defined in your .env
+      wsHost: 'mobileapps.ardanradio.com', // the host defined in your .env
+      wssHost: 'mobileapps.ardanradio.com', // the host defined in your .env
+      wsPort: 6001, // or the port defined in your .env
+      wssPort: 6001, // or the port defined in your .env
+      forceTLS: false,
+      encrypted: false,
+      cluster: 'mt1',
+      enabledTransports: ['ws', 'wss'],
+    })
+    echo.channel('chat')
+      .listen('NewChatMessage', (eventData) => {
+        // do something when the event fires
+      });
   };
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
