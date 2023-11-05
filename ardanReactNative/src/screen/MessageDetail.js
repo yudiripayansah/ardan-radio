@@ -1,11 +1,5 @@
 import Echo from 'laravel-echo';
-import Socketio from 'socket.io-client';
-import {
-  Pusher,
-  PusherMember,
-  PusherChannel,
-  PusherEvent,
-} from '@pusher/pusher-websocket-react-native';
+import Pusher from "pusher-js/react-native";
 import React, {useEffect, useContext, useState} from 'react';
 import {
   View,
@@ -19,37 +13,39 @@ import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 const MessageDetail = ({navigation}) => {
-  const listenChat = async () => {
+  const listenChat = () => {
     const apiKey = 'ardanradiopusher'
     const cluster = 'mt1'
     const channelName = 'chat'
-    const pusher = Pusher.getInstance();
-    await pusher.init({
-      apiKey,
-      cluster
-    });
-
-    await pusher.connect();
-    await pusher.subscribe({ channelName });
-    let echo = new Echo({
-      broadcaster: 'pusher',
-      pusher, // sets the instance imported above
-  
-      // Tweak the options according to your settings
-      key: 'ardanradiopusher', // set the key defined in your .env
-      wsHost: 'mobileapps.ardanradio.com', // the host defined in your .env
-      wssHost: 'mobileapps.ardanradio.com', // the host defined in your .env
-      wsPort: 6001, // or the port defined in your .env
-      wssPort: 6001, // or the port defined in your .env
-      forceTLS: false,
-      encrypted: false,
-      cluster: 'mt1',
-      enabledTransports: ['ws', 'wss'],
-    })
-    echo.channel('chat')
-      .listen('NewChatMessage', (eventData) => {
-        // do something when the event fires
+    const eventName = 'NewChatMessage'
+    try {
+      const ws = new Echo({
+        broadcaster: "pusher",
+        Pusher, // sets the instance imported above
+        key: apiKey, // app key
+        wsHost: "mobileapps.ardanradio.com", // host
+        wssHost: "mobileapps.ardanradio.com",
+        wsPort: 6001, // port
+        wssPort: 6001, 
+        forceTLS: false,
+        encrypted: false,
+        cluster: cluster,
+        enabledTransports: ["ws", "wss"],
       });
+      const channel = ws.channel(channelName);
+      channel.error((error) => {
+        // Handle the channel subscription error
+        console.error('Channel Subscription Error:', error);
+    });
+      const subs = channel.subscribed( () => {
+        console.log('subscribed');
+      })
+      channel.listen(eventName, (e) => {
+        console.log("ada cuuy :",e);
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
   };
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);

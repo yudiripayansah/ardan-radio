@@ -15,7 +15,7 @@ class MessageController extends Controller
       ], 422);
     }
     // TODO: Sanitize input
-    event(new NewChatMessage($request->message, $request->user));
-    return response()->json([$request->all()], 200);
+    $broadcast = broadcast(new NewChatMessage($request->message, $request->user))->toOthers();
+    return response()->json([$request->all(),$broadcast], 200);
   }
 }

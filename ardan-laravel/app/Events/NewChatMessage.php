@@ -38,4 +38,12 @@ class NewChatMessage implements ShouldBroadcast
     {
         return new Channel('chat');
     }
+    public function broadcastAs()
+    {
+        return 'message';
+    }
+    public function broadcastWith()
+    {
+        return ['msg' => 'coba coba ajaaaa'];
+    }
 }
