@@ -248,10 +248,6 @@
 </div>
 @endsection
 @section('customScript')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js"
-  integrity="sha512-KGdD9Tf9LLS1w0LTOgilvMhXlybJK8pvB8ia6wrE3NrfwbNaSMlz+RrTpDej1W+DkbL3mnY2LSkX8Dwfh2MDgA=="
-  crossorigin="anonymous" referrerpolicy="no-referrer" type="module"></script>
-<script src="https://js.pusher.com/4.0/pusher.min.js"></script>
 <script type="module">
 import Echo from 'https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js';
 let modalForm = new bootstrap.Modal(document.getElementById('modalForm'),{})
@@ -473,40 +469,10 @@ const vueDashboard = new Vue( {
         }, 2000);
       },
       listenChat() {
-        window.Pusher = require('pusher-js');
         window.Echo = new Echo({
-            broadcaster: 'pusher',
-            key: 'ardanradiopusher',
-            cluster: 'mt1',
-            encrypted: false,
-            wsHost: 'localhost',
-            wsPort: 6001,
-            disableStats: false,
-            enabledTransports: ['ws']
+          broadcaster: 'socket.io',
+          host: window.location.hostname + ':6001'
         });
-        window.Echo.connector.pusher.connection.bind('connected', () => {
-          console.log('connected');
-        });
-        let sample = window.Echo.channel('chat')
-        .listen('NewChatMessage', (e) => {
-          console.log('NewChatMessage', e);
-            this.messages.push({
-                text: e.message,
-                user: e.user
-            });
-        });
-        console.log(sample)
-      },
-      listens() {
-        let ws = new WebSocket('ws://localhost:6001/app/ardanradiopusher');
-        ws.onopen = function(){
-          //Subscribe to the channel
-          ws.send(JSON.stringify({"command": "subscribe","identifier":"{\"channel\":\"chat\"}"}))
-        }    
-
-        ws.onmessage = function(msg) {
-            console.log('hehe', msg);
-        }
       }
   },
   mounted() {
