@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Feeds;
+use App\Models\Comments;
+use App\Models\Likes;
 
 class FeedsController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['read', 'get']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get','create', 'update']]);
   }
   public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;
@@ -19,6 +21,7 @@ class FeedsController extends Controller
     $sortDir = ($request->sortDir) ? $request->sortDir : 'DESC';
     $sortBy = ($request->sortBy) ? $request->sortBy : 'updated_at';
     $search = ($request->search) ? $request->search : null;
+    $category = ($request->category) ? $request->category : null;
     $total = 0;
     $totalPage = 1;
     $id_user = ($request->id_user) ? $request->id_user : null;
@@ -30,6 +33,9 @@ class FeedsController extends Controller
     }
     if ($search != null) {
         $listData->whereRaw('(feeds.title LIKE "%'.$search.'%")');
+    }
+    if ($category != null) {
+        $listData->whereRaw('(feeds.category LIKE "%'.$category.'%")');
     }
     if ($type != null) {
         $listData->where('type',$type);
@@ -44,11 +50,16 @@ class FeedsController extends Controller
     foreach($listData as $ld) {
       $ld->image_url = ($ld->image) ? Storage::disk('public')->url('feeds/'.$ld->image) : null;
       $ld->user->image_url = ($ld->user->image) ? Storage::disk('public')->url('user/'.$ld->user->image) : null;
+      $ld->comment_count = Comments::where('id_target',$ld->id)->where('target_type',$ld->type)->count();
+      $ld->like_count = Likes::where('id_target',$ld->id)->where('type',$ld->type)->count();
     }
-    if ($search || $id_user || $type || $status) {
+    if ($search || $id_user || $type || $status || $category) {
         $total = Feeds::orderBy($sortBy, $sortDir);
         if ($search) {
             $total->whereRaw('(feeds.title LIKE "%'.$search.'%")');
+        }
+        if ($category) {
+            $total->whereRaw('(feeds.category LIKE "%'.$category.'%")');
         }
         if ($type) {
             $total->where('type', $type);
@@ -87,6 +98,8 @@ class FeedsController extends Controller
       $getData = Feeds::with('user')->get()->find($request->id);
       $getData->image = ($getData->image) ? Storage::disk('public')->url('feeds/'.$getData->image) : null;
       $getData->user->image_url = ($getData->user->image) ? Storage::disk('public')->url('user/'.$getData->user->image) : null;
+      $getData->comment_count = Comments::where('id_target',$getData->id)->where('target_type',$getData->type)->count();
+      $getData->like_count = Likes::where('id_target',$getData->id)->where('type',$getData->type)->count();
       if ($getData) {
           $res = array(
                   'status' => true,
@@ -162,6 +175,9 @@ class FeedsController extends Controller
     unset($dataUpdate['created_at']);
     unset($dataUpdate['updated_at']);
     unset($dataUpdate['deleted_at']);
+    unset($dataUpdate['user']);
+    unset($dataUpdate['comment_count']);
+    unset($dataUpdate['like_count']);
     DB::beginTransaction();
     if ($validate['status']) {
       try {

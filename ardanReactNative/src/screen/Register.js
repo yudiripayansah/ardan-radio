@@ -23,6 +23,10 @@ const Register = ({navigation}) => {
     }
     return result;
   }
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
   const doRegister = async () => {
     setError(null);
     setLoading(true);
@@ -41,23 +45,31 @@ const Register = ({navigation}) => {
         role: 'member',
         status: 'active',
       };
-      
-      let req = await Api.userCreate(payload, 'randomToken');
-      if (req.status == 200) {
-        let {data, status, msg} = req.data;
-        if(status) {
-          // setUser(data);
-          setbtnLabel('Register Successful');
-          setTimeout(() => {
-            navigation.navigate('Login')
-          },1000)
+      if(payload.email && payload.password && payload.name) {
+        if(validateEmail(payload.email)){
+          let req = await Api.userCreate(payload, 'randomToken');
+          if (req.status == 200) {
+            let {data, status, msg} = req.data;
+            if(status) {
+              // setUser(data);
+              setbtnLabel('Register Successful');
+              setError(null)
+              setTimeout(() => {
+                navigation.navigate('Login')
+              },1000)
+            } else {
+              setError(msg);
+            }
+          }
         } else {
-          setError(msg);
+          setError('Please enter Valid Email')
         }
+      } else {
+        setError('Please enter Email, Name and Password')
       }
       setLoading(false);
     } catch (error) {
-      console.log('catch',error);
+      console.error(error);
       setLoading(false);
     }
   };

@@ -3,56 +3,7 @@ import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInpu
 import { ThemeContext } from '../context/ThemeContext';
 const RadioDetails = ({ navigation }) => {
   const theme = useContext(ThemeContext)
-  const programList = [
-    {
-      image: require('../assets/images/program-1.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-    {
-      image: require('../assets/images/program-2.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-    {
-      image: require('../assets/images/program-3.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-    {
-      image: require('../assets/images/program-4.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-    {
-      image: require('../assets/images/program-1.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-    {
-      image: require('../assets/images/program-2.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-    {
-      image: require('../assets/images/program-3.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-    {
-      image: require('../assets/images/program-4.png'),
-      name: 'Cipaganti',
-      penyiar: 'Syarlita, Iqbal',
-      time: '12.00 - 13.00 Wib'
-    },
-  ]
+  const programList = []
   useEffect(() => {
     
   }, [])
@@ -80,7 +31,7 @@ const RadioDetails = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={[theme.fRow,theme.faCenter, theme.mt35,theme.w320,theme.p10,theme.br12,theme.relative, {backgroundColor:'rgba(255, 255, 255, 0.16)'}]}>
-            <Image source={require('../assets/images/program-2.png')} style={[theme.h55,theme.w55,theme.br7,theme.me10]}/>
+            {/* <Image source={require('../assets/images/program-2.png')} style={[theme.h55,theme.w55,theme.br7,theme.me10]}/> */}
             <View style={[theme.faStart]}>
               <Text style={[theme['h16-700'],theme.cwhite]}>Ardanesia</Text>
               <Text style={[theme['h8-600'],theme.cwhite,{opacity:.6}]}>Alda , Keepe</Text>

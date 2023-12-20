@@ -17,7 +17,7 @@ class CreateLikesTable extends Migration
             $table->id();
             $table->integer('id_user');
             $table->integer('id_target');
-            $table->integer('type');
+            $table->text('type');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -3,25 +3,59 @@ import {View, Image, TouchableOpacity, TextInput, Text} from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
-import { useRoute } from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import SvgUri from 'react-native-svg-uri';
+import Icons from './Icons';
 const Header = ({navigation, ...props}) => {
   const route = useRoute();
   const {currentScreen} = props;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const {removeUser} = useContext(AuthContext);
-  const [header, setHeader] = useState(Object)
+  const [header, setHeader] = useState(Object);
   const doLogout = () => {
     removeUser();
   };
+  const menu = [
+    {
+      icon: Icons.menuContent,
+      title: 'Content',
+      target: () => {
+        navigation.navigate('ArdanContent');
+      },
+    },
+    {
+      icon: Icons.menuSocial,
+      title: 'Social',
+      target: () => {
+        navigation.navigate('Social');
+      },
+    },
+    {
+      icon: Icons.menuNews,
+      title: 'News',
+      target: () => {
+        navigation.navigate('News');
+      },
+    },
+    {
+      icon: Icons.menuEvents,
+      title: 'Event',
+      target: () => {
+        navigation.navigate('Event');
+      },
+    },
+  ];
   const CLogo = () => {
     return (
-      <Image
-        source={require('../assets/images/logo-ardan-simple.png')}
-        style={[theme.w50]}
-      />
-    )
-  }
+      <></>
+      // <Image
+      //   source={require('../assets/images/logo-ardan-simple.png')}
+      //   style={[theme.w50]}
+      // />
+    );
+  };
   const CSearch = () => {
     return (
       <TextInput
@@ -41,82 +75,172 @@ const Header = ({navigation, ...props}) => {
         multiline
         numberOfLines={1}
       />
-    )
-  }
+    );
+  };
   const CTitle = () => {
     return (
-      <Text style={[theme['h20-600'],theme.cwhite]}>{currentScreen}</Text>
-    )
-  }
+      <Text style={[theme['h20-600'], theme.cwhite]}>{currentScreen}</Text>
+    );
+  };
   const CNotif = () => {
     return (
-      <TouchableOpacity>
-        <Image
-          source={require('../assets/images/icons/notif.png')}
-          style={[theme.w20]}
-        />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Notifications');
+        }}>
+        <Icon name="bell" size={20} color="#fff" />
       </TouchableOpacity>
-    )
-  }
+    );
+  };
   const CBack = () => {
     return (
-      <TouchableOpacity onPress={() => {navigation.goBack()}}>
-        <Image
-          source={require('../assets/images/icons/icon-back.png')}
-          style={[theme.w20,theme.h16]}
-        />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}>
+        <Icon name="angle-left" size={30} color="#fff" />
       </TouchableOpacity>
-    )
-  }
-  const CFavorite = () => {
-
-  }
+    );
+  };
+  const CFavorite = () => {};
   const HeaderHome = () => {
     return (
       <>
-      <View style={[theme.wp20]}>
-        <CLogo/>
-      </View>
-      <View style={[theme.wp60, theme.faCenter]}>
-        <CSearch/>
-      </View>
-      <View style={[theme.wp20, theme.faEnd]}>
-        <CNotif/>
-      </View>
+        <View
+          style={[
+            {backgroundColor: '#28353b'},
+            theme.wp100,
+            theme.py25,
+            theme.px40,
+            theme.fRow,
+            theme.fjBetween,
+            theme.faCenter,
+          ]}>
+          <View style={[theme.fRow, theme.faCenter]}>
+            <View
+              style={[
+                theme.faCenter,
+                theme.fjCenter,
+                theme.w35,
+                theme.h35,
+                {backgroundColor: '#fff', borderColor: '#F8C303'},
+                theme.br100,
+                theme.bsolid,
+                theme.bw2,
+                theme.me17,
+              ]}>
+              <SvgUri width={20} height={20} source={Icons.user} />
+            </View>
+            <View>
+              <Text style={[theme['h15-700'], {color: '#fff'}]}>
+                Welcome back!
+              </Text>
+              <Text
+                style={[
+                  theme['h12-400'],
+                  {color: '#fff', opacity: 0.5, marginTop: -5},
+                ]}>
+                {user.name}
+              </Text>
+            </View>
+          </View>
+          <View style={[theme.fRow]}>
+            <TouchableOpacity style={[theme.me10]}>
+              <SvgUri source={Icons.search} width={25} height={25} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <SvgUri source={Icons.notif} width={25} height={25} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={[
+            {backgroundColor: '#21292f'},
+            theme.wp100,
+            theme.py17,
+            theme.px40,
+            theme.fRow,
+            theme.faCenter,
+            theme.fjBetween,
+          ]}>
+          {menu.map(item => {
+            return (
+              <TouchableOpacity
+                style={[theme.faCenter, theme.fjCenter]}
+                onPress={item.target}>
+                <View
+                  style={[
+                    {backgroundColor: '#F8C303'},
+                    theme.br100,
+                    theme.h55,
+                    theme.w55,
+                    theme.faCenter,
+                    theme.fjCenter,
+                  ]}>
+                  <SvgUri source={item.icon} width={35} />
+                </View>
+                <Text
+                  style={[
+                    {color: '#fff', letterSpacing: 0.3},
+                    theme['h10-500'],
+                    theme.mt5,
+                  ]}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </>
-    )
-  }
+    );
+  };
   const HeaderTitle = () => {
     return (
       <>
-      <View style={[theme.wp20]}>
-        <CBack/>
-      </View>
-      <View style={[theme.wp60, theme.faCenter]}>
-        <CTitle/>
-      </View>
-      <View style={[theme.wp20, theme.faEnd]}>
-        <CNotif/>
-      </View>
+        <View
+          style={[
+            {backgroundColor: '#28353b'},
+            theme.wp100,
+            theme.py15,
+            theme.px20,
+            theme.fRow,
+            theme.fjBetween,
+            theme.faCenter,
+          ]}>
+          <View style={[theme.wp20]}>
+            <TouchableOpacity style={[theme.me10]} onPress={()=>{navigation.goBack();}}>
+              <SvgUri source={Icons.back} width={25} height={25} />
+            </TouchableOpacity>
+          </View>
+          <View style={[theme.fRow, theme.faCenter]}>
+            <Text style={[theme['h18-700'], {color: '#fff'}]}>
+              {currentScreen}
+            </Text>
+          </View>
+          <View style={[theme.fRow,theme.wp20,theme.fjEnd]}>
+            <TouchableOpacity style={[theme.me10]} onPress={()=>{}}>
+              <SvgUri source={Icons.search} width={25} height={25} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>{navigation.navigate('Notifications');}}>
+              <SvgUri source={Icons.notif} width={25} height={25} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </>
-    )
-  }
+    );
+  };
   const getHeader = () => {
-    if(currentScreen == 'Home'){ 
-      return (
-        <HeaderHome/>
-      )
+    if (currentScreen == 'Home') {
+      return <HeaderHome />;
     } else {
-      return (
-        <HeaderTitle/>
-      )
+      return <HeaderTitle />;
     }
-  }
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {
-        setHeader()
+        setHeader();
       }
     });
     return () => (mounted = false);
@@ -129,10 +253,8 @@ const Header = ({navigation, ...props}) => {
         theme.fRow,
         theme.fjBetween,
         theme.faCenter,
-        theme.p10,
         theme.absolute,
         theme.top0,
-        theme.bgblack,
         {zIndex: 2},
       ]}>
       {getHeader()}

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 let color = {
-    black: '#090903',
+    black: '#181a20',
     black_chocolate: '#191A03',
     black_green: '#4F4F3F',
     yellow: '#F8C303',
@@ -24,7 +24,7 @@ marginPadding[`mtAuto`] = { marginTop: 'auto' }
 marginPadding[`mbAuto`] = { marginBottom: 'auto' }
 marginPadding[`msAuto`] = { marginLeft: 'auto' }
 marginPadding[`meAuto`] = { marginRight: 'auto' }
-for (let i = 1; i < 200; i++) {
+for (let i = 1; i < 1000; i++) {
     marginPadding[`m${i}`] = { margin: i }
     marginPadding[`mx${i}`] = { marginHorizontal: i }
     marginPadding[`my${i}`] = { marginVertical: i }

@@ -27,6 +27,8 @@ Route::get('fetch-private-chat/{chatroom}/', 'PrivateChatController@get')->name(
 
 Route::get('public-chat', 'PublicChatController@index')->name('public.chat.index');
 Route::post('public-chat/{chatroom}', 'PublicChatController@store')->name('public.chat.store');
+Route::post('publicchat/send', 'PublicController@send')->name('public.chat.send');
+Route::post('privatechat/send', 'PrivateChat@send')->name('private.chat.send');
 Route::get('fetch-public-chat/{chatroom}/', 'PublicChatController@get')->name('fetch-public.chat');
 
 Route::get('test', function() {

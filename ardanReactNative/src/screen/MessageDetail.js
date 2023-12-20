@@ -1,74 +1,58 @@
 import Echo from 'laravel-echo';
-import axios from 'axios'
-import Socketio from 'socket.io-client';
-import Pusher from "pusher-js/react-native";
-import React, {useEffect, useContext, useState} from 'react';
+import io from 'socket.io-client';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   View,
   Text,
   SafeAreaView,
   ScrollView,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+  Keyboard
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
-const MessageDetail = ({navigation}) => {
-  const login = async () => {
-    let login = 'https://chat.kopikoding.com/login'
-    payload = {
-      email: 'yudi@360and5.com',
-      password: '123456'
-    }
-    let req = axios.post(login,payload)
-    console.log(req)
-  }
-  const listenChat = () => {
-    let hostname = 'ws://chat.kopikoding.com'
-    let echo = new Echo({
-        broadcaster: 'socket.io',
-        client: Socketio,
-        host: hostname + ':6001'
-    });
-    // console.log(echo)
-    echo.join(`room-events-1`)
-    .here((users) => {
-        console.log('user',users)
-        // users.forEach(function(user) {
-        //     app.onlineUsers.push(user.name);
-        // });
-    }).joining((user) => {
-      console.log(user)
-        // app.onlineUsers.push(user.name);
-        // $.notify(user.name + " joined.", "success");
-    }).leaving((user) => {
-      console.log(user)
-        // var i = app.onlineUsers.indexOf(user.name);
-        // app.onlineUsers.splice(i, 1);
-        // $.notify(user.name + " left.", "error");
-    });
-
-    let listen = echo.channel(`public-chat-room-1`)
-    .listen('PublicMessageEvent', (e) => {
-        // app.updateChat(e);
-        console.log(e)
-    }).error((er) => {
-      Alert.alert('Socket Err', 'An error occured')
-      console.log('socket error msg:', JSON.stringify(er))        
-    });
-    console.log(listen)
-
-    echo.private(`typing-room-1`)
-    .listenForWhisper('typing', (e) => {
-        // app.isTyping = e.name;
-        // setTimeout(function() {
-        //     app.isTyping = '';
-        // }, 1000);
-    });
-  };
+import Icon from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios'
+const MessageDetail = ({route,navigation}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
+  const scrollViewRef = useRef();
+  const [msg, setMsg] = useState()
+  const [privatechat, setPrivatechat] = useState([])
+  const roomId = user.id+''+route.params.id
+  const listenChat = () => {
+    const echo = new Echo({
+      broadcaster: 'socket.io',
+      host: 'https://chat.kopikoding.com:6001',
+      client: io
+    });
+    echo.channel('private-chat-room-'+roomId).listen('PrivateChatEvent', (event) => {
+      const {target} = event
+      console.log(event)
+      let theChat = privatechat
+      theChat.push(event)
+      setPrivatechat(theChat)
+    });
+  }
+  const sendChat = async () => {
+    try {
+      let url = 'https://chat.kopikoding.com/publicchat/send'
+      let payload = {
+        message: msg,
+        target: "livestream",
+        name: user.name
+      }
+      let req = await axios.post(url,payload)
+      setMsg('')
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const FriendChat = chat => {
     return (
       <View style={[theme.pb20]}>
@@ -109,13 +93,16 @@ const MessageDetail = ({navigation}) => {
       </View>
     );
   };
+  
   useEffect(() => {
     listenChat()
   }, []);
 
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, theme.pt60]}>
-      <ScrollView style={[theme.px15]}>
+    <KeyboardAvoidingView style={[theme.bgblack, {flexGrow: 1}, theme.pt60]}>
+      <ScrollView style={[theme.px20]}
+      ref={scrollViewRef}
+      onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
         {FriendChat(
           'lorem ipsum dolor sit amet, consectetur adipis constrender nunc vitae et just euismod tempor incididunt ut labore et dolore magna aliqu sapient',
         )}
@@ -136,9 +123,18 @@ const MessageDetail = ({navigation}) => {
         {FriendChat(
           'lorem ipsum dolor sit amet, consectetur adipis constrender nunc vitae et just euismod tempor incididunt ut labore et dolore magna aliqu sapient',
         )}
-        <View style={[theme.h100]}></View>
+        <View style={[theme.h170]}></View>
       </ScrollView>
-    </SafeAreaView>
+      <View
+      style={[theme.px30, theme.fRow, theme.absolute,theme.pb110,theme.pt20,theme.bottom0, theme.faCenter,theme.fjBetween, theme.bgblack]}>
+        <View style={[theme.bgwhite,theme.px15,theme.br16,theme.me10,theme.wp84]}>
+          <TextInput placeholder="Send Message" style={[theme.cblack,theme['p12-500']]} onChangeText={setMsg} value={msg} onSubmitEditing={() => {sendChat()}} clearButtonMode="while-editing"/>
+        </View>
+        <TouchableOpacity style={[theme.w43,theme.h43,theme.bgyellow,theme.br100,theme.fjCenter,theme.faCenter]} onPress={() => {sendChat();Keyboard.dismiss()}}>
+          <Icon name="send" size={14} color="#fff" />
+        </TouchableOpacity> 
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

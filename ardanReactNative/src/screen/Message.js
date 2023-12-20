@@ -20,7 +20,7 @@ const Message = ({navigation}) => {
     return (
       <TouchableOpacity style={[theme.py10,theme.fRow,theme.fjBetween,theme.faCenter]} onPress={()=>{navigation.navigate('MessageDetail')}}>
         <View style={[theme.fRow,theme.faCenter]}>
-          <Image source={require('../assets/images/penyiar/1.png')} style={[theme.w50,theme.h50,{objectFit:'cover'},theme.br100,theme.me15]}/>
+          {/* <Image source={require('../assets/images/penyiar/1.png')} style={[theme.w50,theme.h50,{objectFit:'cover'},theme.br100,theme.me15]}/> */}
           <View>
             <Text style={[theme.cwhite,theme['h16-600']]}>Salsabila</Text>
             <Text style={[theme.cwhite,theme['p14-400']]}>Hallo yang disana...</Text>
@@ -37,7 +37,7 @@ const Message = ({navigation}) => {
     return (
       <TouchableOpacity style={[theme.py10,theme.fRow,theme.fjBetween,theme.faCenter]} onPress={()=>{navigation.navigate('MessageDetail')}}>
         <View style={[theme.fRow,theme.faCenter]}>
-          <Image source={require('../assets/images/penyiar/2.png')} style={[theme.w50,theme.h50,{objectFit:'cover'},theme.br100,theme.me15]}/>
+          {/* <Image source={require('../assets/images/penyiar/2.png')} style={[theme.w50,theme.h50,{objectFit:'cover'},theme.br100,theme.me15]}/> */}
           <View>
             <Text style={[theme.cwhite,theme['h16-600']]}>Johan</Text>
             <Text style={[theme.cwhite,theme['p14-400']]}>Oke siap gaskeun...</Text>

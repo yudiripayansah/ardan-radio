@@ -1,80 +1,159 @@
-import React, { useEffect, useContext } from 'react'
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
-const Program = ({ navigation }) => {
-  const theme = useContext(ThemeContext)
-  const programList = [
-    {
-      image: require('../assets/images/program/1.png'),
-      name: 'Ardanesia',
-      date: 'Setiap Hari',
-      time: '18.00-21.00'
-    },
-    {
-      image: require('../assets/images/program/2.png'),
-      name: 'Cipaganti',
-      date: 'Senin-Jumat',
-      time: '06.00-09.00'
-    },
-    {
-      image: require('../assets/images/program/3.png'),
-      name: 'LDR',
-      date: 'Setiap Hari',
-      time: '18.00-21.00'
-    },
-    {
-      image: require('../assets/images/program/4.png'),
-      name: 'Aseek',
-      date: 'Setiap Hari',
-      time: '18.00-21.00'
-    },
-    {
-      image: require('../assets/images/program/5.png'),
-      name: 'Hegarmanah',
-      date: 'Setiap Hari',
-      time: '18.00-21.00'
-    },
-    {
-      image: require('../assets/images/program/6.png'),
-      name: 'Ardan Inde7',
-      date: 'Setiap Hari',
-      time: '18.00-21.00'
-    },
-  ]
+import React, {useEffect, useContext, useState} from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  KeyboardAvoidingView,
+  ActivityIndicator
+} from 'react-native';
+import {ThemeContext} from '../context/ThemeContext';
+import Api from '../config/Api';
+import Helper from '../config/Helper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+const Program = ({navigation}) => {
+  const theme = useContext(ThemeContext);
+  const [search, setSearch] = useState(null);
+  const [programsItem, setProgramsItem] = useState({
+    data: [],
+    loading: false,
+  });
+  const getProgram = async (cat = null) => {
+    setProgramsItem({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: '~',
+        sortDir: 'DESC',
+        sortBy: 'id',
+      };
+      if (search) {
+        payload.search = search;
+      }
+      let req = await Api.programsRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setProgramsItem({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setProgramsItem({
+        data: [],
+        loading: false,
+      });
+    }
+  };
   useEffect(() => {
-    
-  }, [])
+    getProgram();
+  }, []);
 
   return (
-    <SafeAreaView style={[theme.bgblack,{flexGrow: 1},theme.pt60, theme.relative]}>
-      <View style={[theme.px30, theme.mb5]}>
-        <View style={[theme.br14,{backgroundColor:'#2B2B16'},theme.px10,theme.pt5]}>
-          <TextInput placeholder='Search Program' style={[theme.cwhite,theme['h12-500']]} placeholderTextColor={'#fff'}/>
+    <KeyboardAvoidingView
+      style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
+      <View style={[theme.px20]}>
+        <View
+          style={[
+            theme.fRow,
+            theme.faCenter,
+            {backgroundColor: '#12120B'},
+            theme.my25,
+            theme.br12,
+            theme.px15,
+          ]}>
+          <TouchableOpacity
+            onPress={() => {
+              getProgram();
+            }}>
+            <Image
+              source={require('../assets/images/icons/search.png')}
+              style={[theme.me5, theme.w25, theme.h25]}
+            />
+          </TouchableOpacity>
+          <TextInput
+            placeholder="Search..."
+            style={[theme.cwhite, theme['p14-400'], theme.wp90]}
+            placeholderTextColor="#fff"
+            onChangeText={setSearch}
+            value={search}
+            onSubmitEditing={() => {
+              getProgram();
+            }}
+            clearButtonMode="while-editing"
+          />
         </View>
       </View>
-      <ScrollView style={[theme.px30]}>
-        <View style={[theme.fRow,theme.fjBetween]}>
-        {
-          programList.map((item,i) => {
-            return (
-              <TouchableOpacity 
-                style={[{backgroundColor:'#252525'}, theme.br14, theme.mb15, theme.wp48]}
-                onPress={()=>{navigation.navigate('ProgramDetails')}} key={i}>
-                <Image source={item.image} style={[theme.wp100,theme.h125,theme.brtl12,theme.brtr12, theme.me10]}/>
-                <View style={[theme.py8,theme.px12]}>
-                  <Text style={[theme['h14-700'], theme.cwhite]}>{item.name}</Text>
-                  <Text style={[theme['h10-400'], theme.cwhite]}>{item.date}</Text>
-                  <Text style={[theme['h7-400'], theme.cyellow,theme.tRight]}>{item.time}</Text>
-                </View>
-              </TouchableOpacity>
-            )
-          })
-        }
+      <ScrollView style={[theme.px20]}>
+        <View style={[theme.fRow, theme.fjBetween, theme.wp100]}>
+          {programsItem.loading ? (
+            <View style={[theme.py50, theme.wp100, theme.faCenter]}>
+              <ActivityIndicator size="large" color="#F8C303" />
+            </View>
+          ) : (
+            programsItem.data.map((item, i) => {
+              return (
+                <TouchableOpacity
+                  style={[
+                    {backgroundColor: '#252525'},
+                    theme.br14,
+                    theme.mb15,
+                    theme.wp48,
+                  ]}
+                  onPress={() => {
+                    navigation.navigate('ProgramDetails', {
+                      id: item.id,
+                    });
+                  }}
+                  key={i}>
+                  <Image
+                    source={{uri: item.image_url}}
+                    style={[
+                      theme.wp100,
+                      theme.h180,
+                      theme.brtl12,
+                      theme.brtr12,
+                      theme.me10,
+                    ]}
+                  />
+                  <View style={[theme.py8, theme.px12, theme.fjStart]}>
+                    <View style={[theme.fRow, theme.fjBetween, theme.wp100]}>
+                      <Text style={[theme['h8-400'], theme.cwhite, theme.wp50]}>
+                        {Helper.hari(item.days)}
+                      </Text>
+                      <Text
+                        style={[
+                          theme['h8-400'],
+                          theme.cyellow,
+                          theme.tRight,
+                          theme.wp50,
+                        ]}>
+                        {item.time}
+                      </Text>
+                    </View>
+                    <Text style={[theme['h14-700'], theme.cwhite]}>
+                      {item.title}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          )}
         </View>
-        <View style={[theme.mb150]}/>
+        <View style={[theme.mb150]} />
       </ScrollView>
-    </SafeAreaView>
-  )
-}
+    </KeyboardAvoidingView>
+  );
+};
 
-export default Program
+export default Program;

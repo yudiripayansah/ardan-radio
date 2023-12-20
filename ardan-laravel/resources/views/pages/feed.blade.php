@@ -403,7 +403,7 @@ const vueDashboard = new Vue( {
         this.form.loading = true
         let payload = {...this.form.data}
         payload.category = payload.category.join(',')
-        payload.id_user = this.users.id
+        payload.id_user = (payload.id_user) ? payload.id_user : this.users.id
         try {
           let req = false
           if(payload.id) {

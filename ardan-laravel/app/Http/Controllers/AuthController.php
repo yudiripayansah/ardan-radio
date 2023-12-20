@@ -28,7 +28,10 @@ class AuthController extends Controller
             'msg' => 'Email dan Password tidak valid'
         );
         } else {
-        $data = auth()->user();
+        $aUser = auth()->user();
+        $getData = User::find($aUser->id);
+        $getData->image_url = ($getData->image) ? Storage::disk('public')->url('user/'.$getData->image) : null;
+        $data = $getData;
         $data['access_token'] = $token;
         $data['token_type'] = 'bearer';
         $data['expires_in'] = auth()->factory()->getTTL() * 60;
