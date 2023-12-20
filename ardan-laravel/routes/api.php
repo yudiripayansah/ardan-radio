@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\EventsController;
@@ -11,8 +12,9 @@ use App\Http\Controllers\ProgramsController;
 use App\Http\Controllers\PenyiarController;
 use App\Http\Controllers\FeedsController;
 use App\Http\Controllers\LiveStreamingsController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PublicChatControllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -129,5 +131,25 @@ Route::group([
     Route::post('/update', [UserController::class, 'update']); 
     Route::post('/delete', [UserController::class, 'delete']); 
 });
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'comment'
+], function ($router) {
+    Route::post('/read', [CommentController::class, 'read']); 
+    Route::post('/get', [CommentController::class, 'get']); 
+    Route::post('/create', [CommentController::class, 'create']); 
+    Route::post('/update', [CommentController::class, 'update']); 
+    Route::post('/delete', [CommentController::class, 'delete']); 
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'like'
+], function ($router) {
+    Route::post('/read', [LikeController::class, 'read']); 
+    Route::post('/get', [LikeController::class, 'get']); 
+    Route::post('/create', [LikeController::class, 'create']); 
+    Route::post('/update', [LikeController::class, 'update']); 
+    Route::post('/delete', [LikeController::class, 'delete']); 
+});
 
-Route::post('/message', [MessageController::class, 'broadcast']);
+Route::post('/chat/send', [PublicChatControllers::class, 'send']);

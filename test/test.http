@@ -1,8 +1,9 @@
-POST https://mobileapps.ardanradio.com/api/message
+POST https://ardan.kopikoding.com/api/chat/send
 Content-Type: application/json
 Accept: application/json
 
 {
-"message": "Haloo boskjkjkjkjs",
-"user": "Testuser"
+"message": "Hallo",
+"target": "livestream",
+"name": "Yudi Ripayansah"
 }

@@ -1,340 +1,413 @@
-import axios from 'axios'
+import axios from 'axios';
 const defAxios = axios.create({
   // baseURL: "http://localhost:8000/api/"
-  baseURL: "https://mobileapps.ardanradio.com/api/"
-})
+  // baseURL: "https://ardan.kopikoding.com/api/"
+  baseURL: 'https://mobileapps.ardanradio.com/api/',
+});
 const Api = {
   login(payload) {
-    let url = '/auth/login'
+    let url = '/auth/login';
     return defAxios.post(url, payload);
   },
   logout(payload) {
-    let url = '/auth/logout'
+    let url = '/auth/logout';
     return defAxios.post(url, payload);
   },
   // user
   userRead(payload) {
-    let url = '/user/read'
+    let url = '/user/read';
     return defAxios.post(url, payload);
   },
   userGet(payload) {
-    let url = '/user/get'
+    let url = '/user/get';
     return defAxios.post(url, payload);
   },
   userCreate(payload, token) {
-    let url = '/user/create'
+    let url = '/user/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   userUpdate(payload, token) {
-    let url = '/user/update'
+    let url = '/user/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   userDelete(payload, token) {
-    let url = '/user/delete'
+    let url = '/user/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // banner
   bannerRead(payload) {
-    let url = '/banner/read'
+    let url = '/banner/read';
     return defAxios.post(url, payload);
   },
   bannerGet(payload) {
-    let url = '/banner/get'
+    let url = '/banner/get';
     return defAxios.post(url, payload);
   },
   bannerCreate(payload, token) {
-    let url = '/banner/create'
+    let url = '/banner/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   bannerUpdate(payload, token) {
-    let url = '/banner/update'
+    let url = '/banner/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   bannerDelete(payload, token) {
-    let url = '/banner/delete'
+    let url = '/banner/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // category
   categoryRead(payload) {
-    let url = '/category/read'
+    let url = '/category/read';
     return defAxios.post(url, payload);
   },
   categoryGet(payload) {
-    let url = '/category/get'
+    let url = '/category/get';
     return defAxios.post(url, payload);
   },
   categoryCreate(payload, token) {
-    let url = '/category/create'
+    let url = '/category/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   categoryUpdate(payload, token) {
-    let url = '/category/update'
+    let url = '/category/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   categoryDelete(payload, token) {
-    let url = '/category/delete'
+    let url = '/category/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // news
   newsRead(payload) {
-    let url = '/news/read'
+    let url = '/news/read';
     return defAxios.post(url, payload);
   },
   newsGet(payload) {
-    let url = '/news/get'
+    let url = '/news/get';
     return defAxios.post(url, payload);
   },
   newsCreate(payload, token) {
-    let url = '/news/create'
+    let url = '/news/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   newsUpdate(payload, token) {
-    let url = '/news/update'
+    let url = '/news/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   newsDelete(payload, token) {
-    let url = '/news/delete'
+    let url = '/news/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // events
   eventsRead(payload) {
-    let url = '/events/read'
+    let url = '/events/read';
     return defAxios.post(url, payload);
   },
   eventsGet(payload) {
-    let url = '/events/get'
+    let url = '/events/get';
     return defAxios.post(url, payload);
   },
   eventsCreate(payload, token) {
-    let url = '/events/create'
+    let url = '/events/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   eventsUpdate(payload, token) {
-    let url = '/events/update'
+    let url = '/events/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   eventsDelete(payload, token) {
-    let url = '/events/delete'
+    let url = '/events/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // programs
   programsRead(payload) {
-    let url = '/programs/read'
+    let url = '/programs/read';
     return defAxios.post(url, payload);
   },
   programsGet(payload) {
-    let url = '/programs/get'
+    let url = '/programs/get';
     return defAxios.post(url, payload);
   },
   programsCreate(payload, token) {
-    let url = '/programs/create'
+    let url = '/programs/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   programsUpdate(payload, token) {
-    let url = '/programs/update'
+    let url = '/programs/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   programsDelete(payload, token) {
-    let url = '/programs/delete'
+    let url = '/programs/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // penyiar
   penyiarRead(payload) {
-    let url = '/penyiar/read'
+    let url = '/penyiar/read';
     return defAxios.post(url, payload);
   },
   penyiarGet(payload) {
-    let url = '/penyiar/get'
+    let url = '/penyiar/get';
     return defAxios.post(url, payload);
   },
   penyiarCreate(payload, token) {
-    let url = '/penyiar/create'
+    let url = '/penyiar/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   penyiarUpdate(payload, token) {
-    let url = '/penyiar/update'
+    let url = '/penyiar/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   penyiarDelete(payload, token) {
-    let url = '/penyiar/delete'
+    let url = '/penyiar/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // feeds
   feedsRead(payload) {
-    let url = '/feeds/read'
+    let url = '/feeds/read';
     return defAxios.post(url, payload);
   },
   feedsGet(payload) {
-    let url = '/feeds/get'
+    let url = '/feeds/get';
     return defAxios.post(url, payload);
   },
   feedsCreate(payload, token) {
-    let url = '/feeds/create'
+    let url = '/feeds/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   feedsUpdate(payload, token) {
-    let url = '/feeds/update'
+    let url = '/feeds/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   feedsDelete(payload, token) {
-    let url = '/feeds/delete'
+    let url = '/feeds/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   // livestreamings
   livestreamingsRead(payload) {
-    let url = '/livestreamings/read'
+    let url = '/livestreamings/read';
     return defAxios.post(url, payload);
   },
   livestreamingsGet(payload) {
-    let url = '/livestreamings/get'
+    let url = '/livestreamings/get';
     return defAxios.post(url, payload);
   },
   livestreamingsCreate(payload, token) {
-    let url = '/livestreamings/create'
+    let url = '/livestreamings/create';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   livestreamingsUpdate(payload, token) {
-    let url = '/livestreamings/update'
+    let url = '/livestreamings/update';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
   livestreamingsDelete(payload, token) {
-    let url = '/livestreamings/delete'
+    let url = '/livestreamings/delete';
     let config = {
       headers: {
-        Authorization: 'Bearer '+token,
+        Authorization: 'Bearer ' + token,
       },
     };
     return defAxios.post(url, payload, config);
   },
-}
-export default Api
+  // comment
+  commentRead(payload) {
+    let url = '/comment/read';
+    return defAxios.post(url, payload);
+  },
+  commentGet(payload) {
+    let url = '/comment/get';
+    return defAxios.post(url, payload);
+  },
+  commentCreate(payload, token) {
+    let url = '/comment/create';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  commentUpdate(payload, token) {
+    let url = '/comment/update';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  commentDelete(payload, token) {
+    let url = '/comment/delete';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  // like
+  likeRead(payload) {
+    let url = '/like/read';
+    return defAxios.post(url, payload);
+  },
+  likeGet(payload) {
+    let url = '/like/get';
+    return defAxios.post(url, payload);
+  },
+  likeCreate(payload, token) {
+    let url = '/like/create';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  likeUpdate(payload, token) {
+    let url = '/like/update';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  likeDelete(payload, token) {
+    let url = '/like/delete';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+};
+export default Api;

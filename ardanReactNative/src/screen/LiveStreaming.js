@@ -1,116 +1,72 @@
-import React, { useEffect, useContext,useState,useCallback } from 'react'
-import { View, Text, SafeAreaView, ScrollView, Image, Dimensions, TextInput } from 'react-native';
+import React, { useEffect, useContext,useState,useCallback,useRef } from 'react'
+import { View, Text, SafeAreaView, ScrollView, Image, Dimensions, TextInput, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { ThemeContext } from '../context/ThemeContext';
+import { UserContext } from '../context/UserContext';
 import YoutubePlayer from "react-native-youtube-iframe";
-import { WebSocket } from 'react-native-websocket';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Echo from 'laravel-echo';
+import io from 'socket.io-client';
+import axios from 'axios'
+import Api from '../config/Api';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const LiveStreaming = ({ navigation }) => {
+  const scrollViewRef = useRef();
   const theme = useContext(ThemeContext)
+  const user = useContext(UserContext);
   const [playing, setPlaying] = useState(true);
   const height = Dimensions.get("window").height;
-  const chat = [
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/1.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/2.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/3.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/4.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/1.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/2.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/3.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/4.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/1.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/2.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/3.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/4.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/1.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/2.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/3.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/4.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/1.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/2.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/3.png')
-    },
-    {
-      name: 'Hanna Aminoff',
-      chat: 'How are you doing?',
-      image: require('../assets/images/user/4.png')
-    },
-  ]
+  const [liveStream, setLivestream] = useState({
+    
+  });
+  const [livechat, setLivechat] = useState([])
+  const [msg, setMsg] = useState()
+  const listenChat = () => {
+    const echo = new Echo({
+      broadcaster: 'socket.io',
+      host: 'https://chat.kopikoding.com:6001',
+      client: io
+    });
+    echo.channel('publicChat').listen('PublicChatEvent', (event) => {
+      const {target} = event
+      let theChat = livechat
+      if(target == 'livestream') {
+        theChat.push(event)
+        setLivechat(theChat)
+      }
+    });
+  }
+  const sendChat = async () => {
+    try {
+      let url = 'https://chat.kopikoding.com/publicchat/send'
+      let payload = {
+        message: msg,
+        target: "livestream",
+        name: user.name
+      }
+      let req = await axios.post(url,payload)
+      setMsg('')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const getLiveStream = async () => {
+    let date = new Date(),
+        d = date.getDate(),
+        m = date.getMonth() + 1,
+        y = date.getFullYear()
+    let payload = {
+      date: `${y}-${m}-${d}`,
+    }
+    try {
+      let req = await Api.livestreamingsGet(payload)
+      let {status,data,msg} = req.data
+      if(status) {
+        setLivestream(data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const onStateChange = useCallback((state) => {
     if (state === "ended") {
       setPlaying(false);
@@ -123,54 +79,60 @@ const LiveStreaming = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    
+    listenChat()
+    getLiveStream()
   }, [])
 
   return (
-    <SafeAreaView style={[theme.bgblack,{flexGrow: 1}]}>
+    <KeyboardAvoidingView 
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[theme.bgblack,{flexGrow: 1}]}>
       <View style={[]}>
         <YoutubePlayer
           height={height}
           play={playing}
-          videoId={"M0imb71GNY4"}
+          videoId={liveStream.url}
           onChangeState={onStateChange}
         />
       </View>
-      <View style={[theme.fRow,theme.faCenter,theme.mt15,theme.px15,theme.absolute,theme.top60]}>
+      <View style={[theme.fRow,theme.faCenter,theme.mt15,theme.px15,theme.absolute,theme.top0]}>
         <View style={[{backgroundColor:'#FB0808'},theme.h27,theme.px8,theme.br6,theme.fjCenter,theme.faCenter,theme.me10]}>
           <Text style={[theme['p12-600'],theme.cwhite]}>Live</Text>
         </View>
-        <View style={[{backgroundColor:'rgba(255,255,255,.2)'},theme.h27,theme.px8,theme.br6,theme.fjCenter,theme.faCenter]}>
+        {/* <View style={[{backgroundColor:'rgba(255,255,255,.2)'},theme.h27,theme.px8,theme.br6,theme.fjCenter,theme.faCenter]}>
           <View style={[theme.fRow,theme.faCenter]}>
-          <Image source={require('../assets/images/icons/eye.png')} style={[theme.w15,theme.h15,{objectFit:'contain'}]}/>
+          <Icon name="eye" size={14} color="#fff" />
           <Text style={[theme['p12-600'],theme.cwhite,theme.ms5]}>1.9K</Text>
           </View>
-        </View>
+        </View> */}
       </View>
-      <ScrollView style={[theme.px30,theme.my15,theme.absolute,theme.top240,theme.bottom100,theme.wp100]}>
+      <ScrollView style={[theme.px30,theme.my15,theme.absolute,theme.top240,theme.bottom100,theme.wp100]}
+        ref={scrollViewRef}
+        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+      >
         {
-          chat.map((item) => {
+          livechat.map((item) => {
             return (
               <View style={[theme.fRow, theme.mb10]}>
-                <Image source={item.image} style={[theme.br100,theme.w25,theme.h25,{objectFit:'contain'},theme.me5]}/>
+                <Image source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'}} style={[theme.br100,theme.w25,theme.h25,{objectFit:'contain'},theme.me5]}/> 
                 <View>
-                  <Text style={[theme.cwhite,theme['p10-600']]}>{item.name}</Text>
-                  <Text style={[theme.cwhite,theme['p10-400']]}>{item.chat}</Text>
+                  <Text style={[theme.cwhite,theme['p14-600']]}>{item.name}</Text>
+                  <Text style={[theme.cwhite,theme['p12-400']]}>{item.message}</Text>
                 </View>
               </View>
             )
           })
         }
       </ScrollView>
-      <View style={[theme.px30, theme.fRow, theme.absolute,theme.bottom50, theme.faCenter,theme.fjBetween]}>
-        <View style={[theme.bgwhite,theme.px15,theme.br16,theme.me10,theme.wp80]}>
-          <TextInput placeholder="Send Message" style={[theme.cblack,theme['p12-500']]}/>
+      <View
+      style={[theme.px30, theme.fRow, theme.absolute,theme.bottom40, theme.faCenter,theme.fjBetween]}>
+        <View style={[theme.bgwhite,theme.px15,theme.br16,theme.me10,theme.wp84]}>
+          <TextInput placeholder="Send Message" style={[theme.cblack,theme['p12-500']]} onChangeText={setMsg} value={msg} onSubmitEditing={() => {sendChat()}} clearButtonMode="while-editing"/>
         </View>
-        <TouchableOpacity style={[theme.w43,theme.h43,theme.bgyellow,theme.br100,theme.fjCenter,theme.faCenter]}>
-          <Image source={require('../assets/images/icons/heart-o-white.png')}/>
-        </TouchableOpacity>
+        <TouchableOpacity style={[theme.w43,theme.h43,theme.bgyellow,theme.br100,theme.fjCenter,theme.faCenter]} onPress={() => {sendChat();Keyboard.dismiss()}}>
+          <Icon name="send" size={14} color="#fff" />
+        </TouchableOpacity> 
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 

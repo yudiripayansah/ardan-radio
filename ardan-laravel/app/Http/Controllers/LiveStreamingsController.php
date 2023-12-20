@@ -69,9 +69,16 @@ class LiveStreamingsController extends Controller
     return response()->json($res, 200);
   }
   public function get(Request $request) {
-    if ($request->id) {
-      $getData = LiveStreamings::find($request->id);
-      $getData->image = Storage::disk('public')->url('liveStreamings/'.$getData->image);
+    if ($request->id || $request->date) {
+      if($request->id){
+        $getData = LiveStreamings::find($request->id);
+      }
+      if($request->date){
+        $getData = LiveStreamings::where('date',date('Y-m-d',strtotime($request->date)))->first();
+      }
+      if($getData->image){
+        $getData->image = Storage::disk('public')->url('liveStreamings/'.$getData->image);
+      }
       if ($getData) {
           $res = array(
                   'status' => true,

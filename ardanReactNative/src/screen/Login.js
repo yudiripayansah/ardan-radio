@@ -17,6 +17,10 @@ const Login = ({navigation}) => {
   useEffect(() => {
     
   },[])
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
   const doLogin = async () => {
     setLoading(true)
     try {
@@ -25,18 +29,26 @@ const Login = ({navigation}) => {
         password: password
       }
       if(email && password) {
-        let req = await Api.login(payload)
-        if(req.status == 200){
-          let {data,status,msg} = req.data
-          if(status) {
-            setUser(data)
+        if(validateEmail(email)) {
+          let req = await Api.login(payload)
+          if(req.status == 200){
+            let {data,status,msg} = req.data
+            if(status) {
+              setUser(data)
+            } else {
+              setLogin(req.data)
+            }
           } else {
-            setLogin(req.data)
+            setLogin({
+              status: false,
+              msg: 'Failed to login',
+              data: null
+            })
           }
         } else {
           setLogin({
             status: false,
-            msg: 'Failed to login',
+            msg: 'Please enter valid email',
             data: null
           })
         }
@@ -49,8 +61,23 @@ const Login = ({navigation}) => {
       }
       setLoading(false)
     } catch (error) {
+      console.error(error)
       setLoading(false)
     }
+  }
+  const guest = () => {
+    let data = {
+      username: 'guest',
+      email: 'guest@ardanradio.com',
+      name: 'Guest',
+      phone: '-',
+      address: '-',
+      gender: '-',
+      image: '-',
+      role: 'guest',
+      dob: '-'
+    }
+    setUser(data)
   }
   return (
     <KeyboardAvoidingView style={[theme.w%100,theme.h%100, theme.bgblack, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
@@ -85,7 +112,7 @@ const Login = ({navigation}) => {
         </TouchableOpacity>
         {
           (!login.status) ? (
-            <Text style={[theme.cyellow,theme['p10-400'],theme.tCenter,theme.pt5]}>{login.msg}</Text>
+            <Text style={[theme.cindian_red,theme['p10-400'],theme.tCenter,theme.pt5]}>{login.msg}</Text>
           ) : null
         }
         <View style={[theme.relative,theme.mt15, theme.faCenter]}>
@@ -104,7 +131,7 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={[theme.relative,theme.mt30, theme.faCenter]}>
-          <TouchableOpacity style={[theme.fRow]}>
+          <TouchableOpacity style={[theme.fRow]} onPress={()=>{guest()}}>
             <Text style={[theme.cwhite, theme['p15-500'], theme.me5]}>Atau masuk sebagai tamu !</Text>
             <Text style={[theme.cyellow_bold, theme['p15-500']]}>Lewati</Text>
           </TouchableOpacity>

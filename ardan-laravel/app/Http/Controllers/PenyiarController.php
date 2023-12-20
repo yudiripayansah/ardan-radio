@@ -141,6 +141,7 @@ class PenyiarController extends Controller
     unset($dataUpdate['created_at']);
     unset($dataUpdate['updated_at']);
     unset($dataUpdate['deleted_at']);
+    unset($dataUpdate['category']);
     DB::beginTransaction();
     if ($validate['status']) {
       try {

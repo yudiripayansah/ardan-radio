@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, ActivityIndicator} from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, ActivityIndicator, KeyboardAvoidingView} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { ThemeContext } from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
@@ -15,7 +15,7 @@ const CreatePost = ({ navigation }) => {
   const [image, setimage] = useState()
   const [title, settitle] = useState()
   const [text, settext] = useState()
-  const [category, setcategory] = useState(null)
+  const [category, setcategory] = useState('all')
   const [type, settype] = useState('POST')
   const [status, setstatus] = useState('UNPUBLISHED')
   const [loading, setloading] = useState(false)
@@ -70,13 +70,12 @@ const CreatePost = ({ navigation }) => {
       let payload = {
         id_user: id_user,
         image: image,
-        title: title,
+        title: 'Post by '+user.name,
         text: text,
         category: category,
         type: type,
         status: status,
       }
-      console.log(payload)
       let req = await Api.feedsCreate(payload,user.access_token)
       if(req.status == 200){
         let {data,status,msg} = req.data
@@ -86,6 +85,8 @@ const CreatePost = ({ navigation }) => {
             setpostButton('POST')
             navigation.navigate('Social')
           },1000)
+        } else {
+          console.log(msg)
         }
       }
       setloading(false)
@@ -98,9 +99,9 @@ const CreatePost = ({ navigation }) => {
     
   }, []);
   return (
-    <SafeAreaView style={[theme.bgblack,{flexGrow: 1},theme.pt10, theme.relative]}>
+    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},theme.pt10, theme.relative]}>
       <ScrollView style={[]}>
-        <View style={[theme.px10,theme.pb100]}>
+        <View style={[theme.pb100]}>
           {image && (
             <AutoHeightImage
               width={imageWidth}
@@ -123,7 +124,7 @@ const CreatePost = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 

@@ -77,6 +77,19 @@ const helper = {
         finalText = finalText + " " + text3[i] + " ";
       return finalText + "…";
     } else return textToLimit;
+  },
+  hari(days) {
+    let d = days.split(',')
+    let dy = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at','Sabtu']
+    let fd = Number(d[0]) - 1
+    let ld = Number(d[d.length - 1]) - 1
+    let td = ''
+    if(d.length > 1) {
+      td = `${dy[fd]}-${dy[ld]}`
+    } else {
+      td = dy[fd]
+    }
+    return td
   }
 }
 export default helper

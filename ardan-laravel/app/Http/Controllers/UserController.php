@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Feeds;
+use App\Models\Likes;
 
 class UserController extends Controller
 {
@@ -66,7 +68,10 @@ class UserController extends Controller
   public function get(Request $request) {
     if ($request->id) {
       $getData = User::find($request->id);
-      $getData->image = Storage::disk('public')->url('user/'.$getData->image);
+      $getData->image_url = ($getData->image) ? Storage::disk('public')->url('user/'.$getData->image) : null;
+      $getData->followers_count = Likes::where('id_target',$getData->id)->where('type','FOLLOW')->count();
+      $getData->following_count = Likes::where('id_user',$getData->id)->where('type','FOLLOW')->count();
+      $getData->post_count = Feeds::where('id_user',$getData->id)->where('type','POST')->count();
       if ($getData) {
           $res = array(
                   'status' => true,

@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Validator;
 
-class Events extends Model
+class Comments extends Model
 {
     use SoftDeletes;
-    protected $table = 'events';
+    protected $table = 'comments';
     protected $fillable = [
       'id_user','id_target','target_type','name','comment','status'
     ];
@@ -37,5 +37,9 @@ class Events extends Model
                   );
         }
         return $res;
+    }
+    public function user()
+    {
+      return $this->belongsTo(User::class, 'id_user', 'id');
     }
 }

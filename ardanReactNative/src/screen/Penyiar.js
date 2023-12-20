@@ -3,53 +3,7 @@ import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInpu
 import { ThemeContext } from '../context/ThemeContext';
 const Penyiar = ({ navigation }) => {
   const theme = useContext(ThemeContext)
-  const penyiarList = [
-    {
-      image: require('../assets/images/penyiar/1.png'),
-      name: 'Alda Gusmarani',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/2.png'),
-      name: 'Danar Dono',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/3.png'),
-      name: 'Aurel Natasya',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/1.png'),
-      name: 'Alda Gusmarani',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/2.png'),
-      name: 'Danar Dono',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/3.png'),
-      name: 'Aurel Natasya',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/1.png'),
-      name: 'Alda Gusmarani',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/2.png'),
-      name: 'Danar Dono',
-      likes: '22.4K Likes'
-    },
-    {
-      image: require('../assets/images/penyiar/3.png'),
-      name: 'Aurel Natasya',
-      likes: '22.4K Likes'
-    },
-  ]
+  const penyiarList = []
   useEffect(() => {
     
   }, [])

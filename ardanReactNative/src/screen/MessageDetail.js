@@ -1,54 +1,58 @@
 import Echo from 'laravel-echo';
-import Pusher from "pusher-js/react-native";
-import React, {useEffect, useContext, useState} from 'react';
+import io from 'socket.io-client';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   View,
   Text,
   SafeAreaView,
   ScrollView,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+  Keyboard
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
-const MessageDetail = ({navigation}) => {
-  const listenChat = () => {
-    const apiKey = 'ardanradiopusher'
-    const cluster = 'mt1'
-    const channelName = 'chat'
-    const eventName = 'NewChatMessage'
-    try {
-      const ws = new Echo({
-        broadcaster: "pusher",
-        Pusher, // sets the instance imported above
-        key: apiKey, // app key
-        wsHost: "mobileapps.ardanradio.com", // host
-        wssHost: "mobileapps.ardanradio.com",
-        wsPort: 6001, // port
-        wssPort: 6001, 
-        forceTLS: false,
-        encrypted: false,
-        cluster: cluster,
-        enabledTransports: ["ws", "wss"],
-      });
-      const channel = ws.channel(channelName);
-      channel.error((error) => {
-        // Handle the channel subscription error
-        console.error('Channel Subscription Error:', error);
-    });
-      const subs = channel.subscribed( () => {
-        console.log('subscribed');
-      })
-      channel.listen(eventName, (e) => {
-        console.log("ada cuuy :",e);
-      });
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+import Icon from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios'
+const MessageDetail = ({route,navigation}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
+  const scrollViewRef = useRef();
+  const [msg, setMsg] = useState()
+  const [privatechat, setPrivatechat] = useState([])
+  const roomId = user.id+''+route.params.id
+  const listenChat = () => {
+    const echo = new Echo({
+      broadcaster: 'socket.io',
+      host: 'https://chat.kopikoding.com:6001',
+      client: io
+    });
+    echo.channel('private-chat-room-'+roomId).listen('PrivateChatEvent', (event) => {
+      const {target} = event
+      console.log(event)
+      let theChat = privatechat
+      theChat.push(event)
+      setPrivatechat(theChat)
+    });
+  }
+  const sendChat = async () => {
+    try {
+      let url = 'https://chat.kopikoding.com/publicchat/send'
+      let payload = {
+        message: msg,
+        target: "livestream",
+        name: user.name
+      }
+      let req = await axios.post(url,payload)
+      setMsg('')
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const FriendChat = chat => {
     return (
       <View style={[theme.pb20]}>
@@ -89,13 +93,16 @@ const MessageDetail = ({navigation}) => {
       </View>
     );
   };
+  
   useEffect(() => {
-    listenChat();
+    listenChat()
   }, []);
 
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, theme.pt60]}>
-      <ScrollView style={[theme.px15]}>
+    <KeyboardAvoidingView style={[theme.bgblack, {flexGrow: 1}, theme.pt60]}>
+      <ScrollView style={[theme.px20]}
+      ref={scrollViewRef}
+      onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
         {FriendChat(
           'lorem ipsum dolor sit amet, consectetur adipis constrender nunc vitae et just euismod tempor incididunt ut labore et dolore magna aliqu sapient',
         )}
@@ -116,9 +123,18 @@ const MessageDetail = ({navigation}) => {
         {FriendChat(
           'lorem ipsum dolor sit amet, consectetur adipis constrender nunc vitae et just euismod tempor incididunt ut labore et dolore magna aliqu sapient',
         )}
-        <View style={[theme.h100]}></View>
+        <View style={[theme.h170]}></View>
       </ScrollView>
-    </SafeAreaView>
+      <View
+      style={[theme.px30, theme.fRow, theme.absolute,theme.pb110,theme.pt20,theme.bottom0, theme.faCenter,theme.fjBetween, theme.bgblack]}>
+        <View style={[theme.bgwhite,theme.px15,theme.br16,theme.me10,theme.wp84]}>
+          <TextInput placeholder="Send Message" style={[theme.cblack,theme['p12-500']]} onChangeText={setMsg} value={msg} onSubmitEditing={() => {sendChat()}} clearButtonMode="while-editing"/>
+        </View>
+        <TouchableOpacity style={[theme.w43,theme.h43,theme.bgyellow,theme.br100,theme.fjCenter,theme.faCenter]} onPress={() => {sendChat();Keyboard.dismiss()}}>
+          <Icon name="send" size={14} color="#fff" />
+        </TouchableOpacity> 
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

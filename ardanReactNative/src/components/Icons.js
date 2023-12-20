@@ -1,0 +1,22 @@
+const Icons = {
+  search: require('../assets/images/svg/icon-search.svg'),
+  back: require('../assets/images/svg/icon-back.svg'),
+  bookmark: require('../assets/images/svg/icon-bookmark.svg'),
+  chevronRight: require('../assets/images/svg/icon-chevron-right.svg'),
+  comment: require('../assets/images/svg/icon-comment.svg'),
+  flame: require('../assets/images/svg/icon-flame.svg'),
+  love: require('../assets/images/svg/icon-love.svg'),
+  notif: require('../assets/images/svg/icon-notif.svg'),
+  pause: require('../assets/images/svg/icon-pause.svg'),
+  share: require('../assets/images/svg/icon-share.svg'),
+  user: require('../assets/images/svg/icon-user.svg'),
+  menuContent: require('../assets/images/svg/menu-content.svg'),
+  menuEvents: require('../assets/images/svg/menu-events.svg'),
+  menuNews: require('../assets/images/svg/menu-news.svg'),
+  menuSocial: require('../assets/images/svg/menu-social.svg'),
+  navHome: require('../assets/images/svg/nav-home.svg'),
+  navPause: require('../assets/images/svg/nav-pause.svg'),
+  navProfile: require('../assets/images/svg/nav-profile.svg'),
+  navRadio: require('../assets/images/svg/nav-radio.svg'),
+}
+export default Icons

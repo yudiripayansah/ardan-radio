@@ -10,10 +10,12 @@ use App\Models\Penyiar;
 
 class ProgramsController extends Controller
 {
-  public function __construct() {
+  public function __construct()
+  {
     $this->middleware('auth:api', ['except' => ['read', 'get']]);
   }
-  public function read(Request $request) {
+  public function read(Request $request)
+  {
     $page = ($request->page) ? $request->page : 1;
     $perPage = ($request->perPage) ? $request->perPage : '~';
     $offset = ($page > 1) ? ($page - 1) * $perPage : 0;
@@ -26,60 +28,78 @@ class ProgramsController extends Controller
     $type = ($request->type) ? $request->type : null;
     $listData = Programs::select('programs.*')->orderBy($sortBy, $sortDir);
     if ($perPage != '~') {
-        $listData->skip($offset)->take($perPage);
+      $listData->skip($offset)->take($perPage);
     }
     if ($search != null) {
-        $listData->whereRaw('(programs.title LIKE "%'.$search.'%")');
+      $listData->whereRaw('(programs.title LIKE "%' . $search . '%")');
     }
     $listData = $listData->get();
-    foreach($listData as $ld) {
-      $ld->image_url = Storage::disk('public')->url('programs/'.$ld->image);
+    foreach ($listData as $ld) {
+      $ld->image_url = Storage::disk('public')->url('programs/' . $ld->image);
     }
     if ($search || $id_user || $type) {
-        $total = Programs::orderBy($sortBy, $sortDir);
-        if ($search) {
-            $total->whereRaw('(programs.title LIKE "%'.$search.'%")');
-        }
-        $total = $total->count();
+      $total = Programs::orderBy($sortBy, $sortDir);
+      if ($search) {
+        $total->whereRaw('(programs.title LIKE "%' . $search . '%")');
+      }
+      $total = $total->count();
     } else {
-        $total = Programs::all()->count();
+      $total = Programs::all()->count();
     }
     if ($perPage != '~') {
-        $totalPage = ceil($total / $perPage);
+      $totalPage = ceil($total / $perPage);
     }
     $res = array(
-        'status' => true,
-        'data' => $listData,
-        'msg' => 'List data available',
-        'total' => $total,
-        'totalPage' => $totalPage,
-        'paging' => array(
-          'page' => $page,
-          'perPage' => $perPage,
-          'sortDir' => $sortDir,
-          'sortBy' => $sortBy,
-          'search' => $search
-        )
+      'status' => true,
+      'data' => $listData,
+      'msg' => 'List data available',
+      'total' => $total,
+      'totalPage' => $totalPage,
+      'paging' => array(
+        'page' => $page,
+        'perPage' => $perPage,
+        'sortDir' => $sortDir,
+        'sortBy' => $sortBy,
+        'search' => $search
+      )
     );
     return response()->json($res, 200);
   }
-  public function get(Request $request) {
-    if ($request->id) {
-      $getData = Programs::find($request->id);
+  public function get(Request $request)
+  {
+    if ($request->id || $request->day || $request->time) {
+      if($request->id){
+        $getData = Programs::find($request->id);
+      }
+      if($request->day || $request->time) {
+        $getData = Programs::
+                  selectRaw("
+                    *,
+                    SUBSTRING_INDEX(time,'-',1) AS startTime,
+                    SUBSTRING_INDEX(time,'-',-1) AS endTime
+                  ")
+                  ->whereRaw("
+                    (
+                      TIME(SUBSTRING_INDEX(time,'-',1)) <= TIME('".$request->time."')
+                      AND TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('".$request->time."')
+                    )
+                    AND days LIKE '%".$request->day."%'
+                  ")->first();
+      }
       if ($getData) {
-        $getData->image = Storage::disk('public')->url('programs/'.$getData->image);
+        $getData->image = Storage::disk('public')->url('programs/' . $getData->image);
         $getData->days_label = $this->daysLabel($getData->days);
         $getData->penyiar_name = $this->penyiarName($getData->penyiar);
-          $res = array(
-                  'status' => true,
-                  'data' => $getData,
-                  'msg' => 'Data available'
-                );
+        $res = array(
+          'status' => true,
+          'data' => $getData,
+          'msg' => 'Data available'
+        );
       } else {
-          $res = array(
-                  'status' => false,
-                  'msg' => 'Data not found'
-                );
+        $res = array(
+          'status' => false,
+          'msg' => 'Data not found'
+        );
       }
     } else {
       $res = array(
@@ -89,11 +109,12 @@ class ProgramsController extends Controller
     }
     return response()->json($res, 200);
   }
-  public function create(Request $request) {
+  public function create(Request $request)
+  {
     $dataCreate = $request->all();
-    if($request->image){
-      $filename = uniqid().time().'-'. '-programs.png';
-      $filePath = 'programs/' .$filename;
+    if ($request->image) {
+      $filename = uniqid() . time() . '-' . '-programs.png';
+      $filePath = 'programs/' . $filename;
       $dataCreate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
@@ -108,36 +129,37 @@ class ProgramsController extends Controller
         $dc = Programs::create($dataCreate);
         $dg = Programs::find($dc->id);
         $res = array(
-                'status' => true,
-                'data' => $dg,
-                'msg' => 'Data successfully created'
-              );
+          'status' => true,
+          'data' => $dg,
+          'msg' => 'Data successfully created'
+        );
         DB::commit();
       } catch (Exception $e) {
         DB::rollback();
         $res = array(
-                'status' => false,
-                'data' => $dataCreate,
-                'msg' => 'Failed to create data'
-              );
+          'status' => false,
+          'data' => $dataCreate,
+          'msg' => 'Failed to create data'
+        );
       }
     } else {
       $res = array(
-              'status' => false,
-              'data' => $dataCreate,
-              'msg' => 'Validation failed',
-              'errors' => $validate['error']
-            );
+        'status' => false,
+        'data' => $dataCreate,
+        'msg' => 'Validation failed',
+        'errors' => $validate['error']
+      );
     }
     return response()->json($res, 200);
   }
-  public function update(Request $request) {
+  public function update(Request $request)
+  {
     $dataUpdate = $request->all();
     $dataFind = Programs::find($request->id);
     $validate = Programs::validate($dataUpdate);
     if (basename($request->image) != basename($dataFind->image)) {
-      $filename = uniqid().time().'-'. '-programs.png';
-      $filePath = 'programs/' .$filename;
+      $filename = uniqid() . time() . '-' . '-programs.png';
+      $filePath = 'programs/' . $filename;
       $dataUpdate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
@@ -148,22 +170,24 @@ class ProgramsController extends Controller
     unset($dataUpdate['deleted_at']);
     unset($dataUpdate['time_start']);
     unset($dataUpdate['time_end']);
+    unset($dataUpdate['days_label']);
+    unset($dataUpdate['penyiar_name']);
     DB::beginTransaction();
     if ($validate['status']) {
       try {
-        $du = Programs::where('id',$request->id)->update($dataUpdate);
+        $du = Programs::where('id', $request->id)->update($dataUpdate);
         $dg = Programs::find($request->id);
         $res = array(
-                'status' => true,
-                'data' => $dg,
-                'msg' => 'Data Successfully Saved'
-              );
+          'status' => true,
+          'data' => $dg,
+          'msg' => 'Data Successfully Saved'
+        );
         DB::commit();
       } catch (Exception $e) {
         $res = array(
-                'status' => false,
-                'msg' => 'Failed to Save Data'
-              );
+          'status' => false,
+          'msg' => 'Failed to Save Data'
+        );
         DB::rollback();
       }
     } else {
@@ -176,44 +200,47 @@ class ProgramsController extends Controller
     }
     return response()->json($res, 200);
   }
-  public function delete(Request $request) {
+  public function delete(Request $request)
+  {
     $id = $request->id;
     if ($id) {
       $delData = Programs::find($id);
       try {
         $delData->delete();
         $res = array(
-            'status' => true,
-            'msg' => 'Data successfully deleted'
+          'status' => true,
+          'msg' => 'Data successfully deleted'
         );
       } catch (Exception $e) {
         $res = array(
-                'status' => false,
-                'msg' => 'Failed to delete Data'
-              );
+          'status' => false,
+          'msg' => 'Failed to delete Data'
+        );
       }
     } else {
       $res = array(
-              'status' => false,
-              'msg' => 'No data selected'
-            );
+        'status' => false,
+        'msg' => 'No data selected'
+      );
     }
     return response()->json($res, 200);
   }
-  public function daysLabel($data) {
+  public function daysLabel($data)
+  {
     $days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
     $data = explode(",", $data);
     $theDay = [];
-    for($i = 0; $i < count($data);$i++) {
-      array_push($theDay,$days[$data[$i] - 1]);
+    for ($i = 0; $i < count($data); $i++) {
+      array_push($theDay, $days[$data[$i] - 1]);
     }
     return implode(",", $theDay);
   }
-  public function penyiarName($data) {
-    $penyiar = Penyiar::whereRaw("id IN (".$data.")")->get();
+  public function penyiarName($data)
+  {
+    $penyiar = Penyiar::whereRaw("id IN (" . $data . ")")->get();
     $thePenyiar = [];
-    foreach($penyiar as $p) {
-      array_push($thePenyiar,$p->name);
+    foreach ($penyiar as $p) {
+      array_push($thePenyiar, $p->name);
     }
     return implode(",", $thePenyiar);
   }

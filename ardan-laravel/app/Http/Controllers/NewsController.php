@@ -23,6 +23,7 @@ class NewsController extends Controller
     $totalPage = 1;
     $id_user = ($request->id_user) ? $request->id_user : null;
     $type = ($request->type) ? $request->type : null;
+    $category = ($request->category) ? $request->category : null;
     $listData = News::select('news.*')->orderBy($sortBy, $sortDir);
     if ($perPage != '~') {
         $listData->skip($offset)->take($perPage);
@@ -30,14 +31,20 @@ class NewsController extends Controller
     if ($search != null) {
         $listData->whereRaw('(news.title LIKE "%'.$search.'%")');
     }
+    if ($category != null) {
+        $listData->whereRaw('(news.category LIKE "%'.$category.'%")');
+    }
     $listData = $listData->get();
     foreach($listData as $ld) {
       $ld->image_url = Storage::disk('public')->url('news/'.$ld->image);
     }
-    if ($search || $id_user || $type) {
+    if ($search || $id_user || $type || $category) {
         $total = News::orderBy($sortBy, $sortDir);
         if ($search) {
             $total->whereRaw('(news.title LIKE "%'.$search.'%")');
+        }
+        if ($category) {
+            $total->whereRaw('(news.category LIKE "%'.$category.'%")');
         }
         $total = $total->count();
     } else {

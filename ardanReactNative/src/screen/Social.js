@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react'
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput,KeyboardAvoidingView } from 'react-native';
 import { ThemeContext } from '../context/ThemeContext';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import SocialPost from './SocialPost'
@@ -12,7 +12,7 @@ const Social = ({ navigation }) => {
   }, [])
 
   return (
-    <SafeAreaView style={[theme.bgblack,{flexGrow: 1},theme.pt60, theme.relative, theme.px30]}>
+    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},theme.pt60, theme.relative, theme.px20]}>
       <SocialTab.Navigator 
         screenOptions={{
           tabBarActiveTintColor: '#fff',
@@ -24,7 +24,7 @@ const Social = ({ navigation }) => {
         <SocialTab.Screen name="Post" component={SocialPost} />
         <SocialTab.Screen name="Sharing" component={SocialSharing} />
       </SocialTab.Navigator>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 

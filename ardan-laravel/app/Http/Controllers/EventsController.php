@@ -19,6 +19,7 @@ class EventsController extends Controller
     $sortDir = ($request->sortDir) ? $request->sortDir : 'DESC';
     $sortBy = ($request->sortBy) ? $request->sortBy : 'updated_at';
     $search = ($request->search) ? $request->search : null;
+    $category = ($request->category) ? $request->category : null;
     $total = 0;
     $totalPage = 1;
     $id_user = ($request->id_user) ? $request->id_user : null;
@@ -30,14 +31,20 @@ class EventsController extends Controller
     if ($search != null) {
         $listData->whereRaw('(events.title LIKE "%'.$search.'%")');
     }
+    if ($category != null) {
+        $listData->whereRaw('(events.category LIKE "%'.$category.'%")');
+    }
     $listData = $listData->get();
     foreach($listData as $ld) {
       $ld->image_url = Storage::disk('public')->url('events/'.$ld->image);
     }
-    if ($search || $id_user || $type) {
+    if ($search || $id_user || $type || $category) {
         $total = Events::orderBy($sortBy, $sortDir);
         if ($search) {
             $total->whereRaw('(events.title LIKE "%'.$search.'%")');
+        }
+        if ($category) {
+            $total->whereRaw('(events.category LIKE "%'.$category.'%")');
         }
         $total = $total->count();
     } else {
