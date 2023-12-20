@@ -1,4 +1,6 @@
 import Echo from 'laravel-echo';
+import axios from 'axios'
+import Socketio from 'socket.io-client';
 import Pusher from "pusher-js/react-native";
 import React, {useEffect, useContext, useState} from 'react';
 import {
@@ -13,39 +15,57 @@ import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 const MessageDetail = ({navigation}) => {
-  const listenChat = () => {
-    const apiKey = 'ardanradiopusher'
-    const cluster = 'mt1'
-    const channelName = 'chat'
-    const eventName = 'NewChatMessage'
-    try {
-      const ws = new Echo({
-        broadcaster: "pusher",
-        Pusher, // sets the instance imported above
-        key: apiKey, // app key
-        wsHost: "mobileapps.ardanradio.com", // host
-        wssHost: "mobileapps.ardanradio.com",
-        wsPort: 6001, // port
-        wssPort: 6001, 
-        forceTLS: false,
-        encrypted: false,
-        cluster: cluster,
-        enabledTransports: ["ws", "wss"],
-      });
-      const channel = ws.channel(channelName);
-      channel.error((error) => {
-        // Handle the channel subscription error
-        console.error('Channel Subscription Error:', error);
-    });
-      const subs = channel.subscribed( () => {
-        console.log('subscribed');
-      })
-      channel.listen(eventName, (e) => {
-        console.log("ada cuuy :",e);
-      });
-    } catch (error) {
-      console.log("error", error);
+  const login = async () => {
+    let login = 'https://chat.kopikoding.com/login'
+    payload = {
+      email: 'yudi@360and5.com',
+      password: '123456'
     }
+    let req = axios.post(login,payload)
+    console.log(req)
+  }
+  const listenChat = () => {
+    let hostname = 'ws://chat.kopikoding.com'
+    let echo = new Echo({
+        broadcaster: 'socket.io',
+        client: Socketio,
+        host: hostname + ':6001'
+    });
+    // console.log(echo)
+    echo.join(`room-events-1`)
+    .here((users) => {
+        console.log('user',users)
+        // users.forEach(function(user) {
+        //     app.onlineUsers.push(user.name);
+        // });
+    }).joining((user) => {
+      console.log(user)
+        // app.onlineUsers.push(user.name);
+        // $.notify(user.name + " joined.", "success");
+    }).leaving((user) => {
+      console.log(user)
+        // var i = app.onlineUsers.indexOf(user.name);
+        // app.onlineUsers.splice(i, 1);
+        // $.notify(user.name + " left.", "error");
+    });
+
+    let listen = echo.channel(`public-chat-room-1`)
+    .listen('PublicMessageEvent', (e) => {
+        // app.updateChat(e);
+        console.log(e)
+    }).error((er) => {
+      Alert.alert('Socket Err', 'An error occured')
+      console.log('socket error msg:', JSON.stringify(er))        
+    });
+    console.log(listen)
+
+    echo.private(`typing-room-1`)
+    .listenForWhisper('typing', (e) => {
+        // app.isTyping = e.name;
+        // setTimeout(function() {
+        //     app.isTyping = '';
+        // }, 1000);
+    });
   };
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
@@ -90,7 +110,7 @@ const MessageDetail = ({navigation}) => {
     );
   };
   useEffect(() => {
-    listenChat();
+    listenChat()
   }, []);
 
   return (
