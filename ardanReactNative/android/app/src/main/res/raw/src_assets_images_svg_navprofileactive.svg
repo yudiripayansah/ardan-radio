@@ -2,11 +2,11 @@
   <g clip-path="url(#clip0_618_1431)">
     <path
       d="M25.7102 28.3476C24.006 24.9915 20.5215 22.6918 16.4999 22.6918C12.4782 22.6918 8.9937 24.9915 7.28955 28.3476"
-      stroke="white" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round"
+      stroke="#FDD100" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round"
       stroke-linejoin="round" />
-    <circle cx="16.5004" cy="13.5135" r="5.10828" stroke="white" stroke-opacity="0.8"
+    <circle cx="16.5004" cy="13.5135" r="5.10828" stroke="#FDD100" stroke-opacity="0.8"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-    <circle cx="16.5" cy="16.5" r="15.125" stroke="white" stroke-opacity="0.8" stroke-width="1.5"
+    <circle cx="16.5" cy="16.5" r="15.125" stroke="#FDD100" stroke-opacity="0.8" stroke-width="1.5"
       stroke-linecap="round" stroke-linejoin="round" />
   </g>
 </svg>

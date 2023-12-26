@@ -10,9 +10,13 @@ import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
 import {AuthContext} from '../context/AuthContext';
 import TrackPlayer from 'react-native-track-player';
+import {useProgress} from 'react-native-track-player';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import ActionButton from 'react-native-circular-action-menu';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Api from '../config/Api';
+import SvgUri from 'react-native-svg-uri';
+import Icons from './Icons';
 const Nav = ({navigation, ...props}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
@@ -26,20 +30,28 @@ const Nav = ({navigation, ...props}) => {
     profile: require('../assets/images/icons/nav-profile.png'),
     bg: require('../assets/images/nav-bg.png'),
   };
+  const track = {
+    id: '1',
+    url: 'https://n09.rcs.revma.com/1q762wy5a9hvv.m4a?1675997040=&rj-tok=AAABhjk-eo4Aj03-Z03mDUOA_A&rj-ttl=5',
+    title: 'Ardan FM',
+    artist: 'Ardan Radio',
+    artwork:
+      'https://api.radiosworld.info/files/radio/logo/1411605f0a94430b873a6d09580d02cc1c151725.jpeg',
+  };
+  const [currentProgram, setCurrentProgram] = useState({
+    image: null,
+    title: null,
+    penyiar_name: null,
+    text: null,
+  });
+  const {position, buffered, duration} = useProgress();
   const setupTrackPlayer = async () => {
     try {
-      await TrackPlayer.registerPlaybackService(() =>
+      TrackPlayer.registerPlaybackService(() =>
         require('../services/TrackPlayer.js'),
       );
       await TrackPlayer.setupPlayer();
-      await TrackPlayer.add({
-        id: '1',
-        url: 'https://n09.rcs.revma.com/1q762wy5a9hvv.m4a?1675997040=&rj-tok=AAABhjk-eo4Aj03-Z03mDUOA_A&rj-ttl=5',
-        title: 'Ardan FM',
-        artist: 'Ardan Radio',
-        artwork:
-          'https://api.radiosworld.info/files/radio/logo/1411605f0a94430b873a6d09580d02cc1c151725.jpeg',
-      });
+      await TrackPlayer.add(track);
       const playerState = await TrackPlayer.getState();
       if (
         playerState === 'paused' ||
@@ -73,11 +85,14 @@ const Nav = ({navigation, ...props}) => {
       ) {
         await TrackPlayer.play();
         setRadio('playing');
+        getCurrentProgram();
       } else {
         await TrackPlayer.pause();
+        await TrackPlayer.reset();
+        await TrackPlayer.add(track);
         setRadio('paused');
       }
-      console.log('Radio State', radio);
+      console.log('Radio State', radio, playerState);
     } catch (error) {
       console.log('error toggled', error);
     }
@@ -104,7 +119,7 @@ const Nav = ({navigation, ...props}) => {
               theme.br100,
               theme.faCenter,
               theme.fjCenter,
-              {backgroundColor:'#29373d'},
+              {backgroundColor: '#29373d'},
               theme.mb13,
               theme.relative,
             ]}>
@@ -116,23 +131,21 @@ const Nav = ({navigation, ...props}) => {
                   theme.w70,
                   theme.h70,
                   theme.br100,
-                  {backgroundColor: 'fill: rgba(248, 195, 3, 0.50);'},
+                  {backgroundColor: 'fill: rgba(0, 0, 0, 0.3);'},
                   theme.faCenter,
                   theme.fjCenter,
                 ]}>
                 {radio == 'paused' || radio == 'buffering' ? (
-                  <Image source={require('../assets/images/icons/pause.png')} />
+                  <Icon name="play" color="#FDD100" size={40} />
                 ) : (
-                  <Image
-                    source={require('../assets/images/icons/play-black.png')}
-                  />
+                  <Icon name="stop" color="#FDD100" size={40} />
                 )}
               </View>
             ) : (
               ''
             )}
           </View>
-          <Text style={[theme['h10-500'], theme.cyellow]}>Radio</Text>
+          <Text style={[theme['h10-500'], {color: '#fff'}]}>Radio</Text>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -231,8 +244,30 @@ const Nav = ({navigation, ...props}) => {
       </View>
     );
   };
+  const getCurrentProgram = async () => {
+    let date = new Date();
+    let day = date.getDay() + 1;
+    let hour = date.getHours();
+    let minutes = date.getMinutes().toString();
+    minutes = minutes.padStart(2, '0');
+    let payload = {
+      day: day,
+      time: `${hour}:${minutes}`,
+    };
+    try {
+      let req = await Api.programsGet(payload);
+      const {status, data, msg} = req.data;
+      if (status) {
+        console.log(data);
+        setCurrentProgram(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     setupTrackPlayer();
+    getCurrentProgram();
   }, []);
   return (
     <>
@@ -277,44 +312,56 @@ const Nav = ({navigation, ...props}) => {
       ) : (
         ''
       )}
-      {currentScreen != 'Ardan Radio' &&
-      currentScreen != 'LiveStreaming' &&
-      radio == 'playing' ? (
+      {currentScreen == 'Home' && radio == 'playing' ? (
         <View
           style={[
             theme.absolute,
-            theme.bgblack,
+            {backgroundColor: 'rgba(29,34,38,.9)'},
             theme.p10,
-            theme.bottom0,
+            theme.px40,
+            theme.top203,
             theme.wp100,
             theme.fRow,
-            theme.faStart,
+            theme.faCenter,
             theme.fjBetween,
-            theme.pb110,
             theme.bsolid,
             theme.btw1,
             theme.byellow,
           ]}>
-          <Image
-            source={require('../assets/images/icons/played-banner.png')}
-            style={[theme.w60, theme.h35]}
-          />
-          <View style={[theme.mx15]}>
-            <Text style={[theme['h14-500'], theme.cwhite]}>
-              Ardan Radio 105.9 FM
-            </Text>
-            <Text style={[theme['h12-400'], {color: '#919191'}]}>
-              Radio Anak Muda No. 1 Di Bandung
-            </Text>
+          <View style={[theme.fRow, theme.faCenter]}>
+            <Image
+              source={{uri: currentProgram.image}}
+              style={[
+                theme.w35,
+                theme.h35,
+                theme.bsolid,
+                theme.bw2,
+                {borderColor: '#F8C303'},
+                theme.br34,
+              ]}
+            />
+            <View style={[theme.mx15]}>
+              <Text style={[theme['h14-500'], theme.cwhite]}>
+                Live - {currentProgram.title}
+              </Text>
+              <Text style={[theme['h12-400'], {color: '#919191'}]}>
+                {currentProgram.penyiar_name}
+              </Text>
+            </View>
           </View>
           <TouchableOpacity
             onPress={() => {
               handlePlayPause();
-            }}>
-            <Image
-              source={require('../assets/images/icons/btn-pause.png')}
-              style={[theme.w35, theme.h35]}
-            />
+            }}
+            style={[
+              theme.w35,
+              theme.h35,
+              theme.faCenter,
+              theme.fjCenter,
+              theme.br40,
+              {backgroundColor: '#F8C303'},
+            ]}>
+            <Icon name="stop" color="#1d2226" />
           </TouchableOpacity>
         </View>
       ) : (
@@ -337,23 +384,76 @@ const Nav = ({navigation, ...props}) => {
           onPress={() => {
             navigation.navigate('Home');
           }}>
-          <View style={[theme.faCenter, theme.fjCenter, theme.pt13, theme.w40]}>
-            <Image source={image.home} />
-            <Text style={[theme['h10-500'], theme.cyellow]}>Home</Text>
+          <View
+            style={[
+              theme.faCenter,
+              theme.fjCenter,
+              theme.pt13,
+              theme.w40,
+              theme.btw2,
+              theme.bsolid,
+              {
+                borderColor:
+                  currentScreen == 'Home' ? '#FDD100' : 'transparent',
+              },
+            ]}>
+            {(currentScreen == 'Home') ? (
+              <SvgUri source={Icons.navHomeActive} />
+            ) : (
+              <SvgUri source={Icons.navHome} />
+            )}
+            <Text
+              style={[
+                theme['h10-500'],
+                {
+                  color: currentScreen == 'Home' ? '#FDD100' : '#FFF',
+                },
+              ]}>
+              Home
+            </Text>
           </View>
         </TouchableWithoutFeedback>
-        {(currentScreen == 'Ardan Social' && user.role != 'guest') ? <SocialButton /> : <DefaultButton />}
+        {currentScreen == 'Ardan Social' && user.role != 'guest' ? (
+          <SocialButton />
+        ) : (
+          <DefaultButton />
+        )}
         <TouchableWithoutFeedback
           onPress={() => {
-            if(user.role == 'guest'){
-              removeUser()
+            if (user.role == 'guest') {
+              removeUser();
             } else {
               navigation.navigate('Profile');
             }
           }}>
-          <View style={[theme.faCenter, theme.fjCenter, theme.pt13, theme.w40]}>
-            <Image source={image.profile} />
-            <Text style={[theme['h10-500'], theme.cyellow]}>Profile</Text>
+          <View
+            style={[
+              theme.faCenter,
+              theme.fjCenter,
+              theme.pt13,
+              theme.w40,
+              theme.btw2,
+              theme.bsolid,
+              {
+                borderColor:
+                  currentScreen == 'Profile' ? '#FDD100' : 'transparent',
+              },
+            ]}>
+            {(currentScreen == 'Profile') ? (
+              <SvgUri source={Icons.navProfileActive} />
+            ) : (
+              <SvgUri source={Icons.navProfile} />
+            )}
+            {/* <Image source={image.profile} /> */}
+            <Text
+              style={[
+                theme['h10-500'],
+                {
+                  color: currentScreen == 'Profile' ? '#FDD100' : '#FFF',
+                },
+              ]}>
+              Profile
+            </Text>
           </View>
         </TouchableWithoutFeedback>
       </ImageBackground>

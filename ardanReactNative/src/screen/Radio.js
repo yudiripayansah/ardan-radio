@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Animated, Dimensions, Keyboard } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, TextInput, Animated, Dimensions, Keyboard, KeyboardAvoidingView } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { ThemeContext } from '../context/ThemeContext';
 import { UserContext } from '../context/UserContext';
@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Api from '../config/Api';
 const Radio = ({ navigation }) => {
   const scrollViewRef = useRef();
+  const mainScrollViewRef = useRef();
   const imageWidth = Dimensions.get('window').width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -108,8 +109,8 @@ const Radio = ({ navigation }) => {
 
   return (
     <>
-    <SafeAreaView style={[theme.bgblack,{flexGrow: 1},theme.mt50,theme.mb20, theme.relative, {zIndex: 2}]}>
-      <ScrollView style={[theme.pb100]}>
+    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},theme.mt50, theme.relative, {zIndex: 2}]}>
+      <ScrollView nestedScrollEnabled={true} style={[theme.mb120]} ref={mainScrollViewRef}>
         <View style={[theme.fRow, theme.fjCenter, theme.faCenter, theme.mt25]}>
           <TouchableOpacity 
             style={[theme.fRow, theme.faCenter, theme.px15, theme.py5, theme.byellow, theme.bsolid, theme.bw1, theme.br42, theme.wAuto, theme.mx10, theme.fjCenter]}>
@@ -134,48 +135,12 @@ const Radio = ({ navigation }) => {
           <Text style={[theme.cwhite, theme['h14-500'], theme.mt5, theme.tCenter]}>{currentProgram.penyiar_name}</Text>
           <Text style={[theme.cwhite, theme['h32-600'], theme.tCenter]}>{currentProgram.title}</Text>
         </View>
-        <View style={[theme.px20, theme.pb100]}>
+        <View style={[theme.px20]}>
           <View style={[theme.fRow, theme.faCenter]}>
             <Text style={[theme.cwhite,theme['h18-700'], theme.me5]}>Live Chat</Text>
             <Icon name="feed" size={14} color="#F8C303" />
           </View>
-          <TouchableOpacity 
-            onPress={() => {showChat()}}
-            style={[theme.bgblack_green, theme.br10, theme.py12,theme.px20, theme.fRow, theme.faCenter]}>
-            {/* <Image source={require('../assets/images/profile-circle.png')}/> */}
-            <View style={[theme.ps15, theme.w220]}>
-              <Text style={[theme['h12-700'], theme.cwhite]}>Rezky Zakiri</Text>
-              <Text style={[theme['h10-500'], theme.cwhite]}>Haii wah bagus banget siarannya seru</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-    <Animated.View style={[
-        theme.absolute, 
-        theme.top0,
-        theme.bottom0, 
-        theme.right0, 
-        theme.left0,
-        {
-        backgroundColor:'rgba(0,0,0,.5)',
-        opacity: fadeAnim,
-        transform: [{translateY: slideAnim}],
-        zIndex: ziChat
-        }
-        ]}>
-      <View style={[theme.absolute,theme.bottom110, theme.right0, theme.left0]}>
-        <View style={[theme.fRow, theme.faCenter,theme.fjBetween, theme.px15, theme.mb5]}>
-          <View style={[theme.fRow,theme.faCenter]}>
-            <Text style={[theme.cwhite,theme['h18-700'], theme.me5]}>Live Chat</Text>
-            <Icon name="feed" size={14} color="#F8C303" />
-          </View>
-          <TouchableOpacity onPress={() => {showChat()}}>
-          <Icon name="close" size={25} color="#F8C303" />
-          </TouchableOpacity>
-        </View>
-        <View style={[{backgroundColor:'#30302B'}, theme.py22,theme.px20, theme.br24]}>
-          <ScrollView 
+          <ScrollView nestedScrollEnabled={true}
             style={[theme.h220, theme.mb10]}
             ref={scrollViewRef}
             onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
@@ -196,14 +161,14 @@ const Radio = ({ navigation }) => {
             }
           </ScrollView>
           <View style={[{backgroundColor:'rgba(45, 171, 210, 0.12)'}, theme.br30, theme.ps15, theme.fRow, theme.faCenter,theme.fjBetween]}>
-            <TextInput style={[theme.wp85, theme.cwhite,theme['h12-400']]} placeholderTextColor={'#fff'} onChangeText={setMsg} value={msg} onSubmitEditing={() => {sendChat()}} clearButtonMode="while-editing"/>
+            <TextInput style={[theme.wp85, theme.cwhite,theme['h12-400']]} placeholderTextColor={'#fff'} onFocus={() => mainScrollViewRef.current.scrollToEnd({ animated: true })} onChangeText={setMsg} value={msg} onSubmitEditing={() => {sendChat()}} clearButtonMode="while-editing"/>
             <TouchableOpacity style={[theme.br30,theme.w50,theme.h50,theme.bgyellow,theme.fjCenter,theme.faCenter]} onPress={() => { sendChat() }}>
               <Image source={require('../assets/images/icons/send.png')}/>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </Animated.View>
+      </ScrollView>
+    </KeyboardAvoidingView>
     </>
   )
 }

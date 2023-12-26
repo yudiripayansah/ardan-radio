@@ -15,8 +15,10 @@ const Icons = {
   menuNews: require('../assets/images/svg/menu-news.svg'),
   menuSocial: require('../assets/images/svg/menu-social.svg'),
   navHome: require('../assets/images/svg/nav-home.svg'),
+  navHomeActive: require('../assets/images/svg/nav-home-active.svg'),
   navPause: require('../assets/images/svg/nav-pause.svg'),
   navProfile: require('../assets/images/svg/nav-profile.svg'),
+  navProfileActive: require('../assets/images/svg/nav-profile-active.svg'),
   navRadio: require('../assets/images/svg/nav-radio.svg'),
 }
 export default Icons

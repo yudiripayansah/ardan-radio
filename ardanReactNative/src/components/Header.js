@@ -148,7 +148,7 @@ const Header = ({navigation, ...props}) => {
             <TouchableOpacity style={[theme.me10]}>
               <SvgUri source={Icons.search} width={25} height={25} />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>{navigation.navigate('Notifications')}}>
               <SvgUri source={Icons.notif} width={25} height={25} />
             </TouchableOpacity>
           </View>

@@ -17,6 +17,7 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import SvgUri from 'react-native-svg-uri';
 import Icons from '../components/Icons';
+import RenderHtml from 'react-native-render-html';
 const Home = ({navigation}) => {
   let apiKey = 'AIzaSyBOr3JxvvNcGariUrqnvsjUktQKxYGGWiI',
     channelId = 'UCogKRAj4-WLY1INM7vESjhw',
@@ -39,6 +40,47 @@ const Home = ({navigation}) => {
     data: [],
     loading: false,
   });
+  const [hotSharing, setHotSharing] = useState({
+    data: {
+      "category": null,
+      "comment_count": null,
+      "created_at": null,
+      "deleted_at": null,
+      "id": null,
+      "id_user": null,
+      "image": null,
+      "image_url": null,
+      "like_count": null,
+      "status": null,
+      "text": null,
+      "title": null,
+      "type": null,
+      "updated_at": null,
+      "user": {
+        "address": null,
+        "created_at": null,
+        "deleted_at": null,
+        "dob": null,
+        "email": null,
+        "gender": null,
+        "id": null,
+        "image": null,
+        "image_url": null,
+        "name": null,
+        "phone": null,
+        "role": null,
+        "status": null,
+        "updated_at": null,
+        "username": null
+      }
+    },
+    loading: false,
+  });
+  const [categoryNews, setCategoryNews] = useState({
+    data: [],
+    loading: false,
+  });
+  const [activeCatNews, setActiveCatNews] = useState('All');
   const [eventsItem, setEventsItem] = useState({
     data: [],
     loading: false,
@@ -115,7 +157,139 @@ const Home = ({navigation}) => {
       });
     }
   };
-  const getNews = async () => {
+  const getHotSharing = async (cat = null) => {
+    setHotSharing({
+      data: {
+        "category": null,
+        "comment_count": null,
+        "created_at": null,
+        "deleted_at": null,
+        "id": null,
+        "id_user": null,
+        "image": null,
+        "image_url": null,
+        "like_count": null,
+        "status": null,
+        "text": null,
+        "title": null,
+        "type": null,
+        "updated_at": null,
+        "user": {
+          "address": null,
+          "created_at": null,
+          "deleted_at": null,
+          "dob": null,
+          "email": null,
+          "gender": null,
+          "id": null,
+          "image": null,
+          "image_url": null,
+          "name": null,
+          "phone": null,
+          "role": null,
+          "status": null,
+          "updated_at": null,
+          "username": null
+        }
+      },
+      loading: true,
+    });
+    try {
+      let theData = {
+        "category": null,
+        "comment_count": null,
+        "created_at": null,
+        "deleted_at": null,
+        "id": null,
+        "id_user": null,
+        "image": null,
+        "image_url": null,
+        "like_count": null,
+        "status": null,
+        "text": null,
+        "title": null,
+        "type": null,
+        "updated_at": null,
+        "user": {
+          "address": null,
+          "created_at": null,
+          "deleted_at": null,
+          "dob": null,
+          "email": null,
+          "gender": null,
+          "id": null,
+          "image": null,
+          "image_url": null,
+          "name": null,
+          "phone": null,
+          "role": null,
+          "status": null,
+          "updated_at": null,
+          "username": null
+        }
+      }
+      let payload = {
+        page: 1,
+        perPage: 1,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+        type: 'SHARING',
+        status: 'PUBLISHED',
+        kind: 'HOT'
+      };
+      let req = await Api.feedsRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = data[0];
+        }
+      }
+      setHotSharing({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setHotSharing({
+        data: {
+          "category": null,
+          "comment_count": null,
+          "created_at": null,
+          "deleted_at": null,
+          "id": null,
+          "id_user": null,
+          "image": null,
+          "image_url": null,
+          "like_count": null,
+          "status": null,
+          "text": null,
+          "title": null,
+          "type": null,
+          "updated_at": null,
+          "user": {
+            "address": null,
+            "created_at": null,
+            "deleted_at": null,
+            "dob": null,
+            "email": null,
+            "gender": null,
+            "id": null,
+            "image": null,
+            "image_url": null,
+            "name": null,
+            "phone": null,
+            "role": null,
+            "status": null,
+            "updated_at": null,
+            "username": null
+          }
+        },
+        loading: false,
+      });
+    }
+  };
+  const getNews = async (cat = null) => {
     setNewsItem({
       data: [],
       loading: true,
@@ -129,6 +303,12 @@ const Home = ({navigation}) => {
         sortBy: 'id',
         search: null,
       };
+      if (cat) {
+        payload.category = cat;
+        setActiveCatNews(cat);
+      } else {
+        setActiveCatNews('All');
+      }
       let req = await Api.newsRead(payload);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
@@ -143,6 +323,40 @@ const Home = ({navigation}) => {
     } catch (error) {
       console.error(error);
       setNewsItem({
+        data: [],
+        loading: false,
+      });
+    }
+  };
+  const getCategoryNews = async () => {
+    setCategoryNews({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 10,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+        type: 'News',
+      };
+      let req = await Api.categoryRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setCategoryNews({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setCategoryNews({
         data: [],
         loading: false,
       });
@@ -221,7 +435,6 @@ const Home = ({navigation}) => {
       const {status, data} = req;
       if (status === 200) {
         setYoutube(data.items);
-        console.log(data.items[0]);
       }
     } catch (error) {
       console.log(error);
@@ -284,18 +497,14 @@ const Home = ({navigation}) => {
     await Linking.openURL(url);
   };
   useEffect(() => {
-    let mounted = true;
-    navigation.addListener('focus', () => {
-      if (mounted) {
-        getBanner();
-        getNews();
-        getEvents();
-        getPrograms();
-        getBannerAds();
-        getYoutube();
-      }
-    });
-    return () => (mounted = false);
+    getBanner();
+    getNews();
+    getCategoryNews();
+    getEvents();
+    getPrograms();
+    getBannerAds();
+    getYoutube();
+    getHotSharing()
   }, []);
   const MainBanner = () => {
     if (bannerItem.loading) {
@@ -306,7 +515,7 @@ const Home = ({navigation}) => {
       );
     } else {
       return (
-        <View style={[theme.mt20, theme.wp100, {flexGrow: 1}]}>
+        <View style={[theme.mt70, theme.wp100, {flexGrow: 1}]}>
           <ScrollView
             horizontal
             style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.mt10]}
@@ -370,82 +579,132 @@ const Home = ({navigation}) => {
     );
   };
   const News = () => {
-    if (newsItem.loading) {
-      return (
-        <View style={[theme.py50]}>
-          <ActivityIndicator size="large" color="#F8C303" />
-        </View>
-      );
-    } else {
-      return (
-        <View style={[theme.mt35]}>
-          <View
-            style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
-            <Text style={[theme['h16-600'], theme.cwhite]}>
-              Ardan <Text style={[theme['h16-400'], theme.cwhite]}>News</Text>
-            </Text>
-            <TouchableOpacity
-              style={[
-                theme.bgblack_chocolate,
-                theme.fjCenter,
-                theme.py5,
-                theme.px10,
-                theme.br40,
-              ]}
-              onPress={() => {
-                navigation.navigate('News');
-              }}>
-              <SvgUri source={Icons.chevronRight} />
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            horizontal
+    return (
+      <View style={[theme.mt35]}>
+        <View
+          style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
+          <Text style={[theme['h16-600'], theme.cwhite]}>
+            Ardan <Text style={[theme['h16-400'], theme.cwhite]}>News</Text>
+          </Text>
+          <TouchableOpacity
             style={[
-              theme.wp100,
-              {flexGrow: 1},
-              theme.fRow,
+              theme.bgblack_chocolate,
+              theme.fjCenter,
               theme.px10,
-              theme.mt10,
+              theme.br40,
             ]}
-            showsHorizontalScrollIndicator={false}>
-            {newsItem.data.map((item, i) => {
-              return (
-                <TouchableOpacity
-                  style={[
-                    theme.me15,
-                    theme.w230,
-                    theme.br24,
-                    {backgroundColor: '#F8C303'},
-                  ]}
-                  key={i}
-                  onPress={() => {
-                    goToNews(item.id);
-                  }}>
-                  <Image
-                    source={{uri: item.image_url}}
-                    style={[
-                      theme.wp100,
-                      theme.h170,
-                      theme.brtl24,
-                      theme.brtr24,
-                      {objectFit: 'cover'},
-                    ]}
-                  />
-                  <View style={[theme.p10]}>
-                    <Text style={[theme['h10-400'], {color: '#000'}]}>
-                      {Helper.dateIndo(item.created_at)}
-                    </Text>
-                    <Text style={[theme['h16-500'], {color: '#000'}]}>
-                      {item.title}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+            onPress={() => {
+              navigation.navigate('News');
+            }}>
+            <SvgUri source={Icons.chevronRight} />
+          </TouchableOpacity>
         </View>
-      );
-    }
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={[theme.px20]}>
+          <TouchableOpacity
+            style={[theme.me15, theme.faCenter]}
+            onPress={() => {
+              getNews();
+            }}>
+            <Text
+              style={[
+                theme['p12-500'],
+                activeCatNews == 'All' ? {backgroundColor:'#F8C303',color: '#090903'} : {backgroundColor:'#12120B',color: '#FFF'},
+                theme.mt5,
+                theme.px15,
+                theme.fRow,
+                theme.faCenter,
+                theme.fjCenter,
+                theme.py7,
+                theme.br42
+              ]}>
+              All Post
+            </Text>
+          </TouchableOpacity>
+          {categoryNews.data.map((item, i) => {
+            return (
+              <TouchableOpacity
+                style={[theme.me15, theme.faCenter]}
+                key={i}
+                onPress={() => {
+                  getNews(item.title);
+                }}>
+                <Text
+                  style={[
+                    theme['p12-500'],
+                    activeCatNews == item.title ? {backgroundColor:'#F8C303',color: '#090903'} : {backgroundColor:'#12120B',color: '#FFF'},
+                    theme.mt5,
+                    theme.px15,
+                    theme.fRow,
+                    theme.faCenter,
+                    theme.fjCenter,
+                    theme.py7,
+                    theme.br42
+                  ]}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+        {
+          (newsItem.loading) ? (
+              <View style={[theme.py50]}>
+                <ActivityIndicator size="large" color="#F8C303" />
+              </View>
+            ) :
+            (
+                <ScrollView
+                  horizontal
+                  style={[
+                    theme.wp100,
+                    {flexGrow: 1},
+                    theme.fRow,
+                    theme.px20,
+                    theme.mt20,
+                  ]}
+                  showsHorizontalScrollIndicator={false}>
+                  {newsItem.data.map((item, i) => {
+                    return (
+                      <TouchableOpacity
+                        style={[
+                          theme.me15,
+                          theme.w230,
+                          theme.br24,
+                          {backgroundColor: '#F8C303'},
+                        ]}
+                        key={i}
+                        onPress={() => {
+                          goToNews(item.id);
+                        }}>
+                        <Image
+                          source={{uri: item.image_url}}
+                          style={[
+                            theme.wp100,
+                            theme.h170,
+                            theme.brtl24,
+                            theme.brtr24,
+                            {objectFit: 'cover'},
+                          ]}
+                        />
+                        <View style={[theme.p10]}>
+                          <Text style={[theme['h10-400'], {color: '#000'}]}>
+                            {Helper.dateIndo(item.created_at)}
+                          </Text>
+                          <Text style={[theme['h16-500'], {color: '#000'}]}>
+                            {item.title}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+            )
+        }
+      </View>
+    )
   };
   const Content = () => {
     return (
@@ -453,7 +712,7 @@ const Home = ({navigation}) => {
         <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h16-600'], theme.cwhite]}>
             Content
-            <Text style={[theme['h16-400'], theme.cwhite]}>Terbaru</Text>
+            <Text style={[theme['h16-400'], theme.cwhite]}> Terbaru</Text>
           </Text>
           <TouchableOpacity
             style={[
@@ -531,7 +790,7 @@ const Home = ({navigation}) => {
             style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
             <Text style={[theme['h16-600'], theme.cwhite]}>
               Program{' '}
-              <Text style={[theme['h16-400'], theme.cwhite]}>Popular</Text>
+              <Text style={[theme['h16-400'], theme.cwhite]}> Popular</Text>
             </Text>
             <TouchableOpacity
               style={[
@@ -669,7 +928,7 @@ const Home = ({navigation}) => {
     }
   };
   const HotSharing = () => {
-    if (programsItem.loading) {
+    if (hotSharing.loading) {
       return (
         <View style={[theme.py50]}>
           <ActivityIndicator size="large" color="#F8C303" />
@@ -683,8 +942,8 @@ const Home = ({navigation}) => {
             <View style={[theme.fRow, theme.faCenter]}>
               <SvgUri source={Icons.flame} height={25} style={[theme.me10]} />
               <Text style={[theme['h16-600'], theme.cwhite]}>
-                Hot{' '}
-                <Text style={[theme['h16-400'], theme.cwhite]}>Sharing</Text>
+                Hot 
+                <Text style={[theme['h16-400'], theme.cwhite]}> Sharing</Text>
               </Text>
             </View>
             <TouchableOpacity
@@ -696,12 +955,14 @@ const Home = ({navigation}) => {
                 theme.br40,
               ]}
               onPress={() => {
-                navigation.navigate('Program');
+                navigation.navigate('Social');
               }}>
               <SvgUri source={Icons.chevronRight} />
             </TouchableOpacity>
           </View>
-          <View style={[theme.px20, theme.relative]}>
+          <TouchableOpacity onPress={() => {
+                  navigation.navigate('SocialSharingDetails', {id: hotSharing.data.id});
+                }} style={[theme.px20, theme.relative]}>
             <View
               style={[
                 theme.absolute,
@@ -725,7 +986,7 @@ const Home = ({navigation}) => {
                 theme.relative,
               ]}>
               <Text style={[theme['h18-600'], {color: '#fff'}]}>
-                Cari Jodoh Bareng Ardan FM
+                {hotSharing.data.title}
               </Text>
               <View
                 style={[
@@ -749,14 +1010,14 @@ const Home = ({navigation}) => {
                   </View>
                   <View>
                     <Text style={[theme['h12-500'], {color: '#fff'}]}>
-                      Wildan J Saputra
+                    {hotSharing.data.user.name}
                     </Text>
                     <Text
                       style={[
                         theme['h12-400'],
                         {color: '#8D8080', marginTop: -5},
                       ]}>
-                      6H ago
+                      {Helper.dateIndo(hotSharing.data.created_at)}
                     </Text>
                   </View>
                 </View>
@@ -769,32 +1030,36 @@ const Home = ({navigation}) => {
                     theme.fjCenter,
                     theme.px15,
                   ]}>
-                  <Text style={[theme['h12-500'], {color: '#000'}]}>Cinta</Text>
+                  <Text style={[theme['h12-500'], {color: '#000'}]}>{hotSharing.data.category}</Text>
                 </View>
               </View>
-              <Text style={[theme['h12-500'], {color: '#fff'}, theme.mt15]}>
-                Jadi sebenarnya, jodoh itu ditangan Tuhan atau ditangan Orang
-                Tua?
-              </Text>
+              <RenderHtml
+                source={{
+                  html: `<div style="color:#fff;">${hotSharing.data.text}</div>`,
+                }}
+              />
+              {/* <Text style={[theme['h12-500'], {color: '#fff'}, theme.mt15]}>
+                {hotSharing.data.text}
+              </Text> */}
               <View
                 style={[theme.mt20, theme.fRow, theme.faCenter, theme.fjEnd]}>
                 <View style={[theme.fRow, theme.faCenter]}>
                   <SvgUri width={16} height={16} source={Icons.love} />
                   <Text
                     style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
-                    2.304
+                    {hotSharing.data.like_count}
                   </Text>
                 </View>
                 <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
                   <SvgUri width={16} height={16} source={Icons.comment} />
                   <Text
                     style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
-                    15K
+                    {hotSharing.data.comment_count}
                   </Text>
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       );
     }

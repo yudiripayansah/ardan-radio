@@ -17,8 +17,10 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SvgUri from 'react-native-svg-uri';
+import Icons from '../components/Icons';
 const SocialSharing = ({navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 60;
+  const imageWidth = Dimensions.get('window').width - 40;
   const theme = useContext(ThemeContext);
   const [search, setSearch] = useState(null);
   const [feedsItem, setFeedsItem] = useState({
@@ -30,6 +32,46 @@ const SocialSharing = ({navigation}) => {
     loading: false,
   });
   const [activeCat, setActiveCat] = useState('All');
+  const [bannerAdsItem, setBannerAdsItem] = useState({
+    data: [],
+    loading: false,
+  });
+  const [hotSharing, setHotSharing] = useState({
+    data: {
+      category: null,
+      comment_count: null,
+      created_at: null,
+      deleted_at: null,
+      id: null,
+      id_user: null,
+      image: null,
+      image_url: null,
+      like_count: null,
+      status: null,
+      text: null,
+      title: null,
+      type: null,
+      updated_at: null,
+      user: {
+        address: null,
+        created_at: null,
+        deleted_at: null,
+        dob: null,
+        email: null,
+        gender: null,
+        id: null,
+        image: null,
+        image_url: null,
+        name: null,
+        phone: null,
+        role: null,
+        status: null,
+        updated_at: null,
+        username: null,
+      },
+    },
+    loading: false,
+  });
   const getCategory = async () => {
     setCategory({
       data: [],
@@ -107,30 +149,355 @@ const SocialSharing = ({navigation}) => {
       });
     }
   };
+  const getBannerAds = async () => {
+    setBannerAdsItem({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 5,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+        cta: 'HOMEPAGE',
+      };
+      let req = await Api.bannerRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setBannerAdsItem({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setBannerAdsItem({
+        data: [],
+        loading: false,
+      });
+    }
+  };
+  const getHotSharing = async (cat = null) => {
+    setHotSharing({
+      data: {
+        category: null,
+        comment_count: null,
+        created_at: null,
+        deleted_at: null,
+        id: null,
+        id_user: null,
+        image: null,
+        image_url: null,
+        like_count: null,
+        status: null,
+        text: null,
+        title: null,
+        type: null,
+        updated_at: null,
+        user: {
+          address: null,
+          created_at: null,
+          deleted_at: null,
+          dob: null,
+          email: null,
+          gender: null,
+          id: null,
+          image: null,
+          image_url: null,
+          name: null,
+          phone: null,
+          role: null,
+          status: null,
+          updated_at: null,
+          username: null,
+        },
+      },
+      loading: true,
+    });
+    try {
+      let theData = {
+        category: null,
+        comment_count: null,
+        created_at: null,
+        deleted_at: null,
+        id: null,
+        id_user: null,
+        image: null,
+        image_url: null,
+        like_count: null,
+        status: null,
+        text: null,
+        title: null,
+        type: null,
+        updated_at: null,
+        user: {
+          address: null,
+          created_at: null,
+          deleted_at: null,
+          dob: null,
+          email: null,
+          gender: null,
+          id: null,
+          image: null,
+          image_url: null,
+          name: null,
+          phone: null,
+          role: null,
+          status: null,
+          updated_at: null,
+          username: null,
+        },
+      };
+      let payload = {
+        page: 1,
+        perPage: 1,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+        type: 'SHARING',
+        status: 'PUBLISHED',
+        kind: 'HOT',
+      };
+      let req = await Api.feedsRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = data[0];
+        }
+      }
+      setHotSharing({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setHotSharing({
+        data: {
+          category: null,
+          comment_count: null,
+          created_at: null,
+          deleted_at: null,
+          id: null,
+          id_user: null,
+          image: null,
+          image_url: null,
+          like_count: null,
+          status: null,
+          text: null,
+          title: null,
+          type: null,
+          updated_at: null,
+          user: {
+            address: null,
+            created_at: null,
+            deleted_at: null,
+            dob: null,
+            email: null,
+            gender: null,
+            id: null,
+            image: null,
+            image_url: null,
+            name: null,
+            phone: null,
+            role: null,
+            status: null,
+            updated_at: null,
+            username: null,
+          },
+        },
+        loading: false,
+      });
+    }
+  };
+  const Ads = () => {
+    if (bannerAdsItem.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
+        </View>
+      );
+    } else {
+      return bannerAdsItem.data.map((item, i) => {
+        return (
+          <View style={[theme.mt35, theme.px10, theme.wp100]} key={i}>
+            <TouchableOpacity
+              onPress={() => {
+                goToBanner(item.id);
+              }}>
+              <Image
+                source={{uri: item.image_url}}
+                style={[theme.wp100, theme.h150, {objectFit: 'contain'}]}
+              />
+            </TouchableOpacity>
+          </View>
+        );
+      });
+    }
+  };
+  const HotSharing = () => {
+    if (hotSharing.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
+        </View>
+      );
+    } else {
+      return (
+        <View style={[theme.mb35]}>
+          <View style={[theme.fRow, theme.fjBetween, theme.faCenter]}>
+            <View style={[theme.fRow, theme.faCenter]}>
+              <SvgUri source={Icons.flame} height={25} style={[theme.me10]} />
+              <Text style={[theme['h16-600'], theme.cwhite]}>
+                Hot
+                <Text style={[theme['h16-400'], theme.cwhite]}> Sharing</Text>
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                theme.bgblack_chocolate,
+                theme.fjCenter,
+                theme.py5,
+                theme.br40,
+              ]}
+              onPress={() => {
+                navigation.navigate('Social');
+              }}>
+              <SvgUri source={Icons.chevronRight} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('SocialSharingDetails', {
+                id: hotSharing.data.id,
+              });
+            }}
+            style={[theme.relative]}>
+            <View
+              style={[
+                theme.absolute,
+                theme.wp100,
+                theme.hp90,
+                theme.br15,
+                {
+                  left: 30,
+                  right: 0,
+                  bottom: -10,
+                  backgroundColor: 'rgba(2,2,2,.45)',
+                },
+              ]}></View>
+            <View
+              style={[
+                {backgroundColor: '#252D3A'},
+                theme.py15,
+                theme.px20,
+                theme.br15,
+                theme.mt20,
+                theme.relative,
+              ]}>
+              <Text style={[theme['h18-600'], {color: '#fff'}]}>
+                {hotSharing.data.title}
+              </Text>
+              <View
+                style={[
+                  theme.mt10,
+                  theme.fRow,
+                  theme.faCenter,
+                  theme.fjBetween,
+                ]}>
+                <View style={[theme.fRow]}>
+                  <View
+                    style={[
+                      theme.faCenter,
+                      theme.fjCenter,
+                      theme.w35,
+                      theme.h35,
+                      {backgroundColor: '#fff'},
+                      theme.br5,
+                      theme.me5,
+                    ]}>
+                    <SvgUri width={20} height={20} source={Icons.user} />
+                  </View>
+                  <View>
+                    <Text style={[theme['h12-500'], {color: '#fff'}]}>
+                      {hotSharing.data.user.name}
+                    </Text>
+                    <Text
+                      style={[
+                        theme['h12-400'],
+                        {color: '#8D8080', marginTop: -5},
+                      ]}>
+                      {Helper.dateIndo(hotSharing.data.created_at)}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={[
+                    {backgroundColor: '#F8C303'},
+                    theme.h35,
+                    theme.br5,
+                    theme.faCenter,
+                    theme.fjCenter,
+                    theme.px15,
+                  ]}>
+                  <Text style={[theme['h12-500'], {color: '#000'}]}>
+                    {hotSharing.data.category}
+                  </Text>
+                </View>
+              </View>
+              <RenderHtml
+                source={{
+                  html: `<div style="color:#fff;">${hotSharing.data.text}</div>`,
+                }}
+              />
+              {/* <Text style={[theme['h12-500'], {color: '#fff'}, theme.mt15]}>
+                {hotSharing.data.text}
+              </Text> */}
+              <View
+                style={[theme.mt20, theme.fRow, theme.faCenter, theme.fjEnd]}>
+                <View style={[theme.fRow, theme.faCenter]}>
+                  <SvgUri width={16} height={16} source={Icons.love} />
+                  <Text
+                    style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
+                    {hotSharing.data.like_count}
+                  </Text>
+                </View>
+                <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
+                  <SvgUri width={16} height={16} source={Icons.comment} />
+                  <Text
+                    style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
+                    {hotSharing.data.comment_count}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {
         getFeeds();
         getCategory();
+        getBannerAds();
+        getHotSharing();
       }
     });
     return () => (mounted = false);
   }, []);
-  let categoryItem = [
-    'Terbaru',
-    'Musik',
-    'Film',
-    'Hiburan',
-    'Jalan-Jalan',
-    'Kuliner',
-    'Dunia',
-    'Fashion',
-  ];
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, theme.relative, theme.pb120]}>
-      <View
+      <Ads />
+      {/* <View
         style={[
           theme.fRow,
           theme.faCenter,
@@ -159,8 +526,11 @@ const SocialSharing = ({navigation}) => {
           }}
           clearButtonMode="while-editing"
         />
-      </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={[]}>
+      </View> */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={[theme.h100]}>
         <TouchableOpacity
           style={[theme.mb25]}
           onPress={() => {
@@ -168,15 +538,18 @@ const SocialSharing = ({navigation}) => {
           }}>
           <Text
             style={[
-              theme['p14-500'],
+              theme['p12-500'],
+              activeCat == 'All'
+                ? {backgroundColor: '#F8C303', color: '#090903'}
+                : {backgroundColor: '#12120B', color: '#FFF'},
+              theme.mt5,
+              theme.px15,
+              theme.fRow,
+              theme.faCenter,
               theme.fjCenter,
-              theme.h32,
-              theme.px13,
-              theme.py5,
-              theme.br12,
-              'All' == activeCat
-                ? (theme.cwhite, theme.bgyellow)
-                : {color: '#8D9093'},
+              theme.py7,
+              theme.br42,
+              theme.me10,
             ]}>
             All
           </Text>
@@ -191,15 +564,18 @@ const SocialSharing = ({navigation}) => {
               }}>
               <Text
                 style={[
-                  theme['p14-500'],
-                  theme.fjCenter,
-                  theme.h32,
-                  theme.px13,
-                  theme.py5,
-                  theme.br12,
+                  theme['p12-500'],
                   item.title == activeCat
-                    ? (theme.cwhite, theme.bgyellow)
-                    : {color: '#8D9093'},
+                    ? {backgroundColor: '#F8C303', color: '#090903'}
+                    : {backgroundColor: '#12120B', color: '#FFF'},
+                  theme.mt5,
+                  theme.px15,
+                  theme.fRow,
+                  theme.faCenter,
+                  theme.fjCenter,
+                  theme.py7,
+                  theme.br42,
+                  theme.me10,
                 ]}>
                 {item.title}
               </Text>
@@ -207,7 +583,8 @@ const SocialSharing = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <ScrollView style={[theme.mb100]} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[theme.mb230]} showsVerticalScrollIndicator={false}>
+        <HotSharing />
         {feedsItem.loading ? (
           <View style={[theme.py100]}>
             <ActivityIndicator size="large" color="#F8C303" />
@@ -219,66 +596,103 @@ const SocialSharing = ({navigation}) => {
                 onPress={() => {
                   navigation.navigate('SocialSharingDetails', {id: item.id});
                 }}
-                style={[
-                  theme.mb20,
-                  {backgroundColor: '#444548'},
-                  theme.py12,
-                  theme.px15,
-                  theme.br12,
-                  theme.fRow,
-                ]}
-                key={i}>
-                <Image
-                  source={
-                    item.user.image_url
-                      ? {uri: item.user.image_url}
-                      : {
-                          uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                        }
-                  }
-                  style={[theme.h55, theme.w55, theme.br12, theme.me15]}
-                />
-                <View style={[theme.fRow, theme.wp70]}>
-                  <View>
-                    <Text style={[theme['p16-500'], theme.cwhite]}>
-                      {item.title}
-                    </Text>
-                  </View>
-                  <View style={[theme.fRow, theme.faCenter, theme.mb15]}>
-                    <Text
-                      style={[theme['p12-400'], {color: 'grey'}, theme.me10]}>
-                      {item.name}
-                    </Text>
-                    <Text style={[theme['p12-400'], {color: 'grey'}]}>
-                      {item.time}
-                    </Text>
-                  </View>
-                  <View style={[theme.fRow, theme.wp100]}>
+                key={i}
+                style={[theme.mb20,theme.pb20,theme.bbw2,theme.bsolid,{borderBottomColor:'#1D1E21'}]}>
+                <Text style={[theme['h16-500'], {color: '#fff'}]}>
+                  {item.title}
+                </Text>
+                <View style={[theme.fRow, theme.mb10,theme.faCenter, theme.fjBetween]}>
+                  <View style={[theme.fRow]}>
                     <View
                       style={[
-                        {backgroundColor: '#1D2028'},
-                        theme.br6,
-                        theme.p5,
                         theme.faCenter,
-                        theme.fRow,
-                        theme.me10,
+                        theme.fjCenter,
+                        theme.w35,
+                        theme.h35,
+                        {backgroundColor: '#fff'},
+                        theme.br5,
+                        theme.me5,
                       ]}>
-                      <Icon name="heart" size={15} color="#F8C303" />
-                      <Text style={[theme['p12-400'], {color: '#8D9093'}]}>
-                        {item.likes}
+                      <Image
+                        source={
+                          item.user.image_url
+                            ? {uri: item.user.image_url}
+                            : {
+                                uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                              }
+                        }
+                        style={[theme.w35, theme.h35, theme.br5]}
+                      />
+                    </View>
+                    <View>
+                      <Text style={[theme['h12-500'], {color: '#fff'}]}>
+                        {item.user.name}
+                      </Text>
+                      <Text
+                        style={[
+                          theme['h12-400'],
+                          {color: '#8D8080', marginTop: -5},
+                        ]}>
+                        {Helper.dateIndo(item.created_at)}
                       </Text>
                     </View>
+                  </View>
+                  {item.category ? (
                     <View
                       style={[
-                        {backgroundColor: '#1D2028'},
-                        theme.br6,
-                        theme.p5,
+                        {backgroundColor: '#F8C303'},
+                        theme.h35,
+                        theme.br5,
                         theme.faCenter,
-                        theme.fRow,
+                        theme.fjCenter,
+                        theme.px15,
                       ]}>
-                      <Icon name="comment" size={15} color="#F8C303" />
-                      <Text style={[theme['p12-400'], {color: '#8D9093'}]}>
-                        {item.comments}
+                      <Text style={[theme['h12-500'], {color: '#000'}]}>
+                        {item.category}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+                <AutoHeightImage
+                  width={imageWidth}
+                  source={{uri: item.image_url}}
+                />
+                <View
+                  style={[
+                    theme.mt20,
+                    theme.fRow,
+                    theme.faCenter,
+                    theme.fjBetween,
+                  ]}>
+                  <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
+                    <View style={[theme.fRow, theme.faCenter]}>
+                      <SvgUri width={16} height={16} source={Icons.share} />
+                    </View>
+                    <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
+                      <SvgUri width={16} height={16} source={Icons.bookmark} />
+                    </View>
+                  </View>
+                  <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
+                    <View style={[theme.fRow, theme.faCenter]}>
+                      <SvgUri width={16} height={16} source={Icons.love} />
+                      <Text
+                        style={[
+                          theme.ms5,
+                          theme['h12-500'],
+                          {color: '#AEB5C0'},
+                        ]}>
+                        {item.like_count}
+                      </Text>
+                    </View>
+                    <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
+                      <SvgUri width={16} height={16} source={Icons.comment} />
+                      <Text
+                        style={[
+                          theme.ms5,
+                          theme['h12-500'],
+                          {color: '#AEB5C0'},
+                        ]}>
+                        {item.comment_count}
                       </Text>
                     </View>
                   </View>
