@@ -6,6 +6,7 @@ import {UserContext} from '../context/UserContext';
 import {useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SvgUri from 'react-native-svg-uri';
+// import SvgUri from './Svg';
 import Icons from './Icons';
 const Header = ({navigation, ...props}) => {
   const route = useRoute();
@@ -129,7 +130,7 @@ const Header = ({navigation, ...props}) => {
                 theme.bw2,
                 theme.me17,
               ]}>
-              <SvgUri width={20} height={20} source={Icons.user} />
+              <Image source={Icons.user} style={[{objectFit:'contain',width:20}]}/>
             </View>
             <View>
               <Text style={[theme['h15-700'], {color: '#fff'}]}>
@@ -146,10 +147,10 @@ const Header = ({navigation, ...props}) => {
           </View>
           <View style={[theme.fRow]}>
             <TouchableOpacity style={[theme.me10]}>
-              <SvgUri source={Icons.search} width={25} height={25} />
+              <Image source={Icons.search} width={25} height={25} />
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>{navigation.navigate('Notifications')}}>
-              <SvgUri source={Icons.notif} width={25} height={25} />
+              <Image source={Icons.notif} width={25} height={25} />
             </TouchableOpacity>
           </View>
         </View>
@@ -177,7 +178,7 @@ const Header = ({navigation, ...props}) => {
                     theme.faCenter,
                     theme.fjCenter,
                   ]}>
-                  <SvgUri source={item.icon} width={35} />
+                  <Image source={item.icon} width={35} />
                 </View>
                 <Text
                   style={[
@@ -209,7 +210,7 @@ const Header = ({navigation, ...props}) => {
           ]}>
           <View style={[theme.wp20]}>
             <TouchableOpacity style={[theme.me10]} onPress={()=>{navigation.goBack();}}>
-              <SvgUri source={Icons.back} width={25} height={25} />
+              <Image source={Icons.back} width={25} height={25} />
             </TouchableOpacity>
           </View>
           <View style={[theme.fRow, theme.faCenter]}>
@@ -219,10 +220,10 @@ const Header = ({navigation, ...props}) => {
           </View>
           <View style={[theme.fRow,theme.wp20,theme.fjEnd]}>
             <TouchableOpacity style={[theme.me10]} onPress={()=>{}}>
-              <SvgUri source={Icons.search} width={25} height={25} />
+              <Image source={Icons.search} width={25} height={25} />
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>{navigation.navigate('Notifications');}}>
-              <SvgUri source={Icons.notif} width={25} height={25} />
+              <Image source={Icons.notif} width={25} height={25} />
             </TouchableOpacity>
           </View>
         </View>

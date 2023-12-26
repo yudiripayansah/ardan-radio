@@ -16,6 +16,7 @@ import ActionButton from 'react-native-circular-action-menu';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Api from '../config/Api';
 import SvgUri from 'react-native-svg-uri';
+// import SvgUri from './Svg';
 import Icons from './Icons';
 const Nav = ({navigation, ...props}) => {
   const theme = useContext(ThemeContext);
@@ -398,9 +399,9 @@ const Nav = ({navigation, ...props}) => {
               },
             ]}>
             {(currentScreen == 'Home') ? (
-              <SvgUri source={Icons.navHomeActive} />
+              <Image source={Icons.navHomeActive} />
             ) : (
-              <SvgUri source={Icons.navHome} />
+              <Image source={Icons.navHome} />
             )}
             <Text
               style={[
@@ -440,9 +441,9 @@ const Nav = ({navigation, ...props}) => {
               },
             ]}>
             {(currentScreen == 'Profile') ? (
-              <SvgUri source={Icons.navProfileActive} />
+              <Image source={Icons.navProfileActive} />
             ) : (
-              <SvgUri source={Icons.navProfile} />
+              <Image source={Icons.navProfile} />
             )}
             {/* <Image source={image.profile} /> */}
             <Text

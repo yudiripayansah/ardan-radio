@@ -18,6 +18,7 @@ import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SvgUri from 'react-native-svg-uri';
+// import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
 const SocialSharing = ({navigation}) => {
   const imageWidth = Dimensions.get('window').width - 40;
@@ -352,7 +353,7 @@ const SocialSharing = ({navigation}) => {
         <View style={[theme.mb35]}>
           <View style={[theme.fRow, theme.fjBetween, theme.faCenter]}>
             <View style={[theme.fRow, theme.faCenter]}>
-              <SvgUri source={Icons.flame} height={25} style={[theme.me10]} />
+              <Image source={Icons.flame} height={25} style={[theme.me10]} />
               <Text style={[theme['h16-600'], theme.cwhite]}>
                 Hot
                 <Text style={[theme['h16-400'], theme.cwhite]}> Sharing</Text>
@@ -368,7 +369,7 @@ const SocialSharing = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Social');
               }}>
-              <SvgUri source={Icons.chevronRight} />
+              <Image source={Icons.chevronRight} />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -421,7 +422,7 @@ const SocialSharing = ({navigation}) => {
                       theme.br5,
                       theme.me5,
                     ]}>
-                    <SvgUri width={20} height={20} source={Icons.user} />
+                    <Image source={Icons.user} style={[{objectFit:'contain',width:20}]}/>
                   </View>
                   <View>
                     <Text style={[theme['h12-500'], {color: '#fff'}]}>
@@ -461,14 +462,14 @@ const SocialSharing = ({navigation}) => {
               <View
                 style={[theme.mt20, theme.fRow, theme.faCenter, theme.fjEnd]}>
                 <View style={[theme.fRow, theme.faCenter]}>
-                  <SvgUri width={16} height={16} source={Icons.love} />
+                  <Image source={Icons.love} width={16} height={16} />
                   <Text
                     style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                     {hotSharing.data.like_count}
                   </Text>
                 </View>
                 <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                  <SvgUri width={16} height={16} source={Icons.comment} />
+                  <Image source={Icons.comment} width={16} height={16} />
                   <Text
                     style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                     {hotSharing.data.comment_count}
@@ -666,15 +667,15 @@ const SocialSharing = ({navigation}) => {
                   ]}>
                   <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                     <View style={[theme.fRow, theme.faCenter]}>
-                      <SvgUri width={16} height={16} source={Icons.share} />
+                      <Image source={Icons.share} width={16} height={16} />
                     </View>
                     <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                      <SvgUri width={16} height={16} source={Icons.bookmark} />
+                      <Image source={Icons.bookmark} width={16} height={16} />
                     </View>
                   </View>
                   <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                     <View style={[theme.fRow, theme.faCenter]}>
-                      <SvgUri width={16} height={16} source={Icons.love} />
+                      <Image source={Icons.love} width={16} height={16} />
                       <Text
                         style={[
                           theme.ms5,
@@ -685,7 +686,7 @@ const SocialSharing = ({navigation}) => {
                       </Text>
                     </View>
                     <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                      <SvgUri width={16} height={16} source={Icons.comment} />
+                      <Image source={Icons.comment} width={16} height={16} />
                       <Text
                         style={[
                           theme.ms5,
