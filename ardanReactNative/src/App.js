@@ -9,7 +9,16 @@ import {AuthContext} from './context/AuthContext';
 import Style from './config/Style';
 import Splash from './screen/Splash';
 import {useAuth} from './hook/useAuth';
+import usePushNotification from './hook/usePushNotification';
 const App = ({}) => {
+  const {
+    requestUserPermission,
+    getFCMToken,
+    listenToBackgroundNotifications,
+    listenToForegroundNotifications,
+    onNotificationOpenedAppFromBackground,
+    onNotificationOpenedAppFromQuit,
+  } = usePushNotification();
   const {auth, state} = useAuth()
   const RootStack = createStackNavigator();
   const [loading, setLoading] = useState(true);
@@ -33,6 +42,20 @@ const App = ({}) => {
     }
   };
   useEffect(() => {
+    const listenToNotifications = () => {
+      try {
+        getFCMToken();
+        requestUserPermission();
+        onNotificationOpenedAppFromQuit();
+        listenToBackgroundNotifications();
+        listenToForegroundNotifications();
+        onNotificationOpenedAppFromBackground();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    listenToNotifications();
     setTimeout(() => {
       setLoading(false);
     }, 2000);

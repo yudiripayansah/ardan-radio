@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "543317221813",
+    "project_id": "ardan-radio-61cbe",
+    "storage_bucket": "ardan-radio-61cbe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543317221813:android:135677d1976c25f52239fc",
+        "android_client_info": {
+          "package_name": "com.ardanreactnative"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDc1kqHjIq-e51t7EHa0Go0_kuYtEka4DM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

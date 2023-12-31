@@ -16,6 +16,7 @@ import ActionButton from 'react-native-circular-action-menu';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Api from '../config/Api';
 import SvgUri from 'react-native-svg-uri';
+import Draggable from 'react-native-draggable';
 // import SvgUri from './Svg';
 import Icons from './Icons';
 const Nav = ({navigation, ...props}) => {
@@ -23,6 +24,7 @@ const Nav = ({navigation, ...props}) => {
   const user = useContext(UserContext);
   const {removeUser} = useContext(AuthContext);
   const [radio, setRadio] = useState('paused');
+  const [showLive, setShowLive] = useState(true);
   const {currentScreen} = props;
   const image = {
     home: require('../assets/images/icons/nav-home.png'),
@@ -151,6 +153,9 @@ const Nav = ({navigation, ...props}) => {
       </TouchableWithoutFeedback>
     );
   };
+  const toggleLive = () => {
+    setShowLive(!showLive);
+  };
   const SocialButton = () => {
     return (
       <TouchableWithoutFeedback
@@ -181,6 +186,84 @@ const Nav = ({navigation, ...props}) => {
           <Text style={[theme['h10-500'], theme.cyellow]}>Add</Text>
         </View>
       </TouchableWithoutFeedback>
+    );
+  };
+  const LiveButton = () => {
+    return (
+      <View style={[theme.bottom300,(!showLive) ? (theme.right0,theme.relative): null]}>
+        {showLive ? (
+          <Draggable x={300} y={60}>
+            <View style={[theme.relative]}>
+              <TouchableOpacity
+                style={[
+                  theme.absolute,
+                  theme.br100,
+                  {backgroundColor: '#fff', top: -10, right: -10},
+                ]}
+                onPress={() => {
+                  toggleLive();
+                }}>
+                <Icon name="close" color="#1d2226" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('LiveStreaming');
+                }}>
+                <View
+                  style={[
+                    theme.w70,
+                    theme.h70,
+                    theme.bgyellow,
+                    theme.faCenter,
+                    theme.fjCenter,
+                    theme.br200,
+                    {overflow: 'hidden'},
+                  ]}>
+                  <Image
+                    source={require('../assets/images/icons/played-banner.png')}
+                    style={[theme.wp100, theme.h50, {objectFit: 'contain'}]}
+                  />
+                </View>
+                <View
+                  style={[
+                    {backgroundColor: '#EB4646'},
+                    theme.fRow,
+                    theme.faCenter,
+                    theme.fjCenter,
+                    theme.br100,
+                  ]}>
+                  <Text style={[theme['h11-500'], theme.cwhite, theme.me5]}>
+                    Live
+                  </Text>
+                  <Image
+                    source={require('../assets/images/icons/network-white.png')}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Draggable>
+        ) : (
+          <TouchableOpacity
+            style={[
+              {backgroundColor: '#EB4646'},
+              theme.faCenter,
+              theme.fjCenter,
+              theme.br5,
+              theme.py5,
+              theme.px10,
+              theme.absolute,
+              theme.right0
+            ]}
+            onPress={() => {
+              toggleLive();
+            }}>
+            <Text style={[theme['h11-500'], theme.cwhite]}>L</Text>
+            <Text style={[theme['h11-500'], theme.cwhite]}>I</Text>
+            <Text style={[theme['h11-500'], theme.cwhite]}>V</Text>
+            <Text style={[theme['h11-500'], theme.cwhite]}>E</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     );
   };
   const AnimetedSocialButton = () => {
@@ -272,47 +355,7 @@ const Nav = ({navigation, ...props}) => {
   }, []);
   return (
     <>
-      {currentScreen == 'Home' ? (
-        <View style={[theme.absolute, theme.right10, theme.bottom300]}>
-          {/* <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('LiveStreaming');
-            }}>
-            <View
-              style={[
-                theme.w70,
-                theme.h70,
-                theme.bgyellow,
-                theme.faCenter,
-                theme.fjCenter,
-                theme.br200,
-                {overflow: 'hidden'},
-              ]}>
-              <Image
-                source={require('../assets/images/icons/played-banner.png')}
-                style={[theme.wp100, theme.h50, {objectFit: 'contain'}]}
-              />
-            </View>
-            <View
-              style={[
-                {backgroundColor: '#EB4646'},
-                theme.fRow,
-                theme.faCenter,
-                theme.fjCenter,
-                theme.br100,
-              ]}>
-              <Text style={[theme['h11-500'], theme.cwhite, theme.me5]}>
-                Live
-              </Text>
-              <Image
-                source={require('../assets/images/icons/network-white.png')}
-              />
-            </View>
-          </TouchableOpacity> */}
-        </View>
-      ) : (
-        ''
-      )}
+      {currentScreen == 'Home' ? <LiveButton /> : ''}
       {currentScreen == 'Home' && radio == 'playing' ? (
         <View
           style={[
@@ -398,7 +441,7 @@ const Nav = ({navigation, ...props}) => {
                   currentScreen == 'Home' ? '#FDD100' : 'transparent',
               },
             ]}>
-            {(currentScreen == 'Home') ? (
+            {currentScreen == 'Home' ? (
               <Image source={Icons.navHomeActive} />
             ) : (
               <Image source={Icons.navHome} />
@@ -440,7 +483,7 @@ const Nav = ({navigation, ...props}) => {
                   currentScreen == 'Profile' ? '#FDD100' : 'transparent',
               },
             ]}>
-            {(currentScreen == 'Profile') ? (
+            {currentScreen == 'Profile' ? (
               <Image source={Icons.navProfileActive} />
             ) : (
               <Image source={Icons.navProfile} />
