@@ -20,6 +20,7 @@ import News from '../screen/News';
 import NewsDetails from '../screen/NewsDetails';
 import Notifications from '../screen/Notifications';
 import Profile from '../screen/Profile';
+import ProfileUpdate from '../screen/ProfileUpdate';
 import Penyiar from '../screen/Penyiar';
 import PenyiarDetails from '../screen/PenyiarDetails';
 import Program from '../screen/Program';
@@ -57,6 +58,11 @@ export const RouteMain = ({navigation}) => {
                             || routeName == 'RadioDetails'
                             ){
                             routeName = 'Ardan Radio'
+                        }
+                        if(
+                            routeName == 'ProfileUpdate'
+                            ){
+                            routeName = 'Profile Update'
                         }
                         if(
                             routeName == 'Penyiar'
@@ -133,6 +139,7 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'NewsDetails'} component={NewsDetails} options={options}/>
                 <MainStack.Screen name={'Notifications'} component={Notifications} options={options}/>
                 <MainStack.Screen name={'Profile'} component={Profile} options={options}/>
+                <MainStack.Screen name={'ProfileUpdate'} component={ProfileUpdate} options={options}/>
                 <MainStack.Screen name={'Penyiar'} component={Penyiar} options={options}/>
                 <MainStack.Screen name={'PenyiarDetails'} component={PenyiarDetails} options={options}/>
                 <MainStack.Screen name={'Program'} component={Program} options={options}/>

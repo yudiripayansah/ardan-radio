@@ -1792,6 +1792,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-google-signin/google-signin/-/google-signin-10.1.1.tgz#1306aac8c32cb5deb994a1bfb05bed8172defed1"
   integrity sha512-o6VufmUpdP174WY7r+ojVccyVHrTMjZEzCBJVa52r/wGJBzbxe8eD9MXdAYClkS2f4AGOdH6epNkySow89HRrA==
 
+"@react-native-picker/picker@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@react-native-picker/picker/-/picker-2.6.1.tgz#3b20ddd1385fab0487db103dc6519570f8892e6d"
+  integrity sha512-oJftvmLOj6Y6/bF4kPcK6L83yNBALGmqNYugf94BzP0FQGpHBwimVN2ygqkQ2Sn2ZU3pGUZMs0jV6+Gku2GyYg==
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets/-/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"
@@ -6689,6 +6694,11 @@ react-native-codegen@^0.71.5:
     flow-parser "^0.185.0"
     jscodeshift "^0.14.0"
     nullthrows "^1.1.1"
+
+react-native-date-picker@^4.3.5:
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-4.3.5.tgz#81797f874a34a75ce2ff57d2bb1519ee2ac062dd"
+  integrity sha512-jKOGCM2AUkRJb+tXYiwFHLfbB1Jh7OWXH4TxhLsuh7DWMXpWgUN3cGlFr3vl7G4wy45raAyPqmsZNSqmMr/98g==
 
 react-native-draggable@^3.3.0:
   version "3.3.0"

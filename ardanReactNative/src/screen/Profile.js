@@ -11,7 +11,6 @@ import {
 import RenderHtml from 'react-native-render-html';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
-import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';

@@ -52,6 +52,22 @@ const helper = {
       return null
     }
   },
+  dateTimeIndo(date) {
+    if(date) {
+      let theDate = new Date(date)
+      let days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"]
+      let month = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+      let dy = theDate.getDay()
+      let d = theDate.getDate()
+      let m = theDate.getMonth()
+      let y = theDate.getFullYear()
+      let h = theDate.getHours()
+      let min = theDate.getMinutes()
+      return `${days[dy]},${d} ${month[m]} ${y} ${h}:${min}`
+    } else {
+      return null
+    }
+  },
   dateFormatEn(date) {
     if(date) {
       let theDate = new Date(date)

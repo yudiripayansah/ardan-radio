@@ -14,6 +14,8 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
+import Share from 'react-native-share';
+import Icons from '../components/Icons';
 const EventsDetails = ({route, navigation}) => {
   const imageWidth = Dimensions.get('window').width;
   const theme = useContext(ThemeContext);
@@ -63,6 +65,14 @@ const EventsDetails = ({route, navigation}) => {
       });
     }
   };
+  const doShare = async id => {
+    let opt = {
+      title: 'Check this Events on Ardan Radio',
+      message: 'Check this Events on Ardan Radio',
+      url: 'https://mobileapps.ardanradio.com/events/' + id,
+    };
+    let share = Share.open(opt);
+  };
   const goToUrl = async url => {
     if(url){
       await Linking.openURL(url);
@@ -80,7 +90,7 @@ const EventsDetails = ({route, navigation}) => {
           width={imageWidth}
           source={{uri: eventsItem.data.image}}
         />
-        <View style={[theme.px30]}>
+        <View style={[theme.px20]}>
           <View style={[theme.mt10,theme.faStart]}>
             <Text style={[theme['h24-700'], theme.cwhite]}>
               {eventsItem.data.title}
@@ -88,6 +98,13 @@ const EventsDetails = ({route, navigation}) => {
             <Text style={[theme['p12-400'], theme.cyellow]}>
               {Helper.dateIndo(eventsItem.data.created_at)}
             </Text>
+            <TouchableOpacity
+              style={[theme.fRow, theme.faCenter, theme.mt10]}
+              onPress={() => {
+                doShare(eventsItem.id);
+              }}>
+              <Image source={Icons.share} width={16} height={16} />
+            </TouchableOpacity>
             <Text style={[theme['h12-400'], theme.cwhite, theme.mt20]}>
               {eventsItem.data.text}
             </Text>

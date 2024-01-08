@@ -14,7 +14,7 @@ use App\Models\Likes;
 class UserController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['read', 'get','create','createToken','readToken']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get','create','update','createToken','readToken']]);
   }
   public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;
@@ -161,8 +161,10 @@ class UserController extends Controller
     unset($dataUpdate['followers_count']);
     unset($dataUpdate['following_count']);
     unset($dataUpdate['post_count']);
-    if($request->password){
+    if($request->password || $request->password != null || $request->password != 'null'){
       $dataUpdate['password'] = Hash::make($request->password);
+    } else {
+      unset($dataUpdate['password']);
     }
     DB::beginTransaction();
     if ($validate['status']) {

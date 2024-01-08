@@ -72,6 +72,10 @@ class ProgramsController extends Controller
         $getData = Programs::find($request->id);
       }
       if($request->day || $request->time) {
+        $time = "TIME(SUBSTRING_INDEX(time,'-',1)) <= TIME('".$request->time."') AND TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('".$request->time."')";
+        if($request->next) {
+          $time = "TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('".$request->time."')";
+        }
         $getData = Programs::
                   selectRaw("
                     *,
@@ -80,16 +84,23 @@ class ProgramsController extends Controller
                   ")
                   ->whereRaw("
                     (
-                      TIME(SUBSTRING_INDEX(time,'-',1)) <= TIME('".$request->time."')
-                      AND TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('".$request->time."')
+                      ".$time."
                     )
                     AND days LIKE '%".$request->day."%'
-                  ")->first();
+                  ")->orderBy('time', 'ASC')->get();
       }
       if ($getData) {
-        $getData->image = Storage::disk('public')->url('programs/' . $getData->image);
-        $getData->days_label = $this->daysLabel($getData->days);
-        $getData->penyiar_name = $this->penyiarName($getData->penyiar);
+        if(count($getData) > 0) {
+          foreach($getData as $g){
+            $g->image = Storage::disk('public')->url('programs/' . $g->image);
+            $g->days_label = $this->daysLabel($g->days);
+            $g->penyiar_name = $this->penyiarName($g->penyiar);
+          }
+        } else {
+          $getData->image = Storage::disk('public')->url('programs/' . $getData->image);
+          $getData->days_label = $this->daysLabel($getData->days);
+          $getData->penyiar_name = $this->penyiarName($getData->penyiar);
+        }
         $res = array(
           'status' => true,
           'data' => $getData,

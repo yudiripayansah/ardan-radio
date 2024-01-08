@@ -109,7 +109,7 @@ const News = ({navigation}) => {
   const Recomended = () => {
     return (
       <View style={[]}>
-        <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
+        <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Recomended</Text>
         </View>
         <ScrollView
@@ -118,7 +118,7 @@ const News = ({navigation}) => {
             theme.wp100,
             {flexGrow: 1},
             theme.fRow,
-            theme.px10,
+            theme.px20,
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
@@ -178,13 +178,13 @@ const News = ({navigation}) => {
           style={[
             theme.fRow,
             theme.fjBetween,
-            theme.px10,
+            theme.px20,
             theme.faCenter,
             theme.mb10,
           ]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Latest News</Text>
         </View>
-        <View style={[theme.px15]}>
+        <View style={[theme.px20]}>
           {newsItem.loading ? (
             <View style={[theme.py50]}>
               <ActivityIndicator size="large" color="#F8C303" />
@@ -245,7 +245,7 @@ const News = ({navigation}) => {
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
-      <View style={[theme.px15]}>
+      <View style={[theme.px20]}>
         <View
           style={[
             theme.fRow,
@@ -280,7 +280,7 @@ const News = ({navigation}) => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={[theme.px15]}>
+        style={[theme.px20]}>
         <TouchableOpacity
           style={[theme.me15, theme.faCenter, theme.mb50]}
           onPress={() => {

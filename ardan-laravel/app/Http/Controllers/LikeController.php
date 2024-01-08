@@ -90,6 +90,9 @@ class LikeController extends Controller
   {
     if ($request->id_target && $request->type) {
       $getData = Likes::where('id_target',$request->id_target)->where('type',$request->type);
+      if($request->id_user){
+        $getData = $getData->where('id_user',$request->id_user); 
+      }
       $like_count = $getData->count();
       $first_three = $getData->limit(3)->orderBy('id','ASC')->with('user')->get();
       if ($like_count && $first_three) {

@@ -107,7 +107,7 @@ const News = ({navigation}) => {
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
-      <View style={[theme.px15]}>
+      <View style={[theme.px20]}>
         <View
           style={[
             theme.fRow,
@@ -139,7 +139,7 @@ const News = ({navigation}) => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={[theme.px15]}>
+        style={[theme.px20]}>
         <TouchableOpacity
           style={[
             theme.me15,
@@ -185,7 +185,7 @@ const News = ({navigation}) => {
         })}
       </ScrollView>
       <ScrollView style={[theme.mb150, theme.mt20]}>
-        <View style={[theme.fRow, theme.px15, theme.fjBetween]}>
+        <View style={[theme.fRow, theme.px20, theme.fjBetween]}>
           {eventsItem.data.map((item, i) => {
             return (
               <TouchableOpacity
