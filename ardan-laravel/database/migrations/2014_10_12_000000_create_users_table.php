@@ -24,8 +24,11 @@ class CreateUsersTable extends Migration
             $table->text('image')->nullable();
             $table->text('password');
             $table->text('role');
+            $table->text('penyiar')->nullable();
+            $table->text('verified')->nullable();
             $table->text('dob')->nullable();
             $table->text('status')->nullable();
+            $table->text('token')->nullable();
             $table->softDeletes();
             $table->timestamps();
             // $table->timestamp('email_verified_at')->nullable();

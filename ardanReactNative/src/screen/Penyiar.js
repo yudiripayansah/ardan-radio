@@ -7,7 +7,6 @@ const Penyiar = ({ navigation }) => {
   useEffect(() => {
     
   }, [])
-
   return (
     <SafeAreaView style={[theme.bgblack,{flexGrow: 1},theme.pt60, theme.relative]}>
       <View style={[theme.px30, theme.mb5]}>

@@ -74,7 +74,6 @@ const Nav = ({navigation, ...props}) => {
   const handlePlayPause = async () => {
     try {
       const playerState = await TrackPlayer.getState();
-      console.log(playerState);
       if (playerState === 'stopped') {
         await TrackPlayer.reset();
       }
@@ -95,7 +94,6 @@ const Nav = ({navigation, ...props}) => {
         await TrackPlayer.add(track);
         setRadio('paused');
       }
-      console.log('Radio State', radio, playerState);
     } catch (error) {
       console.log('error toggled', error);
     }
@@ -266,68 +264,6 @@ const Nav = ({navigation, ...props}) => {
       </View>
     );
   };
-  const AnimetedSocialButton = () => {
-    return (
-      <View style={{flex: 1, backgroundColor: '#f3f3f3'}}>
-        <ActionButton buttonColor="rgba(231,76,60,1)">
-          <ActionButton.Item
-            buttonColor="#9b59b6"
-            title="New Task"
-            onPress={() => console.log('notes tapped!')}>
-            <Icon
-              name="android-create"
-              style={[theme['h12-400'], theme.h22, theme.cwhite]}
-            />
-          </ActionButton.Item>
-          <ActionButton.Item
-            buttonColor="#3498db"
-            title="Notifications"
-            onPress={() => {}}>
-            <Icon
-              name="android-notifications-none"
-              style={[theme['h12-400'], theme.h22, theme.cwhite]}
-            />
-          </ActionButton.Item>
-          <ActionButton.Item
-            buttonColor="#9b59b6"
-            title="New Task"
-            onPress={() => console.log('notes tapped!')}>
-            <Icon
-              name="android-create"
-              style={[theme['h12-400'], theme.h22, theme.cwhite]}
-            />
-          </ActionButton.Item>
-          <ActionButton.Item
-            buttonColor="#3498db"
-            title="Notifications"
-            onPress={() => {}}>
-            <Icon
-              name="android-notifications-none"
-              style={[theme['h12-400'], theme.h22, theme.cwhite]}
-            />
-          </ActionButton.Item>
-          <ActionButton.Item
-            buttonColor="#9b59b6"
-            title="New Task"
-            onPress={() => console.log('notes tapped!')}>
-            <Icon
-              name="android-create"
-              style={[theme['h12-400'], theme.h22, theme.cwhite]}
-            />
-          </ActionButton.Item>
-          <ActionButton.Item
-            buttonColor="#3498db"
-            title="Notifications"
-            onPress={() => {}}>
-            <Icon
-              name="android-notifications-none"
-              style={[theme['h12-400'], theme.h22, theme.cwhite]}
-            />
-          </ActionButton.Item>
-        </ActionButton>
-      </View>
-    );
-  };
   const getCurrentProgram = async () => {
     let date = new Date();
     let day = date.getDay() + 1;
@@ -342,7 +278,6 @@ const Nav = ({navigation, ...props}) => {
       let req = await Api.programsGet(payload);
       const {status, data, msg} = req.data;
       if (status) {
-        console.log(data);
         setCurrentProgram(data);
       }
     } catch (error) {

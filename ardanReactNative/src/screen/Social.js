@@ -5,10 +5,12 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import SocialPost from './SocialPost'
 import SocialSharing from './SocialSharing'
 const SocialTab = createMaterialTopTabNavigator();
-const Social = ({ navigation }) => {
+const Social = ({ route,navigation }) => {
   const theme = useContext(ThemeContext)
   useEffect(() => {
-    
+    if(route.params.activeTab){
+      navigation.navigate(route.params.activeTab)
+    }
   }, [])
 
   return (

@@ -176,6 +176,14 @@
                     <textarea class="form-control" v-model="form.data.text" id="eventsText" rows="10"></textarea>
                   </div>
                   <div class="form-group mt-3">
+                    <label for="eventsButtonLabel" class="control-label">Button Label</label>
+                    <input type="text" class="form-control" v-model="form.data.btn_label" id="eventsButtonLabel">
+                  </div>
+                  <div class="form-group mt-3">
+                    <label for="eventsButtonurl" class="control-label">Button url</label>
+                    <input type="text" class="form-control" v-model="form.data.btn_url" id="eventsButtonurl">
+                  </div>
+                  <div class="form-group mt-3">
                     <label class="control-label">Category</label>
                     <div class="form-check" v-for="(cat,index) in opt.category" :key="index">
                       <input class="form-check-input" type="checkbox" :value="cat" v-model="form.data.category" :id="`cat-${cat}`">
@@ -239,6 +247,8 @@ const vueDashboard = new Vue( {
             image: null,
             title: null,
             text: null,
+            btn_label: null,
+            btn_url: null,
             category: []
           },
           delete: null,
@@ -422,6 +432,8 @@ const vueDashboard = new Vue( {
           image: null,
           title: null,
           text: null,
+          btn_label: null,
+          btn_url: null,
           category: []
         }
         this.form.delete = null

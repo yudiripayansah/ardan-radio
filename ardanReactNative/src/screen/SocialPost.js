@@ -90,7 +90,6 @@ const SocialPost = ({navigation}) => {
         target_type: 'POST',
         status: 'PUBLISHED',
       };
-      console.log(payload);
       let req = await Api.commentRead(payload);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
@@ -126,8 +125,6 @@ const SocialPost = ({navigation}) => {
         let {data, status, msg} = req.data;
         if (status) {
           getComments(target);
-        } else {
-          console.log(msg);
         }
       }
       setLoading(false);
@@ -137,10 +134,9 @@ const SocialPost = ({navigation}) => {
     }
     Keyboard.dismiss();
     setComment('');
-    console.log(payload);
   };
   const sentLike = async (t, tt, i) => {
-    if(user.role != 'guest') {
+    if (user.role != 'guest') {
       let payload = {
         id_user: user.id,
         id_target: t,
@@ -153,8 +149,6 @@ const SocialPost = ({navigation}) => {
           let {data, status, msg} = req.data;
           if (status) {
             getLike(t, tt, i);
-          } else {
-            console.log(msg);
           }
         }
         setLoading(false);
@@ -176,11 +170,9 @@ const SocialPost = ({navigation}) => {
         let {data, status, msg} = req.data;
         let fi = {...feedsItem};
         if (status) {
-          console.log(data);
           fi.data[i].like_count = data.like_count;
         } else {
           fi.data[i].like_count = 0;
-          console.log(msg);
         }
         setFeedsItem(fi);
       }
@@ -282,10 +274,12 @@ const SocialPost = ({navigation}) => {
                     }}
                   />
                   {/* <Text style={[theme['p14-400'],theme.cwhite,theme.mb20]}>{item.text}</Text> */}
-                  <AutoHeightImage
-                    width={imageWidth}
-                    source={{uri: item.image_url}}
-                  />
+                  {item.image_url ? (
+                    <AutoHeightImage
+                      width={imageWidth}
+                      source={{uri: item.image_url}}
+                    />
+                  ) : null}
                   <View style={[theme.fRow, theme.faCenter, theme.mt10]}>
                     <TouchableOpacity
                       onPress={() => {

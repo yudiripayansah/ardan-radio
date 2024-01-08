@@ -244,6 +244,7 @@ const Home = ({navigation}) => {
         let {data, status, msg} = req.data;
         if (status) {
           theData = data[0];
+          console.log(theData);
         }
       }
       setHotSharing({
@@ -956,7 +957,7 @@ const Home = ({navigation}) => {
                 theme.br40,
               ]}
               onPress={() => {
-                navigation.navigate('Social');
+                navigation.navigate('Social',{activeTab:'Sharing'});
               }}>
               <Image source={Icons.chevronRight} />
             </TouchableOpacity>

@@ -21,6 +21,7 @@ import NewsDetails from '../screen/NewsDetails';
 import Notifications from '../screen/Notifications';
 import Profile from '../screen/Profile';
 import Penyiar from '../screen/Penyiar';
+import PenyiarDetails from '../screen/PenyiarDetails';
 import Program from '../screen/Program';
 import ProgramDetails from '../screen/ProgramDetails';
 import Radio from '../screen/Radio';
@@ -29,6 +30,7 @@ import Register from '../screen/Register';
 import Search from '../screen/Search';
 import Social from '../screen/Social';
 import SocialSharingDetails from '../screen/SocialSharingDetails';
+import SocialPostDetails from '../screen/SocialPostDetails';
 import Nav from '../components/Navigation';
 import Header from '../components/Header';
 const AuthStack = createStackNavigator();
@@ -40,9 +42,7 @@ export const RouteMain = ({navigation}) => {
     let [activeHeader, setActiveHeader] = useState('Home')
     return (
         <>
-            {(activeHeader != 'LiveStreaming') ? (
             <Header navigation={navigation} currentScreen={activeHeader}/>
-            ) : null}
             <MainStack.Navigator
                 screenOptions={{
                     headerShown: false,
@@ -60,6 +60,11 @@ export const RouteMain = ({navigation}) => {
                         }
                         if(
                             routeName == 'Penyiar'
+                            ){
+                            routeName = 'Ardan Announcher'
+                        }
+                        if(
+                            routeName == 'PenyiarDetails'
                             ){
                             routeName = 'Ardan Announcher'
                         }
@@ -82,6 +87,11 @@ export const RouteMain = ({navigation}) => {
                             routeName == 'SocialSharingDetails'
                             ){
                             routeName = 'Forum'
+                        }
+                        if(
+                            routeName == 'SocialPostDetails'
+                            ){
+                            routeName = 'Post'
                         }
                         if(
                             routeName == 'BannerDetails'
@@ -124,6 +134,7 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'Notifications'} component={Notifications} options={options}/>
                 <MainStack.Screen name={'Profile'} component={Profile} options={options}/>
                 <MainStack.Screen name={'Penyiar'} component={Penyiar} options={options}/>
+                <MainStack.Screen name={'PenyiarDetails'} component={PenyiarDetails} options={options}/>
                 <MainStack.Screen name={'Program'} component={Program} options={options}/>
                 <MainStack.Screen name={'ProgramDetails'} component={ProgramDetails} options={options}/>
                 <MainStack.Screen name={'Radio'} component={Radio} options={options}/>
@@ -131,6 +142,7 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'Search'} component={Search} options={options}/>
                 <MainStack.Screen name={'Social'} component={Social} options={options}/>
                 <MainStack.Screen name={'SocialSharingDetails'} component={SocialSharingDetails} options={options}/>
+                <MainStack.Screen name={'SocialPostDetails'} component={SocialPostDetails} options={options}/>
             </MainStack.Navigator>
             {(activeHeader != 'LiveStreaming') ? (
             <Nav navigation={navigation} currentScreen={activeHeader}/>

@@ -1,20 +1,43 @@
-import React, {useEffect, useContext, useState} from 'react';
-import {View, Image, TouchableOpacity, TextInput, Text} from 'react-native';
+import React, {useEffect, useContext, useState, useRef} from 'react';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  Text,
+  Animated,
+  Dimensions,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
 import {useRoute} from '@react-navigation/native';
+import usePushNotification from '../hook/usePushNotification';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SvgUri from 'react-native-svg-uri';
+import Api from '../config/Api';
 // import SvgUri from './Svg';
 import Icons from './Icons';
 const Header = ({navigation, ...props}) => {
+  const {
+    requestUserPermission,
+    getFCMToken,
+    listenToBackgroundNotifications,
+    listenToForegroundNotifications,
+    onNotificationOpenedAppFromBackground,
+    onNotificationOpenedAppFromQuit,
+  } = usePushNotification();
   const route = useRoute();
+  const screenWidth = Dimensions.get('window').width;
+  const widthAnim = useRef(new Animated.Value(screenWidth)).current;
+  const opacityAnim = useRef(new Animated.Value(100)).current;
+  const [keyword, setKeyword] = useState(null);
   const {currentScreen} = props;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const {removeUser} = useContext(AuthContext);
-  const [header, setHeader] = useState(Object);
+  const [openSearch, setOpenSearch] = useState(false);
   const doLogout = () => {
     removeUser();
   };
@@ -30,7 +53,7 @@ const Header = ({navigation, ...props}) => {
       icon: Icons.menuSocial,
       title: 'Social',
       target: () => {
-        navigation.navigate('Social');
+        navigation.navigate('Social',{activeTab:'Post'});
       },
     },
     {
@@ -48,62 +71,75 @@ const Header = ({navigation, ...props}) => {
       },
     },
   ];
-  const CLogo = () => {
-    return (
-      <></>
-      // <Image
-      //   source={require('../assets/images/logo-ardan-simple.png')}
-      //   style={[theme.w50]}
-      // />
-    );
+  const doSearch = (keyword) => {
+    toggleSearch()
+    navigation.navigate('Search', {
+      keyword: keyword,
+    });
+  }
+  const toggleSearch = () => {
+    let width = 0;
+    if (openSearch) {
+      width = screenWidth;
+    }
+    setOpenSearch(!openSearch);
+    Animated.parallel([
+      Animated.timing(widthAnim, {
+        toValue: width,
+        duration: 500,
+        useNativeDriver: false,
+      }),
+    ]).start();
   };
-  const CSearch = () => {
+  const SearchBar = () => {
     return (
-      <TextInput
-        placeholder="Search..."
+      <Animated.View
         style={[
-          {backgroundColor: '#12120B'},
-          theme.cwhite,
-          theme.br14,
-          theme['h10-500'],
-          theme.h40,
-          theme.w165,
-          theme.px10,
+          theme.absolute,
+          theme.left0,
+          theme.right0,
+          theme.faCenter,
           theme.fjCenter,
-          {textAlignVertical: 'center'},
-        ]}
-        placeholderTextColor="#4F4F3F"
-        multiline
-        numberOfLines={1}
-      />
+          theme.bottom0,
+          theme.top0,
+          {
+            transform: [
+              {
+                translateX: widthAnim,
+              },
+            ],
+            backgroundColor: '#28353b',
+          },
+        ]}>
+        <View
+          style={[
+            theme.fRow,
+            theme.faCenter,
+            {backgroundColor: '#12120B'},
+            theme.br12,
+            theme.px15,
+            theme.wp90,
+          ]}>
+          <TouchableOpacity
+            style={[theme.me10]}
+            onPress={() => {
+              toggleSearch();
+            }}>
+            <Image source={Icons.back} width={25} height={25} />
+          </TouchableOpacity>
+          <TextInput
+            placeholder="Search..."
+            style={[theme.cwhite, theme['p14-400'], theme.wp89, theme.h40]}
+            placeholderTextColor="#fff"
+            onSubmitEditing={(e) => {
+              doSearch(e.nativeEvent.text);
+            }}
+            clearButtonMode="while-editing"
+          />
+        </View>
+      </Animated.View>
     );
   };
-  const CTitle = () => {
-    return (
-      <Text style={[theme['h20-600'], theme.cwhite]}>{currentScreen}</Text>
-    );
-  };
-  const CNotif = () => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('Notifications');
-        }}>
-        <Icon name="bell" size={20} color="#fff" />
-      </TouchableOpacity>
-    );
-  };
-  const CBack = () => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.goBack();
-        }}>
-        <Icon name="angle-left" size={30} color="#fff" />
-      </TouchableOpacity>
-    );
-  };
-  const CFavorite = () => {};
   const HeaderHome = () => {
     return (
       <>
@@ -116,6 +152,7 @@ const Header = ({navigation, ...props}) => {
             theme.fRow,
             theme.fjBetween,
             theme.faCenter,
+            theme.relative
           ]}>
           <View style={[theme.fRow, theme.faCenter]}>
             <View
@@ -130,12 +167,16 @@ const Header = ({navigation, ...props}) => {
                 theme.bw2,
                 theme.me17,
               ]}>
-              <Image source={Icons.user} style={[{objectFit:'contain',width:20}]}/>
+              <Image
+                source={Icons.user}
+                style={[{objectFit: 'contain', width: 20}]}
+              />
             </View>
             <View>
               <Text style={[theme['h15-700'], {color: '#fff'}]}>
                 Welcome back!
               </Text>
+              <TouchableOpacity onPress={()=>{doLogout()}}>
               <Text
                 style={[
                   theme['h12-400'],
@@ -143,16 +184,21 @@ const Header = ({navigation, ...props}) => {
                 ]}>
                 {user.name}
               </Text>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={[theme.fRow]}>
-            <TouchableOpacity style={[theme.me10]}>
+            <TouchableOpacity style={[theme.me10]} onPress={()=>{toggleSearch()}}>
               <Image source={Icons.search} width={25} height={25} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{navigation.navigate('Notifications')}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Notifications');
+              }}>
               <Image source={Icons.notif} width={25} height={25} />
             </TouchableOpacity>
           </View>
+          <SearchBar />
         </View>
         <View
           style={[
@@ -164,11 +210,12 @@ const Header = ({navigation, ...props}) => {
             theme.faCenter,
             theme.fjBetween,
           ]}>
-          {menu.map(item => {
+          {menu.map((item, index) => {
             return (
               <TouchableOpacity
                 style={[theme.faCenter, theme.fjCenter]}
-                onPress={item.target}>
+                onPress={item.target}
+                key={index}>
                 <View
                   style={[
                     {backgroundColor: '#F8C303'},
@@ -207,9 +254,14 @@ const Header = ({navigation, ...props}) => {
             theme.fRow,
             theme.fjBetween,
             theme.faCenter,
+            theme.relative,
           ]}>
           <View style={[theme.wp20]}>
-            <TouchableOpacity style={[theme.me10]} onPress={()=>{navigation.goBack();}}>
+            <TouchableOpacity
+              style={[theme.me10]}
+              onPress={() => {
+                navigation.goBack();
+              }}>
               <Image source={Icons.back} width={25} height={25} />
             </TouchableOpacity>
           </View>
@@ -218,14 +270,22 @@ const Header = ({navigation, ...props}) => {
               {currentScreen}
             </Text>
           </View>
-          <View style={[theme.fRow,theme.wp20,theme.fjEnd]}>
-            <TouchableOpacity style={[theme.me10]} onPress={()=>{}}>
+          <View style={[theme.fRow, theme.wp20, theme.fjEnd]}>
+            <TouchableOpacity
+              style={[theme.me10]}
+              onPress={() => {
+                toggleSearch();
+              }}>
               <Image source={Icons.search} width={25} height={25} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{navigation.navigate('Notifications');}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Notifications');
+              }}>
               <Image source={Icons.notif} width={25} height={25} />
             </TouchableOpacity>
           </View>
+          <SearchBar />
         </View>
       </>
     );
@@ -237,18 +297,30 @@ const Header = ({navigation, ...props}) => {
       return <HeaderTitle />;
     }
   };
+  const registerToken = async () => {
+    let token = await getFCMToken();
+    try {
+      let payload = {
+        id_user: (user.id) ? user.id : 0,
+        name: user.name,
+        token: token
+      };
+      // console.warn(payload)
+      let req = await Api.registerToken(payload);
+    } catch (error) {
+      console.error(error);
+    }
+  }
   useEffect(() => {
-    let mounted = true;
-    navigation.addListener('focus', () => {
-      if (mounted) {
-        setHeader();
-      }
-    });
-    return () => (mounted = false);
+    onNotificationOpenedAppFromQuit();
+    listenToBackgroundNotifications();
+    listenToForegroundNotifications();
+    onNotificationOpenedAppFromBackground();
+    registerToken()
   }, []);
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={[
         theme.wp100,
         theme.fRow,
@@ -259,7 +331,7 @@ const Header = ({navigation, ...props}) => {
         {zIndex: 2},
       ]}>
       {getHeader()}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

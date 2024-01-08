@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\UserToken;
 use App\Models\Feeds;
 use App\Models\Likes;
 
 class UserController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['read', 'get','create']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get','create','createToken','readToken']]);
   }
   public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;
@@ -26,12 +27,12 @@ class UserController extends Controller
     $totalPage = 1;
     $id_user = ($request->id_user) ? $request->id_user : null;
     $type = ($request->type) ? $request->type : null;
-    $listData = User::select('user.*')->orderBy($sortBy, $sortDir);
+    $listData = User::select('users.*')->orderBy($sortBy, $sortDir);
     if ($perPage != '~') {
         $listData->skip($offset)->take($perPage);
     }
     if ($search != null) {
-        $listData->whereRaw('(user.name LIKE "%'.$search.'%")');
+        $listData->whereRaw('(users.name LIKE "%'.$search.'%")');
     }
     $listData = $listData->get();
     foreach($listData as $ld) {
@@ -40,7 +41,7 @@ class UserController extends Controller
     if ($search || $id_user || $type) {
         $total = User::orderBy($sortBy, $sortDir);
         if ($search) {
-            $total->whereRaw('(user.name LIKE "%'.$search.'%")');
+            $total->whereRaw('(users.name LIKE "%'.$search.'%")');
         }
         $total = $total->count();
     } else {
@@ -95,7 +96,7 @@ class UserController extends Controller
   public function create(Request $request) {
     $dataCreate = $request->all();
     if($request->image){
-      $filename = uniqid().time().'-'. '-user.png';
+      $filename = uniqid().time().'-'. '-users.png';
       $filePath = 'user/' .$filename;
       $dataCreate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
@@ -146,7 +147,7 @@ class UserController extends Controller
     $dataFind = User::find($request->id);
     $validate = User::validate($dataUpdate);
     if (basename($request->image) != basename($dataFind->image)) {
-      $filename = uniqid().time().'-'. '-user.png';
+      $filename = uniqid().time().'-'. '-users.png';
       $filePath = 'user/' .$filename;
       $dataUpdate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
@@ -156,6 +157,13 @@ class UserController extends Controller
     unset($dataUpdate['created_at']);
     unset($dataUpdate['updated_at']);
     unset($dataUpdate['deleted_at']);
+    unset($dataUpdate['image_url']);
+    unset($dataUpdate['followers_count']);
+    unset($dataUpdate['following_count']);
+    unset($dataUpdate['post_count']);
+    if($request->password){
+      $dataUpdate['password'] = Hash::make($request->password);
+    }
     DB::beginTransaction();
     if ($validate['status']) {
       try {
@@ -216,5 +224,99 @@ class UserController extends Controller
       $res = true;
     }
     return $res;
+  }
+  public function checkToken($request) {
+    $userToken = UserToken::where('token',$request->token)->get();
+    if(count($userToken) > 0) {
+      $res = false;
+    } else {
+      $res = true;
+    }
+    return $res;
+  }
+  public function createToken(Request $request) {
+    $checkToken = $this->checkUser($request);
+    if($checkToken) {
+      $dataCreate = $request->all();
+      DB::beginTransaction();
+      $validate = UserToken::validate($dataCreate);
+      if ($validate['status']) {
+        try {
+          $dc = UserToken::create($dataCreate);
+          $dg = UserToken::find($dc->id);
+          $res = array(
+                  'status' => true,
+                  'data' => $dg,
+                  'msg' => 'Data successfully created'
+                );
+          DB::commit();
+        } catch (Exception $e) {
+          DB::rollback();
+          $res = array(
+                  'status' => false,
+                  'data' => $dataCreate,
+                  'msg' => 'Failed to create data'
+                );
+        }
+      } else {
+        $res = array(
+                'status' => false,
+                'data' => $dataCreate,
+                'msg' => 'Validation failed',
+                'errors' => $validate['error']
+              );
+      }
+    } else {
+      $res = array(
+        'status' => false,
+        'msg' => 'Token Already Exists'
+      );
+    }
+    return response()->json($res, 200);
+  }
+  public function readToken(Request $request) {
+    $page = ($request->page) ? $request->page : 1;
+    $perPage = ($request->perPage) ? $request->perPage : '~';
+    $offset = ($page > 1) ? ($page - 1) * $perPage : 0;
+    $sortDir = ($request->sortDir) ? $request->sortDir : 'DESC';
+    $sortBy = ($request->sortBy) ? $request->sortBy : 'updated_at';
+    $search = ($request->search) ? $request->search : null;
+    $total = 0;
+    $totalPage = 1;
+    $listData = UserToken::select('user_token.*')->orderBy($sortBy, $sortDir);
+    if ($perPage != '~') {
+        $listData->skip($offset)->take($perPage);
+    }
+    if ($search != null) {
+        $listData->whereRaw('(user_token.name LIKE "%'.$search.'%")');
+    }
+    $listData = $listData->get();
+    if ($search) {
+        $total = UserToken::orderBy($sortBy, $sortDir);
+        if ($search) {
+            $total->whereRaw('(user_token.name LIKE "%'.$search.'%")');
+        }
+        $total = $total->count();
+    } else {
+        $total = UserToken::all()->count();
+    }
+    if ($perPage != '~') {
+        $totalPage = ceil($total / $perPage);
+    }
+    $res = array(
+        'status' => true,
+        'data' => $listData,
+        'msg' => 'List data available',
+        'total' => $total,
+        'totalPage' => $totalPage,
+        'paging' => array(
+          'page' => $page,
+          'perPage' => $perPage,
+          'sortDir' => $sortDir,
+          'sortBy' => $sortBy,
+          'search' => $search
+        )
+    );
+    return response()->json($res, 200);
   }
 }

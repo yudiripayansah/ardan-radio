@@ -6,19 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Validator;
 
-class Events extends Model
+class UserToken extends Model
 {
     use SoftDeletes;
-    protected $table = 'events';
+    protected $table = 'user_token';
     protected $fillable = [
-      'image','title','text','btn_label','btn_url','category','status'
+      'id_user','name','token'
     ];
     public static function validate($validate)
     {
         $rule = [
-          'image' => 'required',
-          'title' => 'required',
-          'text' => 'required'
+          'token' => 'required'
         ];
         $validator = Validator::make($validate, $rule);
         if ($validator->fails()) {
@@ -35,5 +33,9 @@ class Events extends Model
                   );
         }
         return $res;
+    }
+    public function user()
+    {
+      return $this->belongsTo(User::class, 'id_user', 'id');
     }
 }

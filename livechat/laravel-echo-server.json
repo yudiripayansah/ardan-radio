@@ -1,5 +1,5 @@
 {
-	"authHost": "http://localhost:8000",
+	"authHost": "https://chat.kopikoding.com",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [],
 	"database": "redis",
@@ -12,8 +12,8 @@
 	"devMode": true,
 	"host": null,
 	"port": "6001",
-	"protocol": "http",
+	"protocol": "https",
 	"socketio": {},
-	"sslCertPath": "",
-	"sslKeyPath": ""
+	"sslCertPath": "/www/server/panel/vhost/cert/chat.kopikoding.com/fullchain.pem",
+	"sslKeyPath": "/www/server/panel/vhost/cert/chat.kopikoding.com/privkey.pem"
 }

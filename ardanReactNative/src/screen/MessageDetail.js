@@ -33,7 +33,6 @@ const MessageDetail = ({route,navigation}) => {
     });
     echo.channel('private-chat-room-'+roomId).listen('PrivateChatEvent', (event) => {
       const {target} = event
-      console.log(event)
       let theChat = privatechat
       theChat.push(event)
       setPrivatechat(theChat)

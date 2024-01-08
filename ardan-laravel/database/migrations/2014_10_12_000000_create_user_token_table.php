@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEventsTable extends Migration
+class CreateUsertokenTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,11 @@ class CreateEventsTable extends Migration
      */
     public function up()
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('user_token', function (Blueprint $table) {
             $table->id();
-            $table->text('image');
-            $table->text('title');
-            $table->text('text');
-            $table->text('btn_label');
-            $table->text('btn_url');
-            $table->text('category')->nullable();
-            $table->text('status')->nullable();
+            $table->integer('id_user')->nullable();
+            $table->text('name')->nullable();
+            $table->text('token');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -34,6 +30,6 @@ class CreateEventsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('user_token');
     }
 }

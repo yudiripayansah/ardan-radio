@@ -22,7 +22,9 @@ class PublicController extends Controller
         $message = $request->message;
         $target = $request->target;
         $name = $request->name;
-    	broadcast(new PublicChatEvent($message,$target,$name))->toOthers();
+        $penyiar = $request->penyiar;
+        $verified = $request->verified;
+    	broadcast(new PublicChatEvent($message,$target,$name,$penyiar,$verified))->toOthers();
     	return $message;
     }
 }

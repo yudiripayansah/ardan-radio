@@ -44,7 +44,8 @@ import Echo from 'laravel-echo'
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
-
+// SSLCertificateFile /www/server/panel/vhost/cert/chat.kopikoding.com/fullchain.pem
+// SSLCertificateKeyFile /www/server/panel/vhost/cert/chat.kopikoding.com/privkey.pem
 
 window.Echo = new Echo({
     broadcaster: 'socket.io',

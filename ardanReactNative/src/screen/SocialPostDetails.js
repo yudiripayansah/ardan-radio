@@ -20,8 +20,8 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
-const SocialSharingDetails = ({route, navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 60;
+const SocialPostDetails = ({route, navigation}) => {
+  const imageWidth = Dimensions.get('window').width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -157,7 +157,7 @@ const SocialSharingDetails = ({route, navigation}) => {
     setComment('');
   };
   const sentLike = async (t, tt) => {
-    if(user.role != 'guest'){
+    if (user.role != 'guest') {
       let payload = {
         id_user: user.id,
         id_target: t,
@@ -252,15 +252,9 @@ const SocialSharingDetails = ({route, navigation}) => {
           theme.pt60,
           theme.relative,
         ]}>
-        <ScrollView style={[theme.px15]}>
-          <View
-            style={[
-              theme.mt25,
-              {backgroundColor: '#444548'},
-              theme.p15,
-              theme.br12,
-            ]}>
-            <View style={[theme.fRow, theme.faCenter, theme.me10]}>
+        <ScrollView style={[theme.px20]}>
+          <View style={[theme.my20]}>
+            <View style={[theme.fRow]}>
               <Image
                 source={
                   feedsItem.data.user.image_url
@@ -269,7 +263,7 @@ const SocialSharingDetails = ({route, navigation}) => {
                         uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
                       }
                 }
-                style={[theme.w55, theme.h55, theme.br100, theme.me15]}
+                style={[theme.h40, theme.w40, theme.br12, theme.me15]}
               />
               <View>
                 <TouchableOpacity
@@ -278,125 +272,57 @@ const SocialSharingDetails = ({route, navigation}) => {
                       id: feedsItem.data.user.id,
                     });
                   }}>
-                  <Text style={[theme['h20-500'], theme.cwhite]}>
+                  <Text style={[theme['p16-700'], theme.cwhite]}>
                     {feedsItem.data.user.name}
                   </Text>
                 </TouchableOpacity>
                 <View style={[theme.fRow, theme.faCenter]}>
-                  {/* <Text style={[theme['p12-400'],theme.cyellow,theme.me3]}>Musik -</Text> */}
-                  <Text style={[theme['p12-400'], theme.cyellow, theme.me5]}>
+                  {/* <Image source={require('../assets/images/icons/map-pin.png')} style={[theme.h15,theme.w15,theme.me5]}/>
+                      <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{feedsItem.data.location}</Text> */}
+                  <Image
+                    source={require('../assets/images/icons/discovery.png')}
+                    style={[theme.h15, theme.w15, theme.me5]}
+                  />
+                  <Text style={[theme['p12-400'], {color: 'grey'}]}>
                     {Helper.dateIndo(feedsItem.data.created_at)}
                   </Text>
                 </View>
               </View>
             </View>
-            <Text
-              style={[theme['h22-700'], theme.cwhite, theme.mt15, theme.mb5]}>
-              {feedsItem.data.title}
-            </Text>
-            <AutoHeightImage
-              width={imageWidth}
-              source={{uri: feedsItem.data.image}}
-            />
             <RenderHtml
               contentWidth={imageWidth}
               source={{
-                html: `<div style="color:#9DA3AF;">${feedsItem.data.text}</div>`,
+                html: `<div style="color:#fff;">${feedsItem.data.text}</div>`,
               }}
             />
-            <View style={[theme.fRow, theme.fjBetween, theme.mt25]}>
-              <View style={[theme.fRow, theme.faCenter]}>
-                <TouchableOpacity
-                  onPress={() => {
-                    sentLike(feedsItem.data.id, 'SHARING');
-                  }}
-                  style={[theme.me10]}>
-                  <Icon name="heart" size={15} color="#F8C303" />
-                </TouchableOpacity>
-                {feedsItem.data.like_count > 0 ? (
-                  <Text
-                    style={[theme['p12-400'], {color: '#C9C9C9'}, theme.ms5]}>
-                    {feedsItem.data.like_count} orang menyukai ini
-                  </Text>
-                ) : null}
-              </View>
-              {user.role != 'guest' ? (
-                <TouchableOpacity
-                  style={[theme.fRow, theme.faCenter]}
-                  onPress={() => {
-                    showChat();
-                  }}>
-                  <Icon name="reply" size={15} color="#F8C303" />
-                  <Text
-                    style={[theme['p12-400'], {color: '#C9C9C9'}, theme.ms5]}>
-                    Balas
-                  </Text>
-                </TouchableOpacity>
-              ) : null}
+            {/* <Text style={[theme['p14-400'],theme.cwhite,theme.mb20]}>{feedsItem.data.text}</Text> */}
+            <AutoHeightImage
+              width={imageWidth}
+              source={{uri: feedsItem.data.image_url}}
+            />
+            <View style={[theme.fRow, theme.faCenter, theme.mt10]}>
+              <TouchableOpacity
+                onPress={() => {
+                  sentLike(feedsItem.data.id, 'POST');
+                }}
+                style={[theme.fRow, theme.faCenter, theme.me15]}>
+                <Icon name="heart" size={20} color="#F8C303" />
+                <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
+                  {feedsItem.data.like_count}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[theme.fRow, theme.faCenter]}
+                onPress={() => {
+                  showChat(feedsItem.data.id);
+                }}>
+                <Icon name="comment" size={20} color="#F8C303" />
+                <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
+                  {feedsItem.data.comment_count}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-          {comments.data.map((item, i) => {
-            return (
-              <View
-                style={[
-                  theme.mt25,
-                  {backgroundColor: '#444548'},
-                  theme.p15,
-                  theme.br12,
-                ]}
-                key={i}>
-                <View style={[theme.fRow, theme.faCenter, theme.me10]}>
-                  <Image
-                    source={
-                      item.user.image_url
-                        ? {uri: item.user.image_url}
-                        : {
-                            uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                          }
-                    }
-                    style={[theme.w55, theme.h55, theme.br100, theme.me15]}
-                  />
-                  <View>
-                    <Text style={[theme['h20-500'], theme.cwhite]}>
-                      {item.name}
-                    </Text>
-                    <View style={[theme.fRow, theme.faCenter]}>
-                      <Text
-                        style={[theme['p12-400'], theme.cyellow, theme.me3]}>
-                        {item.created_on}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <Text
-                  style={[theme['p14-400'], {color: '#9DA3AF'}, theme.mt25]}>
-                  {item.comment}
-                </Text>
-                <View style={[theme.fRow, theme.fjEnd, theme.mt25]}>
-                  <View style={[theme.fRow, theme.faCenter, theme.me10]}>
-                    <Icon name="heart" size={15} color="#F8C303" />
-                    <Text
-                      style={[theme['p12-400'], {color: '#C9C9C9'}, theme.ms5]}>
-                      Like
-                    </Text>
-                  </View>
-                  {user.role != 'guest' ? (
-                    <View style={[theme.fRow, theme.faCenter]}>
-                      <Icon name="reply" size={15} color="#F8C303" />
-                      <Text
-                        style={[
-                          theme['p12-400'],
-                          {color: '#C9C9C9'},
-                          theme.ms5,
-                        ]}>
-                        Balas
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              </View>
-            );
-          })}
           <View style={[theme.mb150]} />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -484,4 +410,4 @@ const SocialSharingDetails = ({route, navigation}) => {
   );
 };
 
-export default SocialSharingDetails;
+export default SocialPostDetails;

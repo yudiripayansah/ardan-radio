@@ -28,6 +28,7 @@ const Login = ({navigation}) => {
         email: email,
         password: password
       }
+      console.log(payload)
       if(email && password) {
         if(validateEmail(email)) {
           let req = await Api.login(payload)

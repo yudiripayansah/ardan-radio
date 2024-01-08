@@ -19,7 +19,7 @@ class PublicChatController extends Controller
      */
     public function __construct()
     {
-    	$this->middleware('auth');
+    	//$this->middleware('auth');
     }
 
     public function get(ChatRoom $chatroom)

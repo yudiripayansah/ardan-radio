@@ -5,6 +5,10 @@ const defAxios = axios.create({
   baseURL: 'https://mobileapps.ardanradio.com/api/',
 });
 const Api = {
+  registerToken(payload, token) {
+    let url = '/user/registerToken';
+    return defAxios.post(url, payload);
+  },
   login(payload) {
     let url = '/auth/login';
     return defAxios.post(url, payload);

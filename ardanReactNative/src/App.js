@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -10,14 +10,10 @@ import Style from './config/Style';
 import Splash from './screen/Splash';
 import {useAuth} from './hook/useAuth';
 import usePushNotification from './hook/usePushNotification';
+import Api from './config/Api'
 const App = ({}) => {
   const {
     requestUserPermission,
-    getFCMToken,
-    listenToBackgroundNotifications,
-    listenToForegroundNotifications,
-    onNotificationOpenedAppFromBackground,
-    onNotificationOpenedAppFromQuit,
   } = usePushNotification();
   const {auth, state} = useAuth()
   const RootStack = createStackNavigator();
@@ -44,12 +40,7 @@ const App = ({}) => {
   useEffect(() => {
     const listenToNotifications = () => {
       try {
-        getFCMToken();
         requestUserPermission();
-        onNotificationOpenedAppFromQuit();
-        listenToBackgroundNotifications();
-        listenToForegroundNotifications();
-        onNotificationOpenedAppFromBackground();
       } catch (error) {
         console.log(error);
       }

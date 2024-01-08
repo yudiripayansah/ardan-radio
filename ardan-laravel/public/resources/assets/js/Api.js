@@ -1,6 +1,6 @@
 const defAxios = axios.create({
   // baseURL: "http://localhost:8000/api/"
-  baseURL: "https://ardan.kopikoding.com/api/"
+  baseURL: "https://mobileapps.ardanradio.com/api/"
 })
 const Api = {
   login(payload) {
@@ -12,6 +12,10 @@ const Api = {
     return defAxios.post(url, payload);
   },
   // user
+  userReadToken(payload) {
+    let url = '/user/readToken'
+    return defAxios.post(url, payload);
+  },
   userRead(payload) {
     let url = '/user/read'
     return defAxios.post(url, payload);
@@ -148,6 +152,42 @@ const Api = {
   },
   newsDelete(payload, token) {
     let url = '/news/delete'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  // notifications
+  notificationsRead(payload) {
+    let url = '/notifications/read'
+    return defAxios.post(url, payload);
+  },
+  notificationsGet(payload) {
+    let url = '/notifications/get'
+    return defAxios.post(url, payload);
+  },
+  notificationsCreate(payload, token) {
+    let url = '/notifications/create'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  notificationsUpdate(payload, token) {
+    let url = '/notifications/update'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  notificationsDelete(payload, token) {
+    let url = '/notifications/delete'
     let config = {
       headers: {
         Authorization: 'Bearer '+token,

@@ -18,6 +18,7 @@ import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SvgUri from 'react-native-svg-uri';
+import Share from 'react-native-share';
 // import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
 const SocialSharing = ({navigation}) => {
@@ -422,7 +423,10 @@ const SocialSharing = ({navigation}) => {
                       theme.br5,
                       theme.me5,
                     ]}>
-                    <Image source={Icons.user} style={[{objectFit:'contain',width:20}]}/>
+                    <Image
+                      source={Icons.user}
+                      style={[{objectFit: 'contain', width: 20}]}
+                    />
                   </View>
                   <View>
                     <Text style={[theme['h12-500'], {color: '#fff'}]}>
@@ -480,6 +484,31 @@ const SocialSharing = ({navigation}) => {
           </TouchableOpacity>
         </View>
       );
+    }
+  };
+  const doShare = async (id) => {
+    let opt = {
+      title: 'Check my Sharing on Ardan Radio',
+      message: 'Check my sharing on Ardan Radio',
+      url: 'https://mobileapps.ardanradio.com/ardansocial/sharing/'+id
+    }
+    let share = Share.open(opt)
+  }
+  const doBookmark = async (target, type) => {
+    if(user.role != 'guest'){
+      let payload = {
+        id_user: user.id,
+        id_target: target,
+        type: type,
+      };
+      try {
+        let req = await Api.likeCreate(payload, user.access_token);
+        if (req.status == 200) {
+          let {data, status, msg} = req.data;
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
   useEffect(() => {
@@ -593,71 +622,87 @@ const SocialSharing = ({navigation}) => {
         ) : (
           feedsItem.data.map((item, i) => {
             return (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('SocialSharingDetails', {id: item.id});
-                }}
+              <View
                 key={i}
-                style={[theme.mb20,theme.pb20,theme.bbw2,theme.bsolid,{borderBottomColor:'#1D1E21'}]}>
-                <Text style={[theme['h16-500'], {color: '#fff'}]}>
-                  {item.title}
-                </Text>
-                <View style={[theme.fRow, theme.mb10,theme.faCenter, theme.fjBetween]}>
-                  <View style={[theme.fRow]}>
-                    <View
-                      style={[
-                        theme.faCenter,
-                        theme.fjCenter,
-                        theme.w35,
-                        theme.h35,
-                        {backgroundColor: '#fff'},
-                        theme.br5,
-                        theme.me5,
-                      ]}>
-                      <Image
-                        source={
-                          item.user.image_url
-                            ? {uri: item.user.image_url}
-                            : {
-                                uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                              }
-                        }
-                        style={[theme.w35, theme.h35, theme.br5]}
-                      />
-                    </View>
-                    <View>
-                      <Text style={[theme['h12-500'], {color: '#fff'}]}>
-                        {item.user.name}
-                      </Text>
-                      <Text
+                style={[
+                  theme.mb20,
+                  theme.pb20,
+                  theme.bbw2,
+                  theme.bsolid,
+                  {borderBottomColor: '#1D1E21'},
+                ]}>
+                <TouchableOpacity 
+                  onPress={() => {
+                    navigation.navigate('SocialSharingDetails', {id: item.id});
+                  }}>
+                  <Text style={[theme['h16-500'], {color: '#fff'}]}>
+                    {item.title}
+                  </Text>
+                  <View
+                    style={[
+                      theme.fRow,
+                      theme.mb10,
+                      theme.faCenter,
+                      theme.fjBetween,
+                    ]}>
+                    <View style={[theme.fRow]}>
+                      <View
                         style={[
-                          theme['h12-400'],
-                          {color: '#8D8080', marginTop: -5},
+                          theme.faCenter,
+                          theme.fjCenter,
+                          theme.w35,
+                          theme.h35,
+                          {backgroundColor: '#fff'},
+                          theme.br5,
+                          theme.me5,
                         ]}>
-                        {Helper.dateIndo(item.created_at)}
-                      </Text>
+                        <Image
+                          source={
+                            item.user.image_url
+                              ? {uri: item.user.image_url}
+                              : {
+                                  uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                                }
+                          }
+                          style={[theme.w35, theme.h35, theme.br5]}
+                        />
+                      </View>
+                      <View>
+                        <Text style={[theme['h12-500'], {color: '#fff'}]}>
+                          {item.user.name}
+                        </Text>
+                        <Text
+                          style={[
+                            theme['h12-400'],
+                            {color: '#8D8080', marginTop: -5},
+                          ]}>
+                          {Helper.dateIndo(item.created_at)}
+                        </Text>
+                      </View>
                     </View>
+                    {item.category ? (
+                      <View
+                        style={[
+                          {backgroundColor: '#F8C303'},
+                          theme.h35,
+                          theme.br5,
+                          theme.faCenter,
+                          theme.fjCenter,
+                          theme.px15,
+                        ]}>
+                        <Text style={[theme['h12-500'], {color: '#000'}]}>
+                          {item.category}
+                        </Text>
+                      </View>
+                    ) : null}
                   </View>
-                  {item.category ? (
-                    <View
-                      style={[
-                        {backgroundColor: '#F8C303'},
-                        theme.h35,
-                        theme.br5,
-                        theme.faCenter,
-                        theme.fjCenter,
-                        theme.px15,
-                      ]}>
-                      <Text style={[theme['h12-500'], {color: '#000'}]}>
-                        {item.category}
-                      </Text>
-                    </View>
+                  {item.image_url ? (
+                    <AutoHeightImage
+                      width={imageWidth}
+                      source={{uri: item.image_url}}
+                    />
                   ) : null}
-                </View>
-                <AutoHeightImage
-                  width={imageWidth}
-                  source={{uri: item.image_url}}
-                />
+                </TouchableOpacity>
                 <View
                   style={[
                     theme.mt20,
@@ -666,12 +711,17 @@ const SocialSharing = ({navigation}) => {
                     theme.fjBetween,
                   ]}>
                   <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
-                    <View style={[theme.fRow, theme.faCenter]}>
+                    <TouchableOpacity style={[theme.fRow, theme.faCenter]}
+                    onPress={()=>{
+                      doShare(item.id)
+                    }}>
                       <Image source={Icons.share} width={16} height={16} />
-                    </View>
-                    <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{
+                      doBookmark(item.id,'Bookmark')
+                    }} style={[theme.fRow, theme.faCenter, theme.ms25]}>
                       <Image source={Icons.bookmark} width={16} height={16} />
-                    </View>
+                    </TouchableOpacity>
                   </View>
                   <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                     <View style={[theme.fRow, theme.faCenter]}>
@@ -698,7 +748,7 @@ const SocialSharing = ({navigation}) => {
                     </View>
                   </View>
                 </View>
-              </TouchableOpacity>
+              </View>
             );
           })
         )}

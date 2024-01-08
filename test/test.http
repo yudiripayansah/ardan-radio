@@ -1,9 +1,9 @@
-POST https://ardan.kopikoding.com/api/chat/send
+POST https://mobileapps.ardanradio.com/api/user/registerToken
 Content-Type: application/json
 Accept: application/json
 
 {
-"message": "Hallo",
-"target": "livestream",
-"name": "Yudi Ripayansah"
+  "id_user": 1,
+  "name": "Guest",
+  "token": "Test",
 }

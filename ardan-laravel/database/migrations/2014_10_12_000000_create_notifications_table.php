@@ -19,6 +19,7 @@ class CreateNotificationsTable extends Migration
             $table->text('title');
             $table->text('text');
             $table->text('target')->nullable();
+            $table->text('type')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

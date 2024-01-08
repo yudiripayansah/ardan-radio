@@ -12,12 +12,10 @@ const Notifications = ({navigation}) => {
       style={[
         theme.bgblack,
         {flexGrow: 1},
-        theme.mt50,
-        theme.mb20,
         theme.relative,
         {zIndex: 2},
       ]}>
-      <ScrollView style={[theme.pb100]}>
+      <ScrollView style={[theme.mb70,theme.mt60]}>
         <View style={[theme.py10,theme.px25,theme.bbw1,theme.bsolid,theme.byellow,theme.fRow,theme.fjBetween]}>
           <Text style={[theme['h14-400'],theme.cyellow]}>Unread Notification(10)</Text>
           <TouchableOpacity>

@@ -102,8 +102,6 @@ const Profile = ({route, navigation}) => {
         let {data, status, msg} = req.data;
         if (status) {
           getUser();
-        } else {
-          console.log(msg);
         }
       }
       setLoading(false);
@@ -131,7 +129,7 @@ const Profile = ({route, navigation}) => {
             <Image
               source={
                 dUser.image
-                  ? {uri: dUser.image}
+                  ? {uri: dUser.image_url}
                   : {
                       uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
                     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\ProgramsController;
 use App\Http\Controllers\PenyiarController;
@@ -73,6 +74,16 @@ Route::group([
 });
 Route::group([
     'middleware' => 'api',
+    'prefix' => 'notifications'
+], function ($router) {
+    Route::post('/read', [NotificationsController::class, 'read']); 
+    Route::post('/get', [NotificationsController::class, 'get']); 
+    Route::post('/create', [NotificationsController::class, 'create']); 
+    Route::post('/update', [NotificationsController::class, 'update']); 
+    Route::post('/delete', [NotificationsController::class, 'delete']); 
+});
+Route::group([
+    'middleware' => 'api',
     'prefix' => 'events'
 ], function ($router) {
     Route::post('/read', [EventsController::class, 'read']); 
@@ -130,6 +141,8 @@ Route::group([
     Route::post('/create', [UserController::class, 'create']); 
     Route::post('/update', [UserController::class, 'update']); 
     Route::post('/delete', [UserController::class, 'delete']); 
+    Route::post('/registerToken', [UserController::class, 'createToken']);
+    Route::post('/readToken', [UserController::class, 'readToken']);
 });
 Route::group([
     'middleware' => 'api',

@@ -22,8 +22,6 @@ const RadioPlayer = () => {
   const handlePlayPause = async () => {
     const currentTrack = await TrackPlayer.getCurrentTrack();
     const playerState = await TrackPlayer.getState();
-    console.log('playerState:',playerState);
-    console.log('currentTrack:',currentTrack);
     if(playerState === 'stopped'){
       await TrackPlayer.reset();
     }

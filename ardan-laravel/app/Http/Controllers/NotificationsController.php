@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Feeds;
-use App\Models\Comments;
-use App\Models\Likes;
+use App\Models\Notifications;
+use Notification;
+use App\Notifications\SendPushNotification;
+use Kutia\Larafirebase\Messages\FirebaseMessage;
 
-class FeedsController extends Controller
+class NotificationsController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['read', 'get','create', 'update']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get']]);
   }
   public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;
@@ -21,58 +22,29 @@ class FeedsController extends Controller
     $sortDir = ($request->sortDir) ? $request->sortDir : 'DESC';
     $sortBy = ($request->sortBy) ? $request->sortBy : 'updated_at';
     $search = ($request->search) ? $request->search : null;
-    $category = ($request->category) ? $request->category : null;
     $total = 0;
     $totalPage = 1;
     $id_user = ($request->id_user) ? $request->id_user : null;
     $type = ($request->type) ? $request->type : null;
-    $status = ($request->status) ? $request->status : null;
-    $listData = Feeds::select('feeds.*')->orderBy($sortBy, $sortDir)->with('user');
+    $listData = Notifications::select('notifications.*')->orderBy($sortBy, $sortDir);
     if ($perPage != '~') {
         $listData->skip($offset)->take($perPage);
     }
     if ($search != null) {
-        $listData->whereRaw('(feeds.title LIKE "%'.$search.'%")');
-    }
-    if ($category != null) {
-        $listData->whereRaw('(feeds.category LIKE "%'.$category.'%")');
-    }
-    if ($type != null) {
-        $listData->where('type',$type);
-    }
-    if ($id_user != null) {
-        $listData->where('id_user',$id_user);
-    }
-    if ($status != null) {
-        $listData->where('status',$status);
+        $listData->whereRaw('(notifications.title LIKE "%'.$search.'%")');
     }
     $listData = $listData->get();
     foreach($listData as $ld) {
-      $ld->image_url = ($ld->image) ? Storage::disk('public')->url('feeds/'.$ld->image) : null;
-      $ld->user->image_url = ($ld->user && $ld->user->image) ? Storage::disk('public')->url('user/'.$ld->user->image) : null;
-      $ld->comment_count = Comments::where('id_target',$ld->id)->where('target_type',$ld->type)->count();
-      $ld->like_count = Likes::where('id_target',$ld->id)->where('type',$ld->type)->count();
+      $ld->image_url = Storage::disk('public')->url('notifications/'.$ld->image);
     }
-    if ($search || $id_user || $type || $status || $category) {
-        $total = Feeds::orderBy($sortBy, $sortDir);
+    if ($search || $id_user || $type) {
+        $total = Notifications::orderBy($sortBy, $sortDir);
         if ($search) {
-            $total->whereRaw('(feeds.title LIKE "%'.$search.'%")');
-        }
-        if ($category) {
-            $total->whereRaw('(feeds.category LIKE "%'.$category.'%")');
-        }
-        if ($type) {
-            $total->where('type', $type);
-        }
-        if ($id_user) {
-            $total->where('id_user', $id_user);
-        }
-        if ($status) {
-            $total->where('status', $status);
+            $total->whereRaw('(notifications.title LIKE "%'.$search.'%")');
         }
         $total = $total->count();
     } else {
-        $total = Feeds::all()->count();
+        $total = Notifications::all()->count();
     }
     if ($perPage != '~') {
         $totalPage = ceil($total / $perPage);
@@ -95,12 +67,8 @@ class FeedsController extends Controller
   }
   public function get(Request $request) {
     if ($request->id) {
-      $getData = Feeds::with('user')->get()->find($request->id);
-      $getData->image_url = ($getData->image) ? Storage::disk('public')->url('feeds/'.$getData->image) : null;
-      $getData->image = ($getData->image) ? Storage::disk('public')->url('feeds/'.$getData->image) : null;
-      $getData->user->image_url = ($getData->user->image) ? Storage::disk('public')->url('user/'.$getData->user->image) : null;
-      $getData->comment_count = Comments::where('id_target',$getData->id)->where('target_type',$getData->type)->count();
-      $getData->like_count = Likes::where('id_target',$getData->id)->where('type',$getData->type)->count();
+      $getData = Notifications::find($request->id);
+      $getData->image = Storage::disk('public')->url('notifications/'.$getData->image);
       if ($getData) {
           $res = array(
                   'status' => true,
@@ -124,22 +92,34 @@ class FeedsController extends Controller
   public function create(Request $request) {
     $dataCreate = $request->all();
     if($request->image){
-      $filename = uniqid().time().'-'. '-feeds.png';
-      $filePath = 'feeds/' .$filename;
+      $filename = uniqid().time().'-'. '-notifications.png';
+      $filePath = 'notifications/' .$filename;
       $dataCreate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
       unset($dataCreate['image']);
     }
     DB::beginTransaction();
-    $validate = Feeds::validate($dataCreate);
+    $validate = Notifications::validate($dataCreate);
     if ($validate['status']) {
       try {
-        $dc = Feeds::create($dataCreate);
-        $dg = Feeds::find($dc->id);
+        $dc = Notifications::create($dataCreate);
+        $dg = Notifications::find($dc->id);
+        $dg->image = Storage::disk('public')->url('notifications/'.$dg->image);
+        $notif = $this->notif(
+          $dg->title,
+          $dg->text,
+          $dg->image,
+          null,
+          [
+            'type' => $dg->type
+          ],
+          $dg->target
+        );
         $res = array(
                 'status' => true,
                 'data' => $dg,
+                'notif' => $notif,
                 'msg' => 'Data successfully created'
               );
         DB::commit();
@@ -163,11 +143,11 @@ class FeedsController extends Controller
   }
   public function update(Request $request) {
     $dataUpdate = $request->all();
-    $dataFind = Feeds::find($request->id);
-    $validate = Feeds::validate($dataUpdate);
+    $dataFind = Notifications::find($request->id);
+    $validate = Notifications::validate($dataUpdate);
     if (basename($request->image) != basename($dataFind->image)) {
-      $filename = uniqid().time().'-'. '-feeds.png';
-      $filePath = 'feeds/' .$filename;
+      $filename = uniqid().time().'-'. '-notifications.png';
+      $filePath = 'notifications/' .$filename;
       $dataUpdate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
@@ -176,14 +156,11 @@ class FeedsController extends Controller
     unset($dataUpdate['created_at']);
     unset($dataUpdate['updated_at']);
     unset($dataUpdate['deleted_at']);
-    unset($dataUpdate['user']);
-    unset($dataUpdate['comment_count']);
-    unset($dataUpdate['like_count']);
     DB::beginTransaction();
     if ($validate['status']) {
       try {
-        $du = Feeds::where('id',$request->id)->update($dataUpdate);
-        $dg = Feeds::find($request->id);
+        $du = Notifications::where('id',$request->id)->update($dataUpdate);
+        $dg = Notifications::find($request->id);
         $res = array(
                 'status' => true,
                 'data' => $dg,
@@ -210,7 +187,7 @@ class FeedsController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = Feeds::find($id);
+      $delData = Notifications::find($id);
       try {
         $delData->delete();
         $res = array(
@@ -230,5 +207,27 @@ class FeedsController extends Controller
             );
     }
     return response()->json($res, 200);
+  }
+  public function sendOnly(Request $request) {
+
+  }
+  function notif($title,$message,$image,$icon='https://mobileapps.ardanradio.com/resources/assets/img/ardan/logo.png',$data,$tokens){
+    $fcm = (new FirebaseMessage);
+    $fcm = $fcm->withTitle($title);
+    $fcm = $fcm->withBody($message);
+    if($image){
+      $fcm = $fcm->withImage($image);
+    }
+    if($icon){
+      $fcm = $fcm->withIcon($icon);
+    }
+    $fcm = $fcm->withSound('default');
+    $fcm = $fcm->withClickAction('https://www.google.com');
+    $fcm = $fcm->withPriority('high');
+    if($data){
+      $fcm = $fcm->withAdditionalData($data);
+    }
+    $fcm = $fcm->asNotification($tokens);
+    return $fcm;
   }
 }
