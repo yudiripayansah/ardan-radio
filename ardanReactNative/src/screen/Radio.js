@@ -70,6 +70,7 @@ const Radio = ({navigation}) => {
       const {target} = event;
       let theChat = radiochat;
       if (target == 'radio') {
+        console.log(event) 
         theChat.push(event);
         setRadiochat(theChat);
       }
