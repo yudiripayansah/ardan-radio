@@ -11,7 +11,7 @@ class Notifications extends Model
     use SoftDeletes;
     protected $table = 'notifications';
     protected $fillable = [
-      'image','title','text','target'
+      'image','title','text','id_target','id_user_target','id_user_sender','read_by','type'
     ];
     public static function validate($validate)
     {

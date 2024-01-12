@@ -52,7 +52,9 @@
                       <th scope="col" width="5%">Image</th>
                       <th scope="col" width="20%">Title</th>
                       <th scope="col" width="20%">Text</th>
-                      <th scope="col" width="20%">Category</th>
+                      <th scope="col" width="20%">Sender</th>
+                      <th scope="col" width="20%">Reciever</th>
+                      <th scope="col" width="20%">Type</th>
                       <th class="text-center" scope="col" width="20%"></th>
                     </tr>
                     <tr aria-hidden="true" class="mt-3 d-block table-row-hidden"></tr>
@@ -71,7 +73,13 @@
                         <span v-text="(item.text) ? item.text.substring(0,20)+'...' : '-'"></span>
                       </td>
                       <td>
-                        <span v-text="(item.category) ? item.category : '-'"></span>
+                        <span v-text="(item.sender.name) ? item.sender.name : '-'"></span>
+                      </td>
+                      <td>
+                        <span v-text="(item.reciever.name) ? item.reciever.name : '-'"></span>
+                      </td>
+                      <td>
+                        <span v-text="(item.category) ? item.type : '-'"></span>
                       </td>
                       <td class="text-center">
                         <div class="action-btns">
