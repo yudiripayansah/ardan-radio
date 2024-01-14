@@ -11,7 +11,9 @@ class PublicChatControllers extends Controller
         $message = $request->message;
         $name = $request->name;
         $target = $request->target;
-    	broadcast(new PublicChatEvents($name,$target,$message))->toOthers();
+        $penyiar = $request->penyiar;
+        $verified = $request->verified;
+    	broadcast(new PublicChatEvents($name,$target,$message,$penyiar,$verified))->toOthers();
         return response()->json([$request->all()], 200);
     }
 }

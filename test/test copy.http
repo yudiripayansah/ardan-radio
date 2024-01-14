@@ -1,9 +1,0 @@
-POST https://chat.kopikoding.com/publicchat/send
-Content-Type: application/json
-Accept: application/json
-
-{
-  "message": "saya ricco",
-  "target": "radio",
-  "name": "Ricco"
-}

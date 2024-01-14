@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
@@ -21,7 +21,7 @@ import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const SocialSharingDetails = ({route, navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 60;
+  const imageWidth = useWindowDimensions().width - 60;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -157,7 +157,7 @@ const SocialSharingDetails = ({route, navigation}) => {
     setComment('');
   };
   const sentLike = async (t, tt) => {
-    if(user.role != 'guest'){
+    if (user.role != 'guest') {
       let payload = {
         id_user: user.id,
         id_target: t,

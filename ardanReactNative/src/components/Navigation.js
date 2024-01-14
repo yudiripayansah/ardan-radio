@@ -277,7 +277,7 @@ const Nav = ({navigation, ...props}) => {
     try {
       let req = await Api.programsGet(payload);
       const {status, data, msg} = req.data;
-      if (status) {
+      if (status && data[0]) {
         setCurrentProgram(data[0]);
       }
     } catch (error) {

@@ -239,7 +239,7 @@ class UserController extends Controller
     $validate = UserToken::validate($dataCreate);
     if ($validate['status']) {
       try {
-        if($token->id){
+        if($token && $token->id){
           $dc = $token;
           $dc->id_user = $request->id_user;
           $dc->name = $request->name;

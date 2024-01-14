@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
-  Dimensions,
+  useWindowDimensions,
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
@@ -30,7 +30,7 @@ const LiveStreaming = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [playing, setPlaying] = useState(true);
-  const height = Dimensions.get('window').height;
+  const height = useWindowDimensions().height;
   const [liveStream, setLivestream] = useState({});
   const [livechat, setLivechat] = useState([]);
   const [msg, setMsg] = useState();
@@ -99,7 +99,7 @@ const LiveStreaming = ({navigation}) => {
   useEffect(() => {
     listenChat();
     getLiveStream();
-    console.log(user)
+    console.log(user);
   }, []);
 
   return (
@@ -136,8 +136,18 @@ const LiveStreaming = ({navigation}) => {
           <Text style={[theme['p12-600'], theme.cwhite]}>Live</Text>
         </View>
       </View>
-      <View style={[theme.absolute,,theme.wp100,theme.left0,theme.top275,theme.py10,theme.px20,{zIndex:2,backgroundColor:'rgba(0,0,0,.8)'}]}>
-        <Text style={[theme['h14-700'],theme.cwhite]}>{liveStream.title}</Text>
+      <View
+        style={[
+          theme.absolute,
+          ,
+          theme.wp100,
+          theme.left0,
+          theme.top275,
+          theme.py10,
+          theme.px20,
+          {zIndex: 2, backgroundColor: 'rgba(0,0,0,.8)'},
+        ]}>
+        <Text style={[theme['h14-700'], theme.cwhite]}>{liveStream.title}</Text>
       </View>
       <ScrollView
         style={[
@@ -169,14 +179,23 @@ const LiveStreaming = ({navigation}) => {
                 ]}
               />
               <View style={[theme.wp80]}>
-                <View style={[theme.fRow,theme.faCenter]}>
+                <View style={[theme.fRow, theme.faCenter]}>
                   <Text style={[theme.cwhite, theme['p14-600']]}>
                     {item.name}
                   </Text>
-                  {(item.penyiar == 'Yes') ? (
-                  <View style={[theme.br100,theme.faCenter,theme.fjCenter,theme.bgyellow,theme.h10,theme.w10,theme.ms5]}>
-                    <Icon name="check" size={6} color="#000" />
-                  </View>
+                  {item.penyiar == 'Yes' ? (
+                    <View
+                      style={[
+                        theme.br100,
+                        theme.faCenter,
+                        theme.fjCenter,
+                        theme.bgyellow,
+                        theme.h10,
+                        theme.w10,
+                        theme.ms5,
+                      ]}>
+                      <Icon name="check" size={6} color="#000" />
+                    </View>
                   ) : null}
                 </View>
                 <Text style={[theme.cwhite, theme['p12-400']]}>

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   Linking,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -17,7 +17,7 @@ import Helper from '../config/Helper';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 const Notifications = ({route, navigation}) => {
-  const imageWidth = Dimensions.get('window').width;
+  const imageWidth = useWindowDimensions().width;
   const theme = useContext(ThemeContext);
   const [notificationsItem, setNotificationsItem] = useState({
     data: {
@@ -74,7 +74,7 @@ const Notifications = ({route, navigation}) => {
     let share = Share.open(opt);
   };
   const goToUrl = async url => {
-    if(url){
+    if (url) {
       await Linking.openURL(url);
     }
   };
@@ -91,7 +91,7 @@ const Notifications = ({route, navigation}) => {
           source={{uri: notificationsItem.data.image}}
         />
         <View style={[theme.px20]}>
-          <View style={[theme.mt10,theme.faStart]}>
+          <View style={[theme.mt10, theme.faStart]}>
             <Text style={[theme['h24-700'], theme.cwhite]}>
               {notificationsItem.data.title}
             </Text>
@@ -108,13 +108,26 @@ const Notifications = ({route, navigation}) => {
             <Text style={[theme['h12-400'], theme.cwhite, theme.mt20]}>
               {notificationsItem.data.text}
             </Text>
-            {
-              (notificationsItem.data.btn_label) ? (
-                <TouchableOpacity style={[theme.faCenter,theme.fjCenter,theme.bgyellow,{width:'auto'},theme.h45,theme.px20,theme.mt10,theme.br5]} onPress={()=>{goToUrl(notificationsItem.data.btn_url)}}>
-                  <Text style={[theme['h14-700'],theme.cblack]}>{notificationsItem.data.btn_label}</Text>
-                </TouchableOpacity>
-              ) : null
-            }
+            {notificationsItem.data.btn_label ? (
+              <TouchableOpacity
+                style={[
+                  theme.faCenter,
+                  theme.fjCenter,
+                  theme.bgyellow,
+                  {width: 'auto'},
+                  theme.h45,
+                  theme.px20,
+                  theme.mt10,
+                  theme.br5,
+                ]}
+                onPress={() => {
+                  goToUrl(notificationsItem.data.btn_url);
+                }}>
+                <Text style={[theme['h14-700'], theme.cblack]}>
+                  {notificationsItem.data.btn_label}
+                </Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
         <View style={[theme.mb150]} />

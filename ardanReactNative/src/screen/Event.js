@@ -52,7 +52,7 @@ const News = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Get Category Events',error);
       setCategory({
         data: [],
         loading: false,
@@ -93,7 +93,7 @@ const News = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Get Events',error);
       setEventsItem({
         data: [],
         loading: false,

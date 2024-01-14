@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowuseWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -28,7 +28,7 @@ const h5 = ({tintColor}) => <Text style={{color: tintColor}}>H5</Text>;
 const h6 = ({tintColor}) => <Text style={{color: tintColor}}>H6</Text>;
 const CreateSharing = ({navigation}) => {
   const richText = React.useRef();
-  const imageWidth = Dimensions.get('window').width - 20;
+  const imageWidth = useWindowDimensions().width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [id_user, setid_user] = useState(user.id);
@@ -72,7 +72,7 @@ const CreateSharing = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Get Category Sharing',error);
       setCategory({
         data: [],
         loading: false,
@@ -148,7 +148,7 @@ const CreateSharing = ({navigation}) => {
       }
       setloading(false);
     } catch (error) {
-      console.error(error);
+      console.error('Save Sharing',error);
       setloading(false);
     }
   };
@@ -233,7 +233,7 @@ const CreateSharing = ({navigation}) => {
           />
           <View style={[theme.btw2, theme.byellow, theme.bsolid, theme.py10]}>
             <Text style={[theme.cwhite, theme['h14-400']]}>Category</Text>
-            <View style={[theme.fRow,theme.mt10]}>
+            <View style={[theme.fRow, theme.mt10]}>
               {category.data.map((item, i) => {
                 return (
                   <TouchableOpacity

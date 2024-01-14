@@ -1,7 +1,0 @@
-POST https://mobileapps.ardanradio.com/api/programs/get
-Content-Type: application/json
-Accept: application/json
-{
-  "day": 5,
-  "time":"22:31"
-}

@@ -117,7 +117,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Home Banner',error);
       setBannerItem({
         data: [],
         loading: false,
@@ -151,7 +151,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Home Banner Ads',error);
       setBannerAdsItem({
         data: [],
         loading: false,
@@ -252,7 +252,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Home Hot Sharing',error);
       setHotSharing({
         data: {
           "category": null,
@@ -323,7 +323,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Home News',error);
       setNewsItem({
         data: [],
         loading: false,
@@ -357,7 +357,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Home Category News',error);
       setCategoryNews({
         data: [],
         loading: false,
@@ -390,7 +390,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Home Events',error);
       setEventsItem({
         data: [],
         loading: false,
@@ -423,7 +423,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error(error);
+      console.error('Home Programs',error);
       setProgramsItem({
         data: [],
         loading: false,

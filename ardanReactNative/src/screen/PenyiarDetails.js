@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   Linking,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -15,7 +15,7 @@ import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 const PenyiarDetails = ({route, navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const [penyiarItem, setPenyiarItem] = useState({
     data: {

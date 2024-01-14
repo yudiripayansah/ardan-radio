@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -22,7 +22,7 @@ import Share from 'react-native-share';
 // import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
 const SocialSharing = ({navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const [search, setSearch] = useState(null);
   const [feedsItem, setFeedsItem] = useState({
@@ -486,16 +486,16 @@ const SocialSharing = ({navigation}) => {
       );
     }
   };
-  const doShare = async (id) => {
+  const doShare = async id => {
     let opt = {
       title: 'Check my Sharing on Ardan Radio',
       message: 'Check my sharing on Ardan Radio',
-      url: 'https://mobileapps.ardanradio.com/ardansocial/sharing/'+id
-    }
-    let share = Share.open(opt)
-  }
+      url: 'https://mobileapps.ardanradio.com/ardansocial/sharing/' + id,
+    };
+    let share = Share.open(opt);
+  };
   const doBookmark = async (target, type) => {
-    if(user.role != 'guest'){
+    if (user.role != 'guest') {
       let payload = {
         id_user: user.id,
         id_target: target,
@@ -631,7 +631,7 @@ const SocialSharing = ({navigation}) => {
                   theme.bsolid,
                   {borderBottomColor: '#1D1E21'},
                 ]}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('SocialSharingDetails', {id: item.id});
                   }}>
@@ -711,15 +711,18 @@ const SocialSharing = ({navigation}) => {
                     theme.fjBetween,
                   ]}>
                   <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
-                    <TouchableOpacity style={[theme.fRow, theme.faCenter]}
-                    onPress={()=>{
-                      doShare(item.id)
-                    }}>
+                    <TouchableOpacity
+                      style={[theme.fRow, theme.faCenter]}
+                      onPress={() => {
+                        doShare(item.id);
+                      }}>
                       <Image source={Icons.share} width={16} height={16} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{
-                      doBookmark(item.id,'Bookmark')
-                    }} style={[theme.fRow, theme.faCenter, theme.ms25]}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        doBookmark(item.id, 'Bookmark');
+                      }}
+                      style={[theme.fRow, theme.faCenter, theme.ms25]}>
                       <Image source={Icons.bookmark} width={16} height={16} />
                     </TouchableOpacity>
                   </View>

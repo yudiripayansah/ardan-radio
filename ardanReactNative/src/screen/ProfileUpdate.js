@@ -6,7 +6,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
-  Dimensions,
+  useWindowDimensions,
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -20,7 +20,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
 const ProfileUpdate = ({route, navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [image, setimage] = useState(user.image_url);
@@ -75,7 +75,7 @@ const ProfileUpdate = ({route, navigation}) => {
     });
   };
   const getUser = async () => {
-    let id = user.id
+    let id = user.id;
     try {
       let payload = {
         id: id,
@@ -84,13 +84,13 @@ const ProfileUpdate = ({route, navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
-          setimage(data.image_url)
-          setname(data.name)
-          setphone(data.phone)
-          setaddress(data.address)
-          setgender(data.gender)
-          setpassword(data.password)
-          setdob(data.dob)
+          setimage(data.image_url);
+          setname(data.name);
+          setphone(data.phone);
+          setaddress(data.address);
+          setgender(data.gender);
+          setpassword(data.password);
+          setdob(data.dob);
         }
       }
     } catch (error) {
@@ -111,9 +111,9 @@ const ProfileUpdate = ({route, navigation}) => {
         gender: gender,
         password: password,
         dob: dob,
-        role: user.role
+        role: user.role,
       };
-      console.log(payload)
+      console.log(payload);
       let req = await Api.userUpdate(payload, user.access_token);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
@@ -134,7 +134,7 @@ const ProfileUpdate = ({route, navigation}) => {
     }
   };
   useEffect(() => {
-    getUser()
+    getUser();
   }, []);
 
   return (
@@ -261,7 +261,11 @@ const ProfileUpdate = ({route, navigation}) => {
             <Picker
               selectedValue={gender}
               onValueChange={(itemValue, itemIndex) => setgender(itemValue)}
-              style={[theme.cwhite,theme['h14-400'],{marginLeft:-13,marginRight:-13}]}
+              style={[
+                theme.cwhite,
+                theme['h14-400'],
+                {marginLeft: -13, marginRight: -13},
+              ]}
               dropdownIconColor="white">
               <Picker.Item label="Laki-Laki" value="Laki-Laki" />
               <Picker.Item label="Perempuan" value="Perempuan" />
@@ -275,7 +279,7 @@ const ProfileUpdate = ({route, navigation}) => {
               theme.br5,
               theme.h30,
               theme.wp100,
-              theme.mt10
+              theme.mt10,
             ]}
             onPress={() => {
               doSave();

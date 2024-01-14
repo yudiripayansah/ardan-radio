@@ -6,7 +6,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -17,11 +17,11 @@ import Helper from '../config/Helper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const Profile = ({route, navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 20;
+  const imageWidth = useWindowDimensions().width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [dUser, setDUser] = useState({});
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [feedsItem, setFeedsItem] = useState({
     data: [],
     loading: false,
@@ -33,7 +33,7 @@ const Profile = ({route, navigation}) => {
     });
     try {
       let theData = [];
-      let id = user.id
+      let id = user.id;
       if (route.params) {
         id = route.params.id;
       }
@@ -66,7 +66,7 @@ const Profile = ({route, navigation}) => {
     }
   };
   const getUser = async () => {
-    let id = user.id
+    let id = user.id;
     if (route.params) {
       id = route.params.id;
     }
@@ -149,17 +149,23 @@ const Profile = ({route, navigation}) => {
           </View>
           <View style={[theme.fRow, theme.py30]}>
             <View style={[theme.wp33, theme.faCenter, theme.fjCenter]}>
-              <Text style={[theme.cwhite, theme['h18-600']]}>{dUser.post_count}</Text>
+              <Text style={[theme.cwhite, theme['h18-600']]}>
+                {dUser.post_count}
+              </Text>
               <Text style={[theme.cpale_white, theme['h14-500']]}>Post</Text>
             </View>
             <View style={[theme.wp33, theme.faCenter, theme.fjCenter]}>
-              <Text style={[theme.cwhite, theme['h18-600']]}>{dUser.followers_count}</Text>
+              <Text style={[theme.cwhite, theme['h18-600']]}>
+                {dUser.followers_count}
+              </Text>
               <Text style={[theme.cpale_white, theme['h14-500']]}>
                 Followers
               </Text>
             </View>
             <View style={[theme.wp33, theme.faCenter, theme.fjCenter]}>
-              <Text style={[theme.cwhite, theme['h18-600']]}>{dUser.following_count}</Text>
+              <Text style={[theme.cwhite, theme['h18-600']]}>
+                {dUser.following_count}
+              </Text>
               <Text style={[theme.cpale_white, theme['h14-500']]}>
                 Following
               </Text>
@@ -181,7 +187,7 @@ const Profile = ({route, navigation}) => {
                   theme.br100,
                 ]}
                 onPress={() => {
-                  doFollow(dUser.id,'FOLLOW')
+                  doFollow(dUser.id, 'FOLLOW');
                 }}>
                 <Text style={[theme.cwhite, theme['h16-600']]}>Follow</Text>
               </TouchableOpacity>
@@ -217,10 +223,10 @@ const Profile = ({route, navigation}) => {
                 theme.br100,
               ]}
               onPress={() => {
-                if(user.id != dUser.id) {
+                if (user.id != dUser.id) {
                   navigation.navigate('MessageDetail', {
                     id: dUser.id,
-                  })
+                  });
                 } else {
                   navigation.navigate('Message');
                 }

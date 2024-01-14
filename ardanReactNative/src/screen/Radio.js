@@ -8,7 +8,7 @@ import {
   Image,
   TextInput,
   Animated,
-  Dimensions,
+  useWindowDimensions,
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -23,7 +23,7 @@ import Api from '../config/Api';
 const Radio = ({navigation}) => {
   const scrollViewRef = useRef();
   const mainScrollViewRef = useRef();
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -31,7 +31,7 @@ const Radio = ({navigation}) => {
   const [radiochat, setRadiochat] = useState([]);
   const [msg, setMsg] = useState();
   const [ziChat, setZiChat] = useState(1);
-  const [favorite, setFavorite] = useState(false)
+  const [favorite, setFavorite] = useState(false);
   const [currentProgram, setCurrentProgram] = useState({
     id: null,
     image: null,
@@ -53,7 +53,8 @@ const Radio = ({navigation}) => {
     try {
       let req = await Api.programsGet(payload);
       const {status, data, msg} = req.data;
-      if (status) {
+      console.log(data);
+      if (status && data[0]) {
         setCurrentProgram(data[0]);
       }
     } catch (error) {
@@ -70,7 +71,7 @@ const Radio = ({navigation}) => {
       const {target} = event;
       let theChat = radiochat;
       if (target == 'radio') {
-        console.log(event) 
+        console.log(event);
         theChat.push(event);
         setRadiochat(theChat);
       }
@@ -129,7 +130,7 @@ const Radio = ({navigation}) => {
         if (req.status == 200) {
           let {data, status, msg} = req.data;
           if (status) {
-            getLike()
+            getLike();
           }
         }
       } catch (error) {
@@ -141,16 +142,16 @@ const Radio = ({navigation}) => {
     let payload = {
       id_target: currentProgram.id,
       type: 'Program',
-      id_user: user.id
+      id_user: user.id,
     };
     try {
       let req = await Api.likeGet(payload, user.access_token);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status && data) {
-          setFavorite(true)
+          setFavorite(true);
         } else {
-          setFavorite(false)
+          setFavorite(false);
         }
       }
     } catch (error) {
@@ -160,7 +161,7 @@ const Radio = ({navigation}) => {
   useEffect(() => {
     listenChat();
     getCurrentProgram();
-    getLike()
+    getLike();
   }, []);
 
   return (
@@ -197,9 +198,13 @@ const Radio = ({navigation}) => {
                 onPress={() => {
                   sentLike(currentProgram.id, 'Program');
                 }}>
-                <Icon name="heart" size={20} color={(favorite) ? "#ee0000" : "#fff"} />
+                <Icon
+                  name="heart"
+                  size={20}
+                  color={favorite ? '#ee0000' : '#fff'}
+                />
                 <Text style={[theme['h14-600'], theme.cwhite, theme.ms5]}>
-                  {(favorite) ? 'Favorited': 'Favorite'}
+                  {favorite ? 'Favorited' : 'Favorite'}
                 </Text>
               </TouchableOpacity>
             ) : null}
@@ -232,7 +237,11 @@ const Radio = ({navigation}) => {
             <View style={[theme.faCenter]}>
               <AutoHeightImage
                 width={imageWidth}
-                source={{uri: currentProgram.image}}
+                source={
+                  currentProgram
+                    ? {uri: currentProgram.image}
+                    : require('../assets/images/radio-play-cover.png')
+                }
                 style={[theme.br10]}
               />
             </View>

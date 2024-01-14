@@ -6,7 +6,7 @@ import {
   TextInput,
   Text,
   Animated,
-  Dimensions,
+  useWindowDimensions,
   KeyboardAvoidingView,
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
@@ -30,8 +30,8 @@ const Header = ({navigation, ...props}) => {
     onNotificationOpenedAppFromQuit,
   } = usePushNotification();
   const route = useRoute();
-  const screenWidth = Dimensions.get('window').width;
-  const widthAnim = useRef(new Animated.Value(screenWidth)).current;
+  const screenWidth = useWindowDimensions().width;
+  const widthAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(100)).current;
   const [keyword, setKeyword] = useState(null);
   const {currentScreen} = props;
@@ -54,7 +54,7 @@ const Header = ({navigation, ...props}) => {
       icon: Icons.menuSocial,
       title: 'Social',
       target: () => {
-        navigation.navigate('Social',{activeTab:'Post'});
+        navigation.navigate('Social', {activeTab: 'Post'});
       },
     },
     {
@@ -72,12 +72,12 @@ const Header = ({navigation, ...props}) => {
       },
     },
   ];
-  const doSearch = (keyword) => {
-    toggleSearch()
+  const doSearch = keyword => {
+    toggleSearch();
     navigation.navigate('Search', {
       keyword: keyword,
     });
-  }
+  };
   const toggleSearch = () => {
     let width = 0;
     if (openSearch) {
@@ -132,7 +132,7 @@ const Header = ({navigation, ...props}) => {
             placeholder="Search..."
             style={[theme.cwhite, theme['p14-400'], theme.wp89, theme.h40]}
             placeholderTextColor="#fff"
-            onSubmitEditing={(e) => {
+            onSubmitEditing={e => {
               doSearch(e.nativeEvent.text);
             }}
             clearButtonMode="while-editing"
@@ -153,7 +153,7 @@ const Header = ({navigation, ...props}) => {
             theme.fRow,
             theme.fjBetween,
             theme.faCenter,
-            theme.relative
+            theme.relative,
           ]}>
           <View style={[theme.fRow, theme.faCenter]}>
             <View
@@ -177,19 +177,26 @@ const Header = ({navigation, ...props}) => {
               <Text style={[theme['h15-700'], {color: '#fff'}]}>
                 Welcome back!
               </Text>
-              <TouchableOpacity onPress={()=>{doLogout()}}>
-              <Text
-                style={[
-                  theme['h12-400'],
-                  {color: '#fff', opacity: 0.5, marginTop: -5},
-                ]}>
-                {user.name}
-              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  doLogout();
+                }}>
+                <Text
+                  style={[
+                    theme['h12-400'],
+                    {color: '#fff', opacity: 0.5, marginTop: -5},
+                  ]}>
+                  {user.name}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
           <View style={[theme.fRow]}>
-            <TouchableOpacity style={[theme.me10]} onPress={()=>{toggleSearch()}}>
+            <TouchableOpacity
+              style={[theme.me10]}
+              onPress={() => {
+                toggleSearch();
+              }}>
               <Image source={Icons.search} width={25} height={25} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -302,28 +309,27 @@ const Header = ({navigation, ...props}) => {
     let token = await getFCMToken();
     try {
       let payload = {
-        id_user: (user.id) ? user.id : 0,
+        id_user: user.id ? user.id : 0,
         name: user.name,
-        token: token
+        token: token,
       };
-      // console.warn(payload)
       let req = await Api.registerToken(payload);
     } catch (error) {
-      console.error(error);
+      console.error('Register Token:',error);
     }
-  }
+  };
   const foregroundnotif = async () => {
     const unsubscribe = messaging().onMessage(async msg => {
-      console.log(msg.data)
+      console.log(msg.data);
     });
-  }
+  };
   useEffect(() => {
     onNotificationOpenedAppFromQuit();
     listenToBackgroundNotifications();
     foregroundnotif();
-    listenToForegroundNotifications
+    listenToForegroundNotifications;
     onNotificationOpenedAppFromBackground();
-    registerToken()
+    registerToken();
   }, []);
 
   return (
