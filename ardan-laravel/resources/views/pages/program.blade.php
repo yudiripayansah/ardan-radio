@@ -127,17 +127,17 @@
                   <div class="dataTables_paginate paging_simple_numbers" id="show-hide-col_paginate">
                     <ul class="pagination" v-if="table.totalPage > 0">
                       <li class="paginate_button page-item previous" id="show-hide-col_previous">
-                        <a href="#" aria-controls="show-hide-col" data-dt-idx="0" tabindex="0" class="page-link" @click="paging.page = paging.page-1">
+                        <button type="button" aria-controls="show-hide-col" data-dt-idx="0" tabindex="0" class="page-link" @click="paging.page = paging.page-1">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                        </a>
+                        </button>
                       </li>
                       <li class="paginate_button page-item active" v-for="page in table.totalPage">
-                        <a href="#" aria-controls="show-hide-col" class="page-link" v-text="page" @click="paging.page = page"></a>
+                        <button type="button" aria-controls="show-hide-col" class="page-link" v-text="page" @click="paging.page = page"></button>
                       </li>
                       <li class="paginate_button page-item next" id="show-hide-col_next">
-                        <a href="#" aria-controls="show-hide-col" data-dt-idx="8" tabindex="0" class="page-link" @click="paging.page = paging.page + 1">
+                        <button type="button" aria-controls="show-hide-col" data-dt-idx="8" tabindex="0" class="page-link" @click="paging.page = paging.page + 1">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </a>
+                        </button>
                       </li>
                     </ul>
                   </div>
@@ -296,31 +296,31 @@ const vueDashboard = new Vue( {
         penyiar: [],
         days: [
           {
-            label: 'Minggu',
+            label: 'Senin',
             value: 1
           },
           {
-            label: 'Senin',
+            label: 'Selasa',
             value: 2
           },
           {
-            label: 'Selasa',
+            label: 'Rabu',
             value: 3
           },
           {
-            label: 'Rabu',
+            label: 'Kamis',
             value: 4
           },
           {
-            label: 'Kamis',
+            label: 'Jumat',
             value: 5
           },
           {
-            label: 'Jumat',
+            label: 'Sabtu',
             value: 6
           },
           {
-            label: 'Sabtu',
+            label: 'Minggu',
             value: 7
           },
         ]
@@ -334,7 +334,7 @@ const vueDashboard = new Vue( {
   watch: {
     paging: {
       handler(val) {
-        if(val.page > 1 && val.page <= this.paging.totalPage){
+        if(val.page >= 1 && val.page <= this.table.totalPage){
           this.doGet();
         }
       },
@@ -503,8 +503,10 @@ const vueDashboard = new Vue( {
         let nPenyiar = []
         let vm = this
         thePenyiar.forEach(function(item) {
-          let fPenyiar = vm.opt.penyiar.find(x => x.value == item).label
-          nPenyiar.push(fPenyiar)
+          let fPenyiar = vm.opt.penyiar.find(x => x.value == item)
+          if(fPenyiar){
+            nPenyiar.push(fPenyiar.label)
+          }
         })
         return nPenyiar.join(',')
       },

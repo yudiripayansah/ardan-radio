@@ -179,6 +179,7 @@ class FeedsController extends Controller
     unset($dataUpdate['user']);
     unset($dataUpdate['comment_count']);
     unset($dataUpdate['like_count']);
+    unset($dataUpdate['image_url']);
     DB::beginTransaction();
     if ($validate['status']) {
       try {

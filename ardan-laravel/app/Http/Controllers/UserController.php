@@ -26,10 +26,13 @@ class UserController extends Controller
     $total = 0;
     $totalPage = 1;
     $id_user = ($request->id_user) ? $request->id_user : null;
-    $type = ($request->type) ? $request->type : null;
+    $role = ($request->role) ? $request->role : null;
     $listData = User::select('users.*')->orderBy($sortBy, $sortDir);
     if ($perPage != '~') {
         $listData->skip($offset)->take($perPage);
+    }
+    if ($role != null) {
+        $listData->where('users.role',$role);
     }
     if ($search != null) {
         $listData->whereRaw('(users.name LIKE "%'.$search.'%")');
@@ -38,10 +41,13 @@ class UserController extends Controller
     foreach($listData as $ld) {
       $ld->image_url = Storage::disk('public')->url('user/'.$ld->image);
     }
-    if ($search || $id_user || $type) {
+    if ($search || $id_user || $role) {
         $total = User::orderBy($sortBy, $sortDir);
         if ($search) {
             $total->whereRaw('(users.name LIKE "%'.$search.'%")');
+        }
+        if ($role) {
+            $total->where('users.role',$role);
         }
         $total = $total->count();
     } else {
@@ -227,52 +233,40 @@ class UserController extends Controller
     }
     return $res;
   }
-  public function checkToken($request) {
-    $userToken = UserToken::where('token',$request->token)->get();
-    if(count($userToken) > 0) {
-      $res = false;
-    } else {
-      $res = true;
-    }
-    return $res;
-  }
   public function createToken(Request $request) {
-    $checkToken = $this->checkUser($request);
-    if($checkToken) {
-      $dataCreate = $request->all();
-      DB::beginTransaction();
-      $validate = UserToken::validate($dataCreate);
-      if ($validate['status']) {
-        try {
+    $token = UserToken::where('token',$request->token)->first();
+    $dataCreate = $request->all();
+    $validate = UserToken::validate($dataCreate);
+    if ($validate['status']) {
+      try {
+        if($token->id){
+          $dc = $token;
+          $dc->id_user = $request->id_user;
+          $dc->name = $request->name;
+          $dc->save();
+        } else {
           $dc = UserToken::create($dataCreate);
-          $dg = UserToken::find($dc->id);
-          $res = array(
-                  'status' => true,
-                  'data' => $dg,
-                  'msg' => 'Data successfully created'
-                );
-          DB::commit();
-        } catch (Exception $e) {
-          DB::rollback();
-          $res = array(
-                  'status' => false,
-                  'data' => $dataCreate,
-                  'msg' => 'Failed to create data'
-                );
         }
-      } else {
+        $dg = UserToken::find($dc->id);
+        $res = array(
+                'status' => true,
+                'data' => $dg,
+                'msg' => 'Data successfully created'
+              );
+      } catch (Exception $e) {
         $res = array(
                 'status' => false,
                 'data' => $dataCreate,
-                'msg' => 'Validation failed',
-                'errors' => $validate['error']
+                'msg' => 'Failed to create data'
               );
       }
     } else {
       $res = array(
-        'status' => false,
-        'msg' => 'Token Already Exists'
-      );
+              'status' => false,
+              'data' => $dataCreate,
+              'msg' => 'Validation failed',
+              'errors' => $validate['error']
+            );
     }
     return response()->json($res, 200);
   }

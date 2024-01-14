@@ -266,7 +266,7 @@ const Nav = ({navigation, ...props}) => {
   };
   const getCurrentProgram = async () => {
     let date = new Date();
-    let day = date.getDay() + 1;
+    let day = date.getDay();
     let hour = date.getHours();
     let minutes = date.getMinutes().toString();
     minutes = minutes.padStart(2, '0');
@@ -278,7 +278,7 @@ const Nav = ({navigation, ...props}) => {
       let req = await Api.programsGet(payload);
       const {status, data, msg} = req.data;
       if (status) {
-        setCurrentProgram(data);
+        setCurrentProgram(data[0]);
       }
     } catch (error) {
       console.log(error);

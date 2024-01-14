@@ -19,6 +19,7 @@ import SvgUri from 'react-native-svg-uri';
 import Api from '../config/Api';
 // import SvgUri from './Svg';
 import Icons from './Icons';
+import messaging from '@react-native-firebase/messaging';
 const Header = ({navigation, ...props}) => {
   const {
     requestUserPermission,
@@ -311,10 +312,16 @@ const Header = ({navigation, ...props}) => {
       console.error(error);
     }
   }
+  const foregroundnotif = async () => {
+    const unsubscribe = messaging().onMessage(async msg => {
+      console.log(msg.data)
+    });
+  }
   useEffect(() => {
     onNotificationOpenedAppFromQuit();
     listenToBackgroundNotifications();
-    listenToForegroundNotifications();
+    foregroundnotif();
+    listenToForegroundNotifications
     onNotificationOpenedAppFromBackground();
     registerToken()
   }, []);

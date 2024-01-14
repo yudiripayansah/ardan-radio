@@ -19,6 +19,7 @@ import MessageDetail from '../screen/MessageDetail';
 import News from '../screen/News';
 import NewsDetails from '../screen/NewsDetails';
 import Notifications from '../screen/Notifications';
+import NotificationsDetails from '../screen/NotificationsDetails';
 import Profile from '../screen/Profile';
 import ProfileUpdate from '../screen/ProfileUpdate';
 import Penyiar from '../screen/Penyiar';
@@ -115,6 +116,11 @@ export const RouteMain = ({navigation}) => {
                             routeName = 'Event'
                         }
                         if(
+                            routeName == 'NotificationsDetails'
+                            ){
+                            routeName = 'Notification'
+                        }
+                        if(
                             routeName == 'CreateFeed'
                             ){
                             routeName = 'Create New'
@@ -138,6 +144,7 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'News'} component={News} options={options}/>
                 <MainStack.Screen name={'NewsDetails'} component={NewsDetails} options={options}/>
                 <MainStack.Screen name={'Notifications'} component={Notifications} options={options}/>
+                <MainStack.Screen name={'NotificationsDetails'} component={NotificationsDetails} options={options}/>
                 <MainStack.Screen name={'Profile'} component={Profile} options={options}/>
                 <MainStack.Screen name={'ProfileUpdate'} component={ProfileUpdate} options={options}/>
                 <MainStack.Screen name={'Penyiar'} component={Penyiar} options={options}/>

@@ -397,7 +397,7 @@
     watch: {
       paging: {
         handler(val) {
-          if(val.page > 1 && val.page <= this.paging.totalPage){
+          if(val.page >= 1 && val.page <= this.table.totalPage){
             this.doGet();
           }
         },

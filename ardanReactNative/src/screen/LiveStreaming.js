@@ -168,7 +168,7 @@ const LiveStreaming = ({navigation}) => {
                   theme.me5,
                 ]}
               />
-              <View>
+              <View style={[theme.wp80]}>
                 <View style={[theme.fRow,theme.faCenter]}>
                   <Text style={[theme.cwhite, theme['p14-600']]}>
                     {item.name}

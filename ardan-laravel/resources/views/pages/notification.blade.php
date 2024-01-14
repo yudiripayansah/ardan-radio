@@ -23,8 +23,7 @@
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
                     <div class="dt-buttons">
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
-                        aria-controls="show-hide-col"
-                        @click="modal.form.show();clearForm()">
+                        aria-controls="show-hide-col" @click="modal.form.show();clearForm()">
                         <span>Add New</span>
                       </button>
                     </div>
@@ -52,8 +51,8 @@
                       <th scope="col" width="5%">Image</th>
                       <th scope="col" width="20%">Title</th>
                       <th scope="col" width="20%">Text</th>
-                      <th scope="col" width="20%">Sender</th>
                       <th scope="col" width="20%">Reciever</th>
+                      <th scope="col" width="20%">Sender</th>
                       <th scope="col" width="20%">Type</th>
                       <th class="text-center" scope="col" width="20%"></th>
                     </tr>
@@ -62,9 +61,10 @@
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
                       <td>
-                        <div class="bg-dark">
-                          <img alt="avatar" :src="item.image_url" class="img-thumbnail w-100 bg-dark rounded" />
+                        <div class="bg-dark" v-if="item.image">
+                          <img alt="avatar" :src="item.image" class="img-thumbnail w-100 bg-dark rounded"/>
                         </div>
+                        <span v-else>-</span>
                       </td>
                       <td>
                         <span v-text="(item.title) ? item.title : '-'"></span>
@@ -73,13 +73,13 @@
                         <span v-text="(item.text) ? item.text.substring(0,20)+'...' : '-'"></span>
                       </td>
                       <td>
-                        <span v-text="(item.sender.name) ? item.sender.name : '-'"></span>
+                        <span v-text="(item.user_target) ? item.user_target.name : '-'"></span>
                       </td>
                       <td>
-                        <span v-text="(item.reciever.name) ? item.reciever.name : '-'"></span>
+                        <span v-text="(item.user_sender) ? item.user_sender.name : 'Admin'"></span>
                       </td>
                       <td>
-                        <span v-text="(item.category) ? item.type : '-'"></span>
+                        <span v-text="(item.type) ? item.type : '-'"></span>
                       </td>
                       <td class="text-center">
                         <div class="action-btns">
@@ -110,7 +110,7 @@
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td colspan="5" class="text-center" v-text="(form.loading) ? 'Loading...' : 'No data to show'">
+                      <td colspan="7" class="text-center" v-text="(form.loading) ? 'Loading...' : 'No data to show'">
                       </td>
                     </tr>
                   </tbody>
@@ -207,9 +207,10 @@
                 <textarea class="form-control" v-model="form.data.text" id="notificationsText" rows="10"></textarea>
               </div>
               <div class="form-group mt-3">
-                <label for="notificationsTarget" class="control-label">Target</label>
-                <select type="text" class="form-control" v-model="form.data.target" id="notificationsTarget">
-                  <option :value="opt.value" v-text="opt.text" v-for="(opt,index) in opt.target" :key="index">
+                <label for="notificationsUserTarget" class="control-label">User Target</label>
+                <select type="text" class="form-control" v-model="form.data.id_user_target"
+                  id="notificationsUserTarget">
+                  <option :value="opt.value" v-text="opt.text" v-for="(opt,index) in opt.userTarget" :key="index">
                   </option>
                 </select>
               </div>
@@ -227,6 +228,8 @@
           <button class="btn" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancel</button>
           <button type="button" class="btn btn-primary" @click="doSave()"
             v-text="(form.loading) ? 'Loading...' : 'Save'" :disabled="form.loading"></button>
+          <button type="button" class="btn btn-primary" @click="doSave(true)"
+            v-text="(form.loading) ? 'Loading...' : 'Save and Send'" :disabled="form.loading"></button>
         </div>
       </div>
     </div>
@@ -282,8 +285,12 @@ const vueDashboard = new Vue( {
             image: null,
             title: null,
             text: null,
-            target: 'all',
-            type: 'Default'
+            id_target: null,
+            id_user_target: null,
+            id_user_sender: 1,
+            read_by: null,
+            type: 'Default',
+            send: false
           },
           delete: null,
           loading: false
@@ -298,7 +305,7 @@ const vueDashboard = new Vue( {
           perPage : 10,
           sortDir : 'DESC',
           sortBy : 'id',
-          search : null
+          search : null,
       },
       alert: {
           show: 'hide',
@@ -307,7 +314,7 @@ const vueDashboard = new Vue( {
           msg: null
       },
       opt: {
-        target: [],
+        userTarget: [],
         type: ['Default','Popup']
       },
       modal: {
@@ -323,7 +330,7 @@ const vueDashboard = new Vue( {
   watch: {
     paging: {
       handler(val) {
-        if(val.page > 1 && val.page <= this.paging.totalPage){
+        if(val.page >= 1 && val.page <= this.table.totalPage){
           this.doGet();
         }
       },
@@ -332,7 +339,7 @@ const vueDashboard = new Vue( {
   },
   methods: {
       async doGetTarget() {
-        this.opt.target = [
+        this.opt.userTarget = [
           {
             'value':'all',
             'text':'All users'
@@ -344,19 +351,20 @@ const vueDashboard = new Vue( {
           perPage: '~',
           sortDir : 'DESC',
           sortBy : 'id',
-          search : null
+          search : null,
+          role: 'member'
         }
         try {
-          let req = await Api.userReadToken(payload)
+          let req = await Api.userRead(payload)
           if(req.status == 200) {
             let {data,status,msg,total,totalPage,paging} = req.data
             if(status){
               data.map((item) => {
                 let opt = {
-                  value: item.token,
-                  text: item.name
+                  value: item.id,
+                  text: item.email+' - '+item.name
                 }
-                this.opt.target.push(opt)
+                this.opt.userTarget.push(opt)
               })
             } else {
               this.notify('error','Error',msg)
@@ -404,7 +412,6 @@ const vueDashboard = new Vue( {
           if(req.status == 200) {
             let {data,status,msg} = req.data
             if(status){
-              data.category = (data.category) ? data.category.split(',') : []
               this.form.data = data
               this.modal.form.show()
             } else {
@@ -419,9 +426,10 @@ const vueDashboard = new Vue( {
           this.form.loading = false
         }
       },
-      async doSave() {
+      async doSave(send = false) {
         this.form.loading = true
         let payload = {...this.form.data}
+        payload.send = send
         try {
           let req = false
           if(payload.id) {

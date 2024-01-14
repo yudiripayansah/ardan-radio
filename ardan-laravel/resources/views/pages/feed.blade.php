@@ -57,9 +57,10 @@
                               <span v-text="(item.user) ? item.user.name : '-'"></span>
                           </td>
                           <td>
-                            <div class="bg-dark">
+                            <div class="bg-dark" v-if="item.image">
                               <img alt="avatar" :src="item.image_url" class="img-thumbnail w-100 bg-dark rounded" />
                             </div>
+                            <span v-else>-</span>
                           </td>
                           <td>
                             <span v-text="(item.title) ? item.title : '-'"></span>
@@ -312,7 +313,7 @@ const vueDashboard = new Vue( {
   watch: {
     paging: {
       handler(val) {
-        if(val.page > 1 && val.page <= this.paging.totalPage){
+        if(val.page >= 1 && val.page <= this.table.totalPage){
           this.doGet();
         }
       },

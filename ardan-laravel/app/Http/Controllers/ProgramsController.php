@@ -90,7 +90,7 @@ class ProgramsController extends Controller
                   ")->orderBy('time', 'ASC')->get();
       }
       if ($getData) {
-        if(count($getData) > 0) {
+        if(is_countable($getData)) {
           foreach($getData as $g){
             $g->image = Storage::disk('public')->url('programs/' . $g->image);
             $g->days_label = $this->daysLabel($g->days);

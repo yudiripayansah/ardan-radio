@@ -42,7 +42,7 @@ const Radio = ({navigation}) => {
   const [showC, setShowC] = useState(true);
   const getCurrentProgram = async () => {
     let date = new Date();
-    let day = date.getDay() + 1;
+    let day = date.getDay();
     let hour = date.getHours();
     let minutes = date.getMinutes().toString();
     minutes = minutes.padStart(2, '0');
@@ -197,7 +197,7 @@ const Radio = ({navigation}) => {
                 onPress={() => {
                   sentLike(currentProgram.id, 'Program');
                 }}>
-                <Image source={require('../assets/images/icons/heart.png')} />
+                <Icon name="heart" size={20} color={(favorite) ? "#ee0000" : "#fff"} />
                 <Text style={[theme['h14-600'], theme.cwhite, theme.ms5]}>
                   {(favorite) ? 'Favorited': 'Favorite'}
                 </Text>
@@ -282,7 +282,7 @@ const Radio = ({navigation}) => {
                         source={require('../assets/images/icons/user-grey.png')}
                       />
                     </View>
-                    <View>
+                    <View style={[theme.wp80]}>
                       <Text
                         style={[
                           theme.cwhite,
