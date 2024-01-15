@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
 const BannerDetails = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width - 60;
+  const imageWidth = Dimensions.get('window').width - 60;
   const theme = useContext(ThemeContext);
   const [bannerItem, setBannerItem] = useState({
     data: {

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -22,7 +22,7 @@ import Share from 'react-native-share';
 // import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
 const SocialSharing = ({navigation}) => {
-  const imageWidth = useWindowDimensions().width - 40;
+  const imageWidth = Dimensions.get('window').width - 40;
   const theme = useContext(ThemeContext);
   const [search, setSearch] = useState(null);
   const [feedsItem, setFeedsItem] = useState({
@@ -464,20 +464,36 @@ const SocialSharing = ({navigation}) => {
                 {hotSharing.data.text}
               </Text> */}
               <View
-                style={[theme.mt20, theme.fRow, theme.faCenter, theme.fjEnd]}>
+                style={[
+                  theme.mt20,
+                  theme.fRow,
+                  theme.faCenter,
+                  theme.fjBetween,
+                ]}>
                 <View style={[theme.fRow, theme.faCenter]}>
-                  <Image source={Icons.love} width={16} height={16} />
-                  <Text
-                    style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
-                    {hotSharing.data.like_count}
-                  </Text>
+                  <TouchableOpacity
+                    style={[theme.fRow, theme.faCenter]}
+                    onPress={() => {
+                      doShare(hotSharing.data.id);
+                    }}>
+                    <Image source={Icons.share} width={16} height={16} />
+                  </TouchableOpacity>
                 </View>
-                <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                  <Image source={Icons.comment} width={16} height={16} />
-                  <Text
-                    style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
-                    {hotSharing.data.comment_count}
-                  </Text>
+                <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
+                  <View style={[theme.fRow, theme.faCenter]}>
+                    <Image source={Icons.love} width={16} height={16} />
+                    <Text
+                      style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
+                      {hotSharing.data.like_count}
+                    </Text>
+                  </View>
+                  <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
+                    <Image source={Icons.comment} width={16} height={16} />
+                    <Text
+                      style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
+                      {hotSharing.data.comment_count}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>

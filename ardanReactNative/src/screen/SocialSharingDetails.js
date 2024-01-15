@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
@@ -20,8 +20,10 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Share from 'react-native-share';
+import Icons from '../components/Icons';
 const SocialSharingDetails = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width - 60;
+  const imageWidth = Dimensions.get('window').width - 60;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -232,6 +234,14 @@ const SocialSharingDetails = ({route, navigation}) => {
       }),
     ]).start();
   };
+  const doShare = async id => {
+    let opt = {
+      title: 'Check my Sharing on Ardan Radio',
+      message: 'Check my sharing on Ardan Radio',
+      url: 'ardanmobileapps://SocialSharingDetails/' + id,
+    };
+    let share = Share.open(opt);
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
@@ -307,18 +317,30 @@ const SocialSharingDetails = ({route, navigation}) => {
             <View style={[theme.fRow, theme.fjBetween, theme.mt25]}>
               <View style={[theme.fRow, theme.faCenter]}>
                 <TouchableOpacity
+                  style={[theme.fRow, theme.faCenter, theme.me10]}
                   onPress={() => {
-                    sentLike(feedsItem.data.id, 'SHARING');
-                  }}
-                  style={[theme.me10]}>
-                  <Icon name="heart" size={15} color="#F8C303" />
+                    doShare(feedsItem.data.id);
+                  }}>
+                  <Image
+                    source={Icons.share}
+                    style={[{width: 15, height: 15, objectFit: 'contain'}]}
+                  />
                 </TouchableOpacity>
-                {feedsItem.data.like_count > 0 ? (
-                  <Text
-                    style={[theme['p12-400'], {color: '#C9C9C9'}, theme.ms5]}>
-                    {feedsItem.data.like_count} orang menyukai ini
-                  </Text>
-                ) : null}
+                <View style={[theme.fRow, theme.faCenter]}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      sentLike(feedsItem.data.id, 'SHARING');
+                    }}
+                    style={[theme.me10]}>
+                    <Icon name="heart" size={15} color="#F8C303" />
+                  </TouchableOpacity>
+                  {feedsItem.data.like_count > 0 ? (
+                    <Text
+                      style={[theme['p12-400'], {color: '#C9C9C9'}, theme.ms5]}>
+                      {feedsItem.data.like_count} orang menyukai ini
+                    </Text>
+                  ) : null}
+                </View>
               </View>
               {user.role != 'guest' ? (
                 <TouchableOpacity

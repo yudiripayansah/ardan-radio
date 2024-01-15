@@ -132,7 +132,7 @@ const Nav = ({navigation, ...props}) => {
                   theme.w70,
                   theme.h70,
                   theme.br100,
-                  {backgroundColor: 'fill: rgba(0, 0, 0, 0.3);'},
+                  {backgroundColor: '#29373d'},
                   theme.faCenter,
                   theme.fjCenter,
                 ]}>
@@ -298,7 +298,7 @@ const Nav = ({navigation, ...props}) => {
             {backgroundColor: 'rgba(29,34,38,.9)'},
             theme.p10,
             theme.px40,
-            theme.top203,
+            theme.top160,
             theme.wp100,
             theme.fRow,
             theme.faCenter,

@@ -6,7 +6,7 @@ import {
   TextInput,
   Text,
   Animated,
-  useWindowDimensions,
+  Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
@@ -30,8 +30,8 @@ const Header = ({navigation, ...props}) => {
     onNotificationOpenedAppFromQuit,
   } = usePushNotification();
   const route = useRoute();
-  const screenWidth = useWindowDimensions().width;
-  const widthAnim = useRef(new Animated.Value(0)).current;
+  const screenWidth = Dimensions.get('window').width
+  const widthAnim = useRef(new Animated.Value(screenWidth)).current;
   const opacityAnim = useRef(new Animated.Value(100)).current;
   const [keyword, setKeyword] = useState(null);
   const {currentScreen} = props;
@@ -148,7 +148,7 @@ const Header = ({navigation, ...props}) => {
           style={[
             {backgroundColor: '#28353b'},
             theme.wp100,
-            theme.py25,
+            theme.py15,
             theme.px40,
             theme.fRow,
             theme.fjBetween,
@@ -212,7 +212,7 @@ const Header = ({navigation, ...props}) => {
           style={[
             {backgroundColor: '#21292f'},
             theme.wp100,
-            theme.py17,
+            theme.py10,
             theme.px40,
             theme.fRow,
             theme.faCenter,
@@ -228,12 +228,12 @@ const Header = ({navigation, ...props}) => {
                   style={[
                     {backgroundColor: '#F8C303'},
                     theme.br100,
-                    theme.h55,
-                    theme.w55,
+                    theme.h45,
+                    theme.w45,
                     theme.faCenter,
                     theme.fjCenter,
                   ]}>
-                  <Image source={item.icon} width={35} />
+                  <Image source={item.icon} width={15} style={[{width: 25,height: 25, objectFit:'contain'}]} />
                 </View>
                 <Text
                   style={[

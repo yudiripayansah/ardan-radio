@@ -6,7 +6,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
-  useWindowDimensions,
+  Dimensions,
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -20,7 +20,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
 const ProfileUpdate = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width - 40;
+  const imageWidth = Dimensions.get('window').width - 40;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [image, setimage] = useState(user.image_url);

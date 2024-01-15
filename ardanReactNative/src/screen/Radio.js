@@ -8,7 +8,7 @@ import {
   Image,
   TextInput,
   Animated,
-  useWindowDimensions,
+  Dimensions,
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -20,10 +20,12 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Api from '../config/Api';
+import Share from 'react-native-share';
+import Icons from '../components/Icons';
 const Radio = ({navigation}) => {
   const scrollViewRef = useRef();
   const mainScrollViewRef = useRef();
-  const imageWidth = useWindowDimensions().width - 40;
+  const imageWidth = Dimensions.get('window').width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -158,6 +160,14 @@ const Radio = ({navigation}) => {
       console.error(error);
     }
   };
+  const doShare = async id => {
+    let opt = {
+      title: 'Check cooL Program that i listen to on Ardan Radio',
+      message: 'Check cool Program that i listen to on Ardan Radio',
+      url: 'ardanmobileapps://ProgramDetails/' + id,
+    };
+    let share = Share.open(opt);
+  };
   useEffect(() => {
     listenChat();
     getCurrentProgram();
@@ -233,7 +243,7 @@ const Radio = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={[theme.mt35]}>
+          <View style={[theme.mt35,theme.fjCenter,theme.faCenter]}>
             <View style={[theme.faCenter]}>
               <AutoHeightImage
                 width={imageWidth}
@@ -257,8 +267,47 @@ const Radio = ({navigation}) => {
             <Text style={[theme.cwhite, theme['h32-600'], theme.tCenter]}>
               {currentProgram.title}
             </Text>
+            <View style={[theme.fRow,theme.faCenter,theme.fjCenter]}>
+              {user.id ? (
+                <TouchableOpacity
+                  style={[
+                    theme.fRow,
+                    theme.faCenter,
+                    theme.px15,
+                    theme.py5,
+                    theme.byellow,
+                    theme.bsolid,
+                    theme.bw1,
+                    theme.br42,
+                    theme.wAuto,
+                    theme.mx10,
+                    theme.fjCenter,
+                  ]}
+                  onPress={() => {
+                    sentLike(currentProgram.id, 'Program');
+                  }}>
+                  
+                  <Text style={[theme['h14-600'], theme.cwhite]}>
+                    {favorite ? (
+                      <Icon
+                      name="check"
+                      size={20}
+                      color={'#F8C303'}
+                    />
+                    ) : 'Remind Me'}
+                  </Text>
+                </TouchableOpacity>
+              ) : null}
+              <TouchableOpacity
+                style={[theme.fRow, theme.faCenter]}
+                onPress={() => {
+                  doShare(currentProgram.id);
+                }}>
+                <Image source={Icons.share} width={16} height={16} />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={[theme.px20]}>
+          <View style={[theme.px20,theme.mt20]}>
             <View style={[theme.fRow, theme.faCenter]}>
               <Text style={[theme.cwhite, theme['h18-700'], theme.me5]}>
                 Live Chat

@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
-  useWindowDimensions,
+  Dimensions,
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
@@ -30,10 +30,11 @@ const LiveStreaming = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [playing, setPlaying] = useState(true);
-  const height = useWindowDimensions().height;
+  const height = Dimensions.get('window').height;
   const [liveStream, setLivestream] = useState({});
   const [livechat, setLivechat] = useState([]);
   const [msg, setMsg] = useState();
+  const [mask, setMask] = useState(true);
   const listenChat = () => {
     const echo = new Echo({
       broadcaster: 'socket.io',
@@ -45,7 +46,7 @@ const LiveStreaming = ({navigation}) => {
       let theChat = livechat;
       if (target == 'livestream') {
         theChat.push(event);
-        console.log(event)
+        console.log(event);
         setLivechat(theChat);
       }
     });
@@ -58,7 +59,7 @@ const LiveStreaming = ({navigation}) => {
         target: 'livestream',
         name: user.name,
         penyiar: user.penyiar,
-        verified: user.verified
+        verified: user.verified,
       };
       console.log(payload);
       let req = await axios.post(url, payload);
@@ -95,10 +96,17 @@ const LiveStreaming = ({navigation}) => {
   const togglePlaying = useCallback(() => {
     setPlaying(prev => !prev);
   }, []);
+  const hideMask = () => {
+    // setMask(!mask);
+    // setTimeout(() => {
+    //   setMask(!mask);
+    // }, 3000);
+  };
 
   useEffect(() => {
     listenChat();
     getLiveStream();
+    hideMask();
     console.log(user);
   }, []);
 
@@ -106,49 +114,71 @@ const LiveStreaming = ({navigation}) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={[theme.bgblack, {flexGrow: 1}]}>
-      <View style={[theme.mt57]}>
-        <YoutubePlayer
-          height={height}
-          play={playing}
-          videoId={liveStream.url}
-          onChangeState={onStateChange}
-        />
-      </View>
-      <View
-        style={[
-          theme.fRow,
-          theme.faCenter,
-          theme.mt15,
-          theme.px15,
-          theme.absolute,
-          theme.top0,
-        ]}>
-        <View
-          style={[
-            {backgroundColor: '#FB0808'},
-            theme.h27,
-            theme.px8,
-            theme.br6,
-            theme.fjCenter,
-            theme.faCenter,
-            theme.me10,
-          ]}>
-          <Text style={[theme['p12-600'], theme.cwhite]}>Live</Text>
+      {liveStream.url ? (
+        <>
+          <View
+            style={[theme.mt57, theme.relative]}
+            >
+            <YoutubePlayer
+              height={height}
+              play={playing}
+              videoId={liveStream.url}
+              onChangeState={onStateChange}
+            />
+            {mask ? (
+              <View style={[theme.absolute, {right: 50, top: 175, opacity:1}]}>
+                <Image
+                  source={require('../assets/images/radio-play-cover.png')}
+                  style={[{width: 80, height: 40, objectFit: 'contain'}]}
+                />
+              </View>
+            ) : null}
+          </View>
+          <View
+            style={[
+              theme.fRow,
+              theme.faCenter,
+              theme.mt15,
+              theme.px15,
+              theme.absolute,
+              theme.top0,
+            ]}>
+            <View
+              style={[
+                {backgroundColor: '#FB0808'},
+                theme.h27,
+                theme.px8,
+                theme.br6,
+                theme.fjCenter,
+                theme.faCenter,
+                theme.me10,
+              ]}>
+              <Text style={[theme['p12-600'], theme.cwhite]}>Live</Text>
+            </View>
+          </View>
+          <View
+            style={[
+              theme.absolute,
+              ,
+              theme.wp100,
+              theme.left0,
+              theme.top275,
+              theme.py10,
+              theme.px20,
+              {zIndex: 2, backgroundColor: 'rgba(0,0,0,.8)'},
+            ]}>
+            <Text style={[theme['h14-700'], theme.cwhite]}>
+              {liveStream.title}
+            </Text>
+          </View>
+        </>
+      ) : (
+        <View style={[theme.mt57, theme.faCenter, theme.fjCenter, theme.py100]}>
+          <Text style={[theme['h20-700'], theme.cwhite]}>
+            No Livestream Schedule
+          </Text>
         </View>
-      </View>
-      <View
-        style={[
-          theme.absolute,
-          ,
-          theme.wp100,
-          theme.left0,
-          theme.top275,
-          theme.py10,
-          theme.px20,
-          {zIndex: 2, backgroundColor: 'rgba(0,0,0,.8)'},
-        ]}>
-        <Text style={[theme['h14-700'], theme.cwhite]}>{liveStream.title}</Text>
-      </View>
+      )}
       <ScrollView
         style={[
           theme.px30,

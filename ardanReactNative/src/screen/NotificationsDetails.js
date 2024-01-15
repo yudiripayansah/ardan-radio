@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
   Linking,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -17,7 +17,7 @@ import Helper from '../config/Helper';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 const Notifications = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width;
+  const imageWidth = Dimensions.get('window').width;
   const theme = useContext(ThemeContext);
   const [notificationsItem, setNotificationsItem] = useState({
     data: {
@@ -69,7 +69,7 @@ const Notifications = ({route, navigation}) => {
     let opt = {
       title: 'Check this Notifications on Ardan Radio',
       message: 'Check this Notifications on Ardan Radio',
-      url: 'https://mobileapps.ardanradio.com/notifications/' + id,
+      url: 'ardanmobileapps://NotificationsDetails/' + id,
     };
     let share = Share.open(opt);
   };
@@ -101,7 +101,7 @@ const Notifications = ({route, navigation}) => {
             <TouchableOpacity
               style={[theme.fRow, theme.faCenter, theme.mt10]}
               onPress={() => {
-                doShare(notificationsItem.id);
+                doShare(notificationsItem.data.id);
               }}>
               <Image source={Icons.share} width={16} height={16} />
             </TouchableOpacity>

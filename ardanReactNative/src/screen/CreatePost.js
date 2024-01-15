@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowuseWindowDimensions,
+  Dimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -19,7 +19,7 @@ import Helper from '../config/Helper';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const CreatePost = ({navigation}) => {
-  const imageWidth = useWindowDimensions().width - 20;
+  const imageWidth = Dimensions.get('window').width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [id_user, setid_user] = useState(user.id);

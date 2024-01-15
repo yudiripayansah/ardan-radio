@@ -16,6 +16,7 @@ import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 import SvgUri from 'react-native-svg-uri';
+import Share from 'react-native-share';
 // import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
 import RenderHtml from 'react-native-render-html';
@@ -43,37 +44,37 @@ const Home = ({navigation}) => {
   });
   const [hotSharing, setHotSharing] = useState({
     data: {
-      "category": null,
-      "comment_count": null,
-      "created_at": null,
-      "deleted_at": null,
-      "id": null,
-      "id_user": null,
-      "image": null,
-      "image_url": null,
-      "like_count": null,
-      "status": null,
-      "text": null,
-      "title": null,
-      "type": null,
-      "updated_at": null,
-      "user": {
-        "address": null,
-        "created_at": null,
-        "deleted_at": null,
-        "dob": null,
-        "email": null,
-        "gender": null,
-        "id": null,
-        "image": null,
-        "image_url": null,
-        "name": null,
-        "phone": null,
-        "role": null,
-        "status": null,
-        "updated_at": null,
-        "username": null
-      }
+      category: null,
+      comment_count: null,
+      created_at: null,
+      deleted_at: null,
+      id: null,
+      id_user: null,
+      image: null,
+      image_url: null,
+      like_count: null,
+      status: null,
+      text: null,
+      title: null,
+      type: null,
+      updated_at: null,
+      user: {
+        address: null,
+        created_at: null,
+        deleted_at: null,
+        dob: null,
+        email: null,
+        gender: null,
+        id: null,
+        image: null,
+        image_url: null,
+        name: null,
+        phone: null,
+        role: null,
+        status: null,
+        updated_at: null,
+        username: null,
+      },
     },
     loading: false,
   });
@@ -117,7 +118,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Home Banner',error);
+      console.error('Home Banner', error);
       setBannerItem({
         data: [],
         loading: false,
@@ -151,7 +152,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Home Banner Ads',error);
+      console.error('Home Banner Ads', error);
       setBannerAdsItem({
         data: [],
         loading: false,
@@ -161,74 +162,74 @@ const Home = ({navigation}) => {
   const getHotSharing = async (cat = null) => {
     setHotSharing({
       data: {
-        "category": null,
-        "comment_count": null,
-        "created_at": null,
-        "deleted_at": null,
-        "id": null,
-        "id_user": null,
-        "image": null,
-        "image_url": null,
-        "like_count": null,
-        "status": null,
-        "text": null,
-        "title": null,
-        "type": null,
-        "updated_at": null,
-        "user": {
-          "address": null,
-          "created_at": null,
-          "deleted_at": null,
-          "dob": null,
-          "email": null,
-          "gender": null,
-          "id": null,
-          "image": null,
-          "image_url": null,
-          "name": null,
-          "phone": null,
-          "role": null,
-          "status": null,
-          "updated_at": null,
-          "username": null
-        }
+        category: null,
+        comment_count: null,
+        created_at: null,
+        deleted_at: null,
+        id: null,
+        id_user: null,
+        image: null,
+        image_url: null,
+        like_count: null,
+        status: null,
+        text: null,
+        title: null,
+        type: null,
+        updated_at: null,
+        user: {
+          address: null,
+          created_at: null,
+          deleted_at: null,
+          dob: null,
+          email: null,
+          gender: null,
+          id: null,
+          image: null,
+          image_url: null,
+          name: null,
+          phone: null,
+          role: null,
+          status: null,
+          updated_at: null,
+          username: null,
+        },
       },
       loading: true,
     });
     try {
       let theData = {
-        "category": null,
-        "comment_count": null,
-        "created_at": null,
-        "deleted_at": null,
-        "id": null,
-        "id_user": null,
-        "image": null,
-        "image_url": null,
-        "like_count": null,
-        "status": null,
-        "text": null,
-        "title": null,
-        "type": null,
-        "updated_at": null,
-        "user": {
-          "address": null,
-          "created_at": null,
-          "deleted_at": null,
-          "dob": null,
-          "email": null,
-          "gender": null,
-          "id": null,
-          "image": null,
-          "image_url": null,
-          "name": null,
-          "phone": null,
-          "role": null,
-          "status": null,
-          "updated_at": null,
-          "username": null
-        }
-      }
+        category: null,
+        comment_count: null,
+        created_at: null,
+        deleted_at: null,
+        id: null,
+        id_user: null,
+        image: null,
+        image_url: null,
+        like_count: null,
+        status: null,
+        text: null,
+        title: null,
+        type: null,
+        updated_at: null,
+        user: {
+          address: null,
+          created_at: null,
+          deleted_at: null,
+          dob: null,
+          email: null,
+          gender: null,
+          id: null,
+          image: null,
+          image_url: null,
+          name: null,
+          phone: null,
+          role: null,
+          status: null,
+          updated_at: null,
+          username: null,
+        },
+      };
       let payload = {
         page: 1,
         perPage: 1,
@@ -237,7 +238,7 @@ const Home = ({navigation}) => {
         search: null,
         type: 'SHARING',
         status: 'PUBLISHED',
-        kind: 'HOT'
+        kind: 'HOT',
       };
       let req = await Api.feedsRead(payload);
       if (req.status == 200) {
@@ -252,40 +253,40 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Home Hot Sharing',error);
+      console.error('Home Hot Sharing', error);
       setHotSharing({
         data: {
-          "category": null,
-          "comment_count": null,
-          "created_at": null,
-          "deleted_at": null,
-          "id": null,
-          "id_user": null,
-          "image": null,
-          "image_url": null,
-          "like_count": null,
-          "status": null,
-          "text": null,
-          "title": null,
-          "type": null,
-          "updated_at": null,
-          "user": {
-            "address": null,
-            "created_at": null,
-            "deleted_at": null,
-            "dob": null,
-            "email": null,
-            "gender": null,
-            "id": null,
-            "image": null,
-            "image_url": null,
-            "name": null,
-            "phone": null,
-            "role": null,
-            "status": null,
-            "updated_at": null,
-            "username": null
-          }
+          category: null,
+          comment_count: null,
+          created_at: null,
+          deleted_at: null,
+          id: null,
+          id_user: null,
+          image: null,
+          image_url: null,
+          like_count: null,
+          status: null,
+          text: null,
+          title: null,
+          type: null,
+          updated_at: null,
+          user: {
+            address: null,
+            created_at: null,
+            deleted_at: null,
+            dob: null,
+            email: null,
+            gender: null,
+            id: null,
+            image: null,
+            image_url: null,
+            name: null,
+            phone: null,
+            role: null,
+            status: null,
+            updated_at: null,
+            username: null,
+          },
         },
         loading: false,
       });
@@ -323,7 +324,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Home News',error);
+      console.error('Home News', error);
       setNewsItem({
         data: [],
         loading: false,
@@ -357,7 +358,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Home Category News',error);
+      console.error('Home Category News', error);
       setCategoryNews({
         data: [],
         loading: false,
@@ -390,7 +391,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Home Events',error);
+      console.error('Home Events', error);
       setEventsItem({
         data: [],
         loading: false,
@@ -423,7 +424,7 @@ const Home = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Home Programs',error);
+      console.error('Home Programs', error);
       setProgramsItem({
         data: [],
         loading: false,
@@ -498,6 +499,14 @@ const Home = ({navigation}) => {
   const goToUrl = async url => {
     await Linking.openURL(url);
   };
+  const doShare = async id => {
+    let opt = {
+      title: 'Check my Sharing on Ardan Radio',
+      message: 'Check my sharing on Ardan Radio',
+      url: 'ardanmobileapps://SocialSharingDetails/' + id,
+    };
+    let share = Share.open(opt);
+  };
   useEffect(() => {
     getBanner();
     getNews();
@@ -506,7 +515,7 @@ const Home = ({navigation}) => {
     getPrograms();
     getBannerAds();
     getYoutube();
-    getHotSharing()
+    getHotSharing();
   }, []);
   const MainBanner = () => {
     if (bannerItem.loading) {
@@ -583,8 +592,7 @@ const Home = ({navigation}) => {
   const News = () => {
     return (
       <View style={[theme.mt35]}>
-        <View
-          style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
+        <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h16-600'], theme.cwhite]}>
             Ardan <Text style={[theme['h16-400'], theme.cwhite]}>News</Text>
           </Text>
@@ -613,14 +621,16 @@ const Home = ({navigation}) => {
             <Text
               style={[
                 theme['p12-500'],
-                activeCatNews == 'All' ? {backgroundColor:'#F8C303',color: '#090903'} : {backgroundColor:'#12120B',color: '#FFF'},
+                activeCatNews == 'All'
+                  ? {backgroundColor: '#F8C303', color: '#090903'}
+                  : {backgroundColor: '#12120B', color: '#FFF'},
                 theme.mt5,
                 theme.px15,
                 theme.fRow,
                 theme.faCenter,
                 theme.fjCenter,
                 theme.py7,
-                theme.br42
+                theme.br42,
               ]}>
               All Post
             </Text>
@@ -636,14 +646,16 @@ const Home = ({navigation}) => {
                 <Text
                   style={[
                     theme['p12-500'],
-                    activeCatNews == item.title ? {backgroundColor:'#F8C303',color: '#090903'} : {backgroundColor:'#12120B',color: '#FFF'},
+                    activeCatNews == item.title
+                      ? {backgroundColor: '#F8C303', color: '#090903'}
+                      : {backgroundColor: '#12120B', color: '#FFF'},
                     theme.mt5,
                     theme.px15,
                     theme.fRow,
                     theme.faCenter,
                     theme.fjCenter,
                     theme.py7,
-                    theme.br42
+                    theme.br42,
                   ]}>
                   {item.title}
                 </Text>
@@ -651,62 +663,59 @@ const Home = ({navigation}) => {
             );
           })}
         </ScrollView>
-        {
-          (newsItem.loading) ? (
-              <View style={[theme.py50]}>
-                <ActivityIndicator size="large" color="#F8C303" />
-              </View>
-            ) :
-            (
-                <ScrollView
-                  horizontal
+        {newsItem.loading ? (
+          <View style={[theme.py50]}>
+            <ActivityIndicator size="large" color="#F8C303" />
+          </View>
+        ) : (
+          <ScrollView
+            horizontal
+            style={[
+              theme.wp100,
+              {flexGrow: 1},
+              theme.fRow,
+              theme.px20,
+              theme.mt20,
+            ]}
+            showsHorizontalScrollIndicator={false}>
+            {newsItem.data.map((item, i) => {
+              return (
+                <TouchableOpacity
                   style={[
-                    theme.wp100,
-                    {flexGrow: 1},
-                    theme.fRow,
-                    theme.px20,
-                    theme.mt20,
+                    theme.me15,
+                    theme.w230,
+                    theme.br24,
+                    {backgroundColor: '#F8C303'},
                   ]}
-                  showsHorizontalScrollIndicator={false}>
-                  {newsItem.data.map((item, i) => {
-                    return (
-                      <TouchableOpacity
-                        style={[
-                          theme.me15,
-                          theme.w230,
-                          theme.br24,
-                          {backgroundColor: '#F8C303'},
-                        ]}
-                        key={i}
-                        onPress={() => {
-                          goToNews(item.id);
-                        }}>
-                        <Image
-                          source={{uri: item.image_url}}
-                          style={[
-                            theme.wp100,
-                            theme.h170,
-                            theme.brtl24,
-                            theme.brtr24,
-                            {objectFit: 'cover'},
-                          ]}
-                        />
-                        <View style={[theme.p10]}>
-                          <Text style={[theme['h10-400'], {color: '#000'}]}>
-                            {Helper.dateIndo(item.created_at)}
-                          </Text>
-                          <Text style={[theme['h16-500'], {color: '#000'}]}>
-                            {item.title}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </ScrollView>
-            )
-        }
+                  key={i}
+                  onPress={() => {
+                    goToNews(item.id);
+                  }}>
+                  <Image
+                    source={{uri: item.image_url}}
+                    style={[
+                      theme.wp100,
+                      theme.h170,
+                      theme.brtl24,
+                      theme.brtr24,
+                      {objectFit: 'cover'},
+                    ]}
+                  />
+                  <View style={[theme.p10]}>
+                    <Text style={[theme['h10-400'], {color: '#000'}]}>
+                      {Helper.dateIndo(item.created_at)}
+                    </Text>
+                    <Text style={[theme['h16-500'], {color: '#000'}]}>
+                      {item.title}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        )}
       </View>
-    )
+    );
   };
   const Content = () => {
     return (
@@ -850,25 +859,26 @@ const Home = ({navigation}) => {
     } else {
       return (
         <View style={[theme.mt25]}>
-          <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
-          <Text style={[theme['h16-600'], theme.cwhite]}>
-            Upcoming
-            <Text style={[theme['h16-400'], theme.cwhite]}>Event</Text>
-          </Text>
-          <TouchableOpacity
-            style={[
-              theme.bgblack_chocolate,
-              theme.fjCenter,
-              theme.py5,
-              theme.px10,
-              theme.br40,
-            ]}
-            onPress={() => {
-              navigation.navigate('Event');
-            }}>
-            <Image source={Icons.chevronRight} />
-          </TouchableOpacity>
-        </View>
+          <View
+            style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
+            <Text style={[theme['h16-600'], theme.cwhite]}>
+              Upcoming
+              <Text style={[theme['h16-400'], theme.cwhite]}>Event</Text>
+            </Text>
+            <TouchableOpacity
+              style={[
+                theme.bgblack_chocolate,
+                theme.fjCenter,
+                theme.py5,
+                theme.px10,
+                theme.br40,
+              ]}
+              onPress={() => {
+                navigation.navigate('Event');
+              }}>
+              <Image source={Icons.chevronRight} />
+            </TouchableOpacity>
+          </View>
           <ScrollView
             horizontal
             style={[
@@ -944,7 +954,7 @@ const Home = ({navigation}) => {
             <View style={[theme.fRow, theme.faCenter]}>
               <Image source={Icons.flame} height={25} style={[theme.me10]} />
               <Text style={[theme['h16-600'], theme.cwhite]}>
-                Hot 
+                Hot
                 <Text style={[theme['h16-400'], theme.cwhite]}> Sharing</Text>
               </Text>
             </View>
@@ -957,14 +967,18 @@ const Home = ({navigation}) => {
                 theme.br40,
               ]}
               onPress={() => {
-                navigation.navigate('Social',{activeTab:'Sharing'});
+                navigation.navigate('Social', {activeTab: 'Sharing'});
               }}>
               <Image source={Icons.chevronRight} />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => {
-                  navigation.navigate('SocialSharingDetails', {id: hotSharing.data.id});
-                }} style={[theme.px20, theme.relative]}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('SocialSharingDetails', {
+                id: hotSharing.data.id,
+              });
+            }}
+            style={[theme.px20, theme.relative]}>
             <View
               style={[
                 theme.absolute,
@@ -1008,11 +1022,14 @@ const Home = ({navigation}) => {
                       theme.br5,
                       theme.me17,
                     ]}>
-                    <Image source={Icons.user} style={[{objectFit:'contain',width:20}]}/>
+                    <Image
+                      source={Icons.user}
+                      style={[{objectFit: 'contain', width: 20}]}
+                    />
                   </View>
                   <View>
                     <Text style={[theme['h12-500'], {color: '#fff'}]}>
-                    {hotSharing.data.user.name}
+                      {hotSharing.data.user.name}
                     </Text>
                     <Text
                       style={[
@@ -1032,7 +1049,9 @@ const Home = ({navigation}) => {
                     theme.fjCenter,
                     theme.px15,
                   ]}>
-                  <Text style={[theme['h12-500'], {color: '#000'}]}>{hotSharing.data.category}</Text>
+                  <Text style={[theme['h12-500'], {color: '#000'}]}>
+                    {hotSharing.data.category}
+                  </Text>
                 </View>
               </View>
               <RenderHtml
@@ -1044,20 +1063,36 @@ const Home = ({navigation}) => {
                 {hotSharing.data.text}
               </Text> */}
               <View
-                style={[theme.mt20, theme.fRow, theme.faCenter, theme.fjEnd]}>
+                style={[
+                  theme.mt20,
+                  theme.fRow,
+                  theme.faCenter,
+                  theme.fjBetween,
+                ]}>
                 <View style={[theme.fRow, theme.faCenter]}>
-                  <Image source={Icons.love} width={16} height={16}  />
-                  <Text
-                    style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
-                    {hotSharing.data.like_count}
-                  </Text>
+                  <TouchableOpacity
+                    style={[theme.fRow, theme.faCenter]}
+                    onPress={() => {
+                      doShare(hotSharing.data.id);
+                    }}>
+                    <Image source={Icons.share} width={16} height={16} />
+                  </TouchableOpacity>
                 </View>
-                <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                  <Image source={Icons.comment} width={16} height={16}  />
-                  <Text
-                    style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
-                    {hotSharing.data.comment_count}
-                  </Text>
+                <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
+                  <View style={[theme.fRow, theme.faCenter]}>
+                    <Image source={Icons.love} width={16} height={16} />
+                    <Text
+                      style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
+                      {hotSharing.data.like_count}
+                    </Text>
+                  </View>
+                  <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
+                    <Image source={Icons.comment} width={16} height={16} />
+                    <Text
+                      style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
+                      {hotSharing.data.comment_count}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -1067,7 +1102,7 @@ const Home = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, theme.pt200]}>
+    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, theme.pt160]}>
       <ScrollView style={[]}>
         <MainBanner />
         <ProgramPopuler />

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowuseWindowDimensions,
+  Dimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -28,7 +28,7 @@ const h5 = ({tintColor}) => <Text style={{color: tintColor}}>H5</Text>;
 const h6 = ({tintColor}) => <Text style={{color: tintColor}}>H6</Text>;
 const CreateSharing = ({navigation}) => {
   const richText = React.useRef();
-  const imageWidth = useWindowDimensions().width - 20;
+  const imageWidth = Dimensions.get('window').width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [id_user, setid_user] = useState(user.id);

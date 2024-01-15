@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
@@ -19,8 +19,10 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Share from 'react-native-share';
+import Icons from '../components/Icons';
 const SocialPost = ({navigation}) => {
-  const imageWidth = useWindowDimensions().width - 40;
+  const imageWidth = Dimensions.get('window').width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -210,6 +212,14 @@ const SocialPost = ({navigation}) => {
       }),
     ]).start();
   };
+  const doShare = async id => {
+    let opt = {
+      title: 'Check my Post on Ardan Radio',
+      message: 'Check my Post on Ardan Radio',
+      url: 'ardanmobileapps://SocialPostDetails/' + id,
+    };
+    let share = Share.open(opt);
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
@@ -280,26 +290,38 @@ const SocialPost = ({navigation}) => {
                       source={{uri: item.image_url}}
                     />
                   ) : null}
-                  <View style={[theme.fRow, theme.faCenter, theme.mt10]}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        sentLike(item.id, 'POST', i);
-                      }}
-                      style={[theme.fRow, theme.faCenter, theme.me15]}>
-                      <Icon name="heart" size={20} color="#F8C303" />
-                      <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
-                        {item.like_count}
-                      </Text>
-                    </TouchableOpacity>
+                  <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.mt10]}>
+                    <View style={[theme.fRow, theme.faCenter]}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          sentLike(item.id, 'POST', i);
+                        }}
+                        style={[theme.fRow, theme.faCenter, theme.me15]}>
+                        <Icon name="heart" size={20} color="#F8C303" />
+                        <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
+                          {item.like_count}
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[theme.fRow, theme.faCenter]}
+                        onPress={() => {
+                          showChat(item.id);
+                        }}>
+                        <Icon name="comment" size={20} color="#F8C303" />
+                        <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
+                          {item.comment_count}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                     <TouchableOpacity
                       style={[theme.fRow, theme.faCenter]}
                       onPress={() => {
-                        showChat(item.id);
+                        doShare(feedsItem.data.id);
                       }}>
-                      <Icon name="comment" size={20} color="#F8C303" />
-                      <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
-                        {item.comment_count}
-                      </Text>
+                      <Image
+                        source={Icons.share}
+                        style={[{width: 20, height: 20, objectFit: 'contain'}]}
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>

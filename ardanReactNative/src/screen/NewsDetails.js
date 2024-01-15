@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
@@ -16,7 +16,7 @@ import Helper from '../config/Helper';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 const NewsDetails = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width - 40;
+  const imageWidth = Dimensions.get('window').width - 40;
   const theme = useContext(ThemeContext);
   const [newsItem, setNewsItem] = useState({
     data: {
@@ -68,7 +68,7 @@ const NewsDetails = ({route, navigation}) => {
     let opt = {
       title: 'Check this News on Ardan Radio',
       message: 'Check this News on Ardan Radio',
-      url: 'https://mobileapps.ardanradio.com/news/' + id,
+      url: 'ardanmobileapps://NewsDetails/' + id,
     };
     let share = Share.open(opt);
   };

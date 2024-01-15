@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
   Linking,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -17,7 +17,7 @@ import Helper from '../config/Helper';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 const EventsDetails = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width;
+  const imageWidth = Dimensions.get('window').width;
   const theme = useContext(ThemeContext);
   const [eventsItem, setEventsItem] = useState({
     data: {
@@ -69,7 +69,7 @@ const EventsDetails = ({route, navigation}) => {
     let opt = {
       title: 'Check this Events on Ardan Radio',
       message: 'Check this Events on Ardan Radio',
-      url: 'https://mobileapps.ardanradio.com/events/' + id,
+      url: 'ardanmobileapps://EventsDetails/' + id,
     };
     let share = Share.open(opt);
   };

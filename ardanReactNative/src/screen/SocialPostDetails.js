@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  useWindowDimensions,
+  Dimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
@@ -21,7 +21,7 @@ import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const SocialPostDetails = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width - 40;
+  const imageWidth = Dimensions.get('window').width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);

@@ -6,7 +6,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
-  useWindowDimensions,
+  Dimensions,
 } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -17,7 +17,7 @@ import Helper from '../config/Helper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const Profile = ({route, navigation}) => {
-  const imageWidth = useWindowDimensions().width - 20;
+  const imageWidth = Dimensions.get('window').width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [dUser, setDUser] = useState({});

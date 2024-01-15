@@ -37,6 +37,44 @@ const App = ({}) => {
       }
     }
   };
+  const linking = {
+    prefixes: ['ardanmobileapps://'],
+    config: {
+      initialRouteName: 'Home',
+      screens: {
+        Home: {
+          path: 'Home'
+        },
+        BannerDetails: {
+          path: 'BannerDetails/:id'
+        },
+        EventsDetails: {
+          path: 'EventsDetails/:id'
+        },
+        MessageDetail: {
+          path: 'MessageDetail/:id'
+        },
+        NewsDetails: {
+          path: 'NewsDetails/:id'
+        },
+        NotificationsDetails: {
+          path: 'NotificationsDetails/:id'
+        },
+        PenyiarDetails: {
+          path: 'PenyiarDetails/:id'
+        },
+        ProgramDetails: {
+          path: 'ProgramDetails/:id'
+        },
+        SocialSharingDetails: {
+          path: 'SocialSharingDetails/:id'
+        },
+        SocialPostDetails: {
+          path: 'SocialPostDetails/:id'
+        }
+      }
+    }
+  };
   useEffect(() => {
     const listenToNotifications = () => {
       try {
@@ -51,11 +89,12 @@ const App = ({}) => {
       setLoading(false);
     }, 2000);
   }, []);
+  
   return (
     <ThemeContext.Provider value={Style}>
       <StatusBar barStyle={'dark-content'} />
       <AuthContext.Provider value={auth}>
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           <RootStack.Navigator
             screenOptions={{
               headerShown: false,

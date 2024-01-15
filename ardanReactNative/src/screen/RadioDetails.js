@@ -174,7 +174,7 @@ const RadioDetails = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View
+          <TouchableOpacity
             style={[
               theme.fRow,
               theme.faCenter,
@@ -184,7 +184,12 @@ const RadioDetails = ({navigation}) => {
               theme.br12,
               theme.relative,
               {backgroundColor: 'rgba(255, 255, 255, 0.16)'},
-            ]}>
+            ]}
+            onPress={() => {
+              navigation.navigate('ProgramDetails', {
+                id: currentProgram.id,
+              });
+            }}>
             <Image
               source={{uri: currentProgram.image}}
               style={[theme.h55, theme.w55, theme.br7, theme.me10]}
@@ -224,7 +229,7 @@ const RadioDetails = ({navigation}) => {
               ]}>
               {currentProgram.startTime} - {currentProgram.endTime} WIB
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={[theme.fjCenter, theme.faCenter, theme.mt35, theme.mb100]}>
           <View style={[theme.w320, theme.faStart]}>
@@ -243,7 +248,7 @@ const RadioDetails = ({navigation}) => {
             {nextProgram.map((item, i) => {
               if (i > 0) {
                 return (
-                  <View
+                  <TouchableOpacity
                     style={[
                       theme.fRow,
                       theme.faCenter,
@@ -254,6 +259,11 @@ const RadioDetails = ({navigation}) => {
                       theme.relative,
                       {backgroundColor: 'rgba(255, 255, 255, 0.16)'},
                     ]}
+                    onPress={() => {
+                      navigation.navigate('ProgramDetails', {
+                        id: item.id,
+                      });
+                    }}
                     key={i}>
                     <Image
                       source={{uri: item.image}}
@@ -271,7 +281,7 @@ const RadioDetails = ({navigation}) => {
                         {item.time} WIB
                       </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 );
               }
             })}
