@@ -3,7 +3,6 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import {useState} from 'react';
 import ArdanContent from '../screen/ArdanContent';
 import BannerDetails from '../screen/BannerDetails';
-import Collections from '../screen/Collections';
 import CreateFeed from '../screen/CreateFeed';
 import Event from '../screen/Event';
 import EventsDetails from '../screen/EventsDetails';
@@ -132,7 +131,6 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'Home'} component={Home} options={options}/>
                 <MainStack.Screen name={'ArdanContent'} component={ArdanContent} options={options}/>
                 <MainStack.Screen name={'BannerDetails'} component={BannerDetails} options={options}/>
-                <MainStack.Screen name={'Collections'} component={Collections} options={options}/>
                 <MainStack.Screen name={'CreateFeed'} component={CreateFeed} options={options}/>
                 <MainStack.Screen name={'Event'} component={Event} options={options}/>
                 <MainStack.Screen name={'EventsDetails'} component={EventsDetails} options={options}/>

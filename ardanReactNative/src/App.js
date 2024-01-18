@@ -6,9 +6,11 @@ import {RouteAuth, RouteMain} from './config/Router';
 import {ThemeContext} from './context/ThemeContext';
 import {UserContext} from './context/UserContext';
 import {AuthContext} from './context/AuthContext';
+import {RadioContext} from './context/RadioContext';
 import Style from './config/Style';
 import Splash from './screen/Splash';
 import {useAuth} from './hook/useAuth';
+import {useRadio} from './hook/useRadio';
 import usePushNotification from './hook/usePushNotification';
 import Api from './config/Api'
 const App = ({}) => {
@@ -93,17 +95,19 @@ const App = ({}) => {
   return (
     <ThemeContext.Provider value={Style}>
       <StatusBar barStyle={'dark-content'} />
-      <AuthContext.Provider value={auth}>
-        <NavigationContainer linking={linking}>
-          <RootStack.Navigator
-            screenOptions={{
-              headerShown: false,
-              animationEnabled: true,
-            }}>
-            {renderRoute()}
-          </RootStack.Navigator>
-        </NavigationContainer>
-      </AuthContext.Provider>
+      <RadioContext.Provider value={useRadio()}>
+        <AuthContext.Provider value={auth}>
+          <NavigationContainer linking={linking}>
+            <RootStack.Navigator
+              screenOptions={{
+                headerShown: false,
+                animationEnabled: true,
+              }}>
+              {renderRoute()}
+            </RootStack.Navigator>
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </RadioContext.Provider>
     </ThemeContext.Provider>
   );
 };

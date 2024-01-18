@@ -4,8 +4,10 @@ import { ThemeContext } from '../context/ThemeContext';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import SocialPost from './SocialPost'
 import SocialSharing from './SocialSharing'
+import {RadioContext} from '../context/RadioContext';
 const SocialTab = createMaterialTopTabNavigator();
 const Social = ({ route,navigation }) => {
+  const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext)
   useEffect(() => {
     if(route.params.activeTab){
@@ -14,7 +16,7 @@ const Social = ({ route,navigation }) => {
   }, [])
 
   return (
-    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},theme.pt60, theme.relative, theme.px20]}>
+    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},(radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative, theme.px20]}>
       <SocialTab.Navigator 
         screenOptions={{
           tabBarActiveTintColor: '#fff',

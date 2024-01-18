@@ -16,7 +16,9 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
+import {RadioContext} from '../context/RadioContext';
 const EventsDetails = ({route, navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const imageWidth = Dimensions.get('window').width;
   const theme = useContext(ThemeContext);
   const [eventsItem, setEventsItem] = useState({
@@ -84,7 +86,7 @@ const EventsDetails = ({route, navigation}) => {
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
+      style={[theme.bgblack, {flexGrow: 1},  (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative]}>
       <ScrollView style={[]}>
         <AutoHeightImage
           width={imageWidth}

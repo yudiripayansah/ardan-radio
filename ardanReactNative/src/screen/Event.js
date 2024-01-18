@@ -13,7 +13,9 @@ import {
 import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
+import {RadioContext} from '../context/RadioContext';
 const News = ({navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
   const [search, setSearch] = useState(null);
   const [eventsItem, setEventsItem] = useState({
@@ -106,7 +108,7 @@ const News = ({navigation}) => {
   }, []);
   return (
     <KeyboardAvoidingView
-      style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
+      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt120 : theme.pt60, theme.relative]}>
       <View style={[theme.px20]}>
         <View
           style={[

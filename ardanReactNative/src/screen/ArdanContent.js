@@ -11,8 +11,10 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import {ThemeContext} from '../context/ThemeContext';
+import {RadioContext} from '../context/RadioContext';
 const ArdanContent = ({navigation}) => {
   const theme = useContext(ThemeContext);
+  const radioState = useContext(RadioContext).state;
   let apiKey = 'AIzaSyBOr3JxvvNcGariUrqnvsjUktQKxYGGWiI',
   channelId = 'UCogKRAj4-WLY1INM7vESjhw',
   channelName = '@ardanradio1059FM',
@@ -236,11 +238,12 @@ const ArdanContent = ({navigation}) => {
       </View>
     );
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+  }, []);
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
+      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt100 : theme.pt60, theme.relative]}>
       <ScrollView style={[]}>
         <Content />
         <Instagram />

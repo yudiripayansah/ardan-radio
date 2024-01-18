@@ -186,7 +186,7 @@ const Radio = ({navigation}) => {
         ]}>
         <ScrollView
           nestedScrollEnabled={true}
-          style={[theme.mb120]}
+          style={[theme.mb70]}
           ref={mainScrollViewRef}>
           <View
             style={[theme.fRow, theme.fjCenter, theme.faCenter, theme.mt25]}>
@@ -307,7 +307,7 @@ const Radio = ({navigation}) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[theme.px20,theme.mt20]}>
+          <View style={[theme.px20,theme.mt20,theme.mb50]}>
             <View style={[theme.fRow, theme.faCenter]}>
               <Text style={[theme.cwhite, theme['h18-700'], theme.me5]}>
                 Live Chat

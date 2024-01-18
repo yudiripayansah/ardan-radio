@@ -10,7 +10,9 @@ import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
+import {RadioContext} from '../context/RadioContext';
 const Notifications = ({navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [notificationsUnreadItem, setNotificationsUnreadItem] = useState({
@@ -62,7 +64,7 @@ const Notifications = ({navigation}) => {
   return (
     <SafeAreaView
       style={[theme.bgblack, {flexGrow: 1}, theme.relative, {zIndex: 2}]}>
-      <ScrollView style={[theme.mb70, theme.mt60]}>
+      <ScrollView style={[theme.mb70, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60]}>
         {notificationsUnreadItem.data.length > 0 && (
           <View
             style={[

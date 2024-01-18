@@ -11,8 +11,10 @@ import {
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
+import {RadioContext} from '../context/RadioContext';
 import Api from '../config/Api';
 const BannerDetails = ({route, navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const imageWidth = Dimensions.get('window').width - 60;
   const theme = useContext(ThemeContext);
   const [bannerItem, setBannerItem] = useState({
@@ -67,7 +69,7 @@ const BannerDetails = ({route, navigation}) => {
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
+      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt150 : theme.pt60, theme.relative]}>
       <ScrollView style={[]}>
         <View style={[theme.px30]}>
           <AutoHeightImage

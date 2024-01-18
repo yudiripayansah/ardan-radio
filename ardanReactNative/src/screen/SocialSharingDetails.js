@@ -22,7 +22,9 @@ import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
+import {RadioContext} from '../context/RadioContext';
 const SocialSharingDetails = ({route, navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const imageWidth = Dimensions.get('window').width - 60;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -259,7 +261,7 @@ const SocialSharingDetails = ({route, navigation}) => {
         style={[
           theme.bgblack,
           {flexGrow: 1, zIndex: 2},
-          theme.pt60,
+          (radioState && radioState.status == 'playing') ? theme.pt120 : theme.pt60,
           theme.relative,
         ]}>
         <ScrollView style={[theme.px15]}>

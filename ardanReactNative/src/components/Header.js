@@ -226,14 +226,13 @@ const Header = ({navigation, ...props}) => {
                 key={index}>
                 <View
                   style={[
-                    {backgroundColor: '#F8C303'},
                     theme.br100,
                     theme.h45,
                     theme.w45,
                     theme.faCenter,
                     theme.fjCenter,
                   ]}>
-                  <Image source={item.icon} width={15} style={[{width: 25,height: 25, objectFit:'contain'}]} />
+                  <Image source={item.icon} style={[{width: 45,height: 45, objectFit:'contain'}]} />
                 </View>
                 <Text
                   style={[

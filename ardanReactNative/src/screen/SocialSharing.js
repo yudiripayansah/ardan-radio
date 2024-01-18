@@ -327,10 +327,12 @@ const SocialSharing = ({navigation}) => {
     } else {
       return bannerAdsItem.data.map((item, i) => {
         return (
-          <View style={[theme.mt35, theme.px10, theme.wp100]} key={i}>
+          <View style={[theme.px10, theme.wp100]} key={i}>
             <TouchableOpacity
               onPress={() => {
-                goToBanner(item.id);
+                navigation.navigate('BannerDetails', {
+                  id: item.id,
+                });
               }}>
               <Image
                 source={{uri: item.image_url}}
@@ -460,9 +462,6 @@ const SocialSharing = ({navigation}) => {
                   html: `<div style="color:#fff;">${hotSharing.data.text}</div>`,
                 }}
               />
-              {/* <Text style={[theme['h12-500'], {color: '#fff'}, theme.mt15]}>
-                {hotSharing.data.text}
-              </Text> */}
               <View
                 style={[
                   theme.mt20,
@@ -543,40 +542,10 @@ const SocialSharing = ({navigation}) => {
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, theme.relative, theme.pb120]}>
       <Ads />
-      {/* <View
-        style={[
-          theme.fRow,
-          theme.faCenter,
-          {backgroundColor: '#444548'},
-          theme.my25,
-          theme.br12,
-          theme.px15,
-        ]}>
-        <TouchableOpacity
-          onPress={() => {
-            getFeeds();
-          }}>
-          <Image
-            source={require('../assets/images/icons/search.png')}
-            style={[theme.me5, theme.w25, theme.h25]}
-          />
-        </TouchableOpacity>
-        <TextInput
-          placeholder="Search..."
-          style={[theme.cwhite, theme['p14-400'], theme.wp90]}
-          placeholderTextColor="#fff"
-          onChangeText={setSearch}
-          value={search}
-          onSubmitEditing={() => {
-            getFeeds();
-          }}
-          clearButtonMode="while-editing"
-        />
-      </View> */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={[theme.h100]}>
+        style={[theme.h120]}>
         <TouchableOpacity
           style={[theme.mb25]}
           onPress={() => {

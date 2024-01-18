@@ -19,7 +19,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
+import {RadioContext} from '../context/RadioContext';
 const ProfileUpdate = ({route, navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const imageWidth = Dimensions.get('window').width - 40;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
@@ -138,7 +140,7 @@ const ProfileUpdate = ({route, navigation}) => {
   }, []);
 
   return (
-    <KeyboardAvoidingView style={[theme.bgblack, {flexGrow: 1}, theme.pt60]}>
+    <KeyboardAvoidingView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60]}>
       <ScrollView style={[]}>
         <KeyboardAvoidingView style={[theme.px20, theme.pt10, theme.pb150]}>
           <TouchableOpacity

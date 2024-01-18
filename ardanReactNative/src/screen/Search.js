@@ -14,7 +14,9 @@ import Navigation from '../components/Navigation';
 import Icons from '../components/Icons';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
+import {RadioContext} from '../context/RadioContext';
 const Search = ({route, navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
   const [keyword, setKeyword] = useState(route.params.keyword);
   const [newsItem, setNewsItem] = useState({
@@ -406,7 +408,7 @@ const Search = ({route, navigation}) => {
   }, []);
   return (
     <KeyboardAvoidingView
-      style={[theme.bgblack, {flexGrow: 1}, theme.pt80, theme.relative]}>
+      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt150 : theme.pt80, theme.relative]}>
       <ScrollView style={[]}>
         <View style={[theme.px20]}>
           <View

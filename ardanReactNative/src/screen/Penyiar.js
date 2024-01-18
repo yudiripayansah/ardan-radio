@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
+import {RadioContext} from '../context/RadioContext';
 const Penyiar = ({navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
   const [search, setSearch] = useState(null);
   const penyiarList = [];
@@ -64,7 +66,7 @@ const Penyiar = ({navigation}) => {
   }, []);
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, theme.pt80, theme.relative]}>
+      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt80, theme.relative]}>
       <View style={[theme.px20, theme.mb5]}>
         <View
           style={[
@@ -91,7 +93,7 @@ const Penyiar = ({navigation}) => {
           return (
             <TouchableOpacity
               style={[
-                theme.bgwhite,
+                {backgroundColor:'#252d3a'},
                 theme.br14,
                 theme.p12,
                 theme.fRow,
@@ -106,30 +108,38 @@ const Penyiar = ({navigation}) => {
               >
               <Image
                 source={{uri: item.image_url}}
-                style={[theme.w160, theme.h160, theme.br12, theme.me10]}
+                style={[theme.wp50, theme.h160, theme.br12]}
               />
-              <View>
-                <Text style={[theme['h14-600']]}>{item.name}</Text>
+              <View style={[theme.wp50,theme.px10]}>
+                <Text style={[theme['h14-600'],theme.cwhite]}>{item.name}</Text>
                 <Text style={[theme['h8-500']]}>{item.likes}</Text>
-                <View style={[theme.fRow]}>
+                <View style={[]}>
                   <TouchableOpacity
-                    style={[theme.me10]}
+                    style={[theme.mb10,theme.fRow]}
                     onPress={() => {
-                      goToUrl(item.instagram);
+                      goToUrl('https://instagram.com/'+item.instagram);
                     }}>
                     <Image
                       source={require('../assets/images/icons/ig.png')}
                       style={[theme.h20, theme.w20]}
                     />
+                    <Text style={[theme['p14-400'],theme.cwhite,theme.ms10]}>{item.instagram}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                    style={[theme.mb10,theme.fRow]}
                     onPress={() => {
-                      goToUrl(item.twitter);
+                      goToUrl('https://instagram.com/'+item.twitter);
                     }}>
                     <Image
                       source={require('../assets/images/icons/twitter.png')}
                       style={[theme.h20, theme.w20]}
                     />
+                    <Text style={[theme['p14-400'],theme.cwhite,theme.ms10]}>{item.twitter}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={[theme.fjCenter,theme.faCenter,theme.wp100,theme.mtAuto]}>
+                  <TouchableOpacity style={[theme.px10,theme.py5,theme.bgyellow,theme.br5]}>
+                    <Text style={[theme['p12-700'],theme.cblack]}>Follow</Text>
                   </TouchableOpacity>
                 </View>
               </View>

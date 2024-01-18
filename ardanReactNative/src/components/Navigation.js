@@ -9,6 +9,7 @@ import {
 import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
 import {AuthContext} from '../context/AuthContext';
+import {RadioContext} from '../context/RadioContext';
 import TrackPlayer from 'react-native-track-player';
 import {useProgress} from 'react-native-track-player';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -23,6 +24,7 @@ const Nav = ({navigation, ...props}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const {removeUser} = useContext(AuthContext);
+  const {radioAct} = useContext(RadioContext);
   const [radio, setRadio] = useState('paused');
   const [showLive, setShowLive] = useState(true);
   const {currentScreen} = props;
@@ -87,12 +89,14 @@ const Nav = ({navigation, ...props}) => {
       ) {
         await TrackPlayer.play();
         setRadio('playing');
+        radioAct.setRadio('playing')
         getCurrentProgram();
       } else {
         await TrackPlayer.pause();
         await TrackPlayer.reset();
         await TrackPlayer.add(track);
         setRadio('paused');
+        radioAct.setRadio('paused')
       }
     } catch (error) {
       console.log('error toggled', error);
@@ -103,7 +107,7 @@ const Nav = ({navigation, ...props}) => {
       <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate('Radio');
-          handlePlayPause();
+          handlePlayPause()
         }}>
         <View
           style={[
@@ -188,7 +192,11 @@ const Nav = ({navigation, ...props}) => {
   };
   const LiveButton = () => {
     return (
-      <View style={[theme.bottom300,(!showLive) ? (theme.right0,theme.relative): null]}>
+      <View
+        style={[
+          theme.bottom300,
+          !showLive ? (theme.right0, theme.relative) : null,
+        ]}>
         {showLive ? (
           <Draggable x={300} y={60}>
             <View style={[theme.relative]}>
@@ -250,7 +258,7 @@ const Nav = ({navigation, ...props}) => {
               theme.py5,
               theme.px10,
               theme.absolute,
-              theme.right0
+              theme.right0,
             ]}
             onPress={() => {
               toggleLive();
@@ -261,6 +269,65 @@ const Nav = ({navigation, ...props}) => {
             <Text style={[theme['h11-500'], theme.cwhite]}>E</Text>
           </TouchableOpacity>
         )}
+      </View>
+    );
+  };
+  const RadioPlayer = () => {
+    return (
+      <View
+        style={[
+          theme.absolute,
+          {backgroundColor: 'rgba(29,34,38,.9)'},
+          theme.p10,
+          theme.px40,
+          currentScreen == 'Home' ? theme.top160 : theme.top63,
+          theme.wp100,
+          theme.fRow,
+          theme.faCenter,
+          theme.fjBetween,
+          theme.bsolid,
+          theme.btw1,
+          theme.byellow,
+        ]}>
+        <TouchableOpacity
+          style={[theme.fRow, theme.faCenter]}
+          onPress={() => {
+            navigation.navigate('Radio');
+          }}>
+          <Image
+            source={{uri: currentProgram.image}}
+            style={[
+              theme.w35,
+              theme.h35,
+              theme.bsolid,
+              theme.bw2,
+              {borderColor: '#F8C303'},
+              theme.br34,
+            ]}
+          />
+          <View style={[theme.mx15]}>
+            <Text style={[theme['h14-500'], theme.cwhite]}>
+              Live - {currentProgram.title}
+            </Text>
+            <Text style={[theme['h12-400'], {color: '#919191'}]}>
+              {currentProgram.penyiar_name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Radio');
+          }}
+          style={[
+            theme.w35,
+            theme.h35,
+            theme.faCenter,
+            theme.fjCenter,
+            theme.br40,
+            {backgroundColor: '#F8C303'},
+          ]}>
+          <Icon name="stop" color="#1d2226" />
+        </TouchableOpacity>
       </View>
     );
   };
@@ -291,61 +358,7 @@ const Nav = ({navigation, ...props}) => {
   return (
     <>
       {currentScreen == 'Home' ? <LiveButton /> : ''}
-      {currentScreen == 'Home' && radio == 'playing' ? (
-        <View
-          style={[
-            theme.absolute,
-            {backgroundColor: 'rgba(29,34,38,.9)'},
-            theme.p10,
-            theme.px40,
-            theme.top160,
-            theme.wp100,
-            theme.fRow,
-            theme.faCenter,
-            theme.fjBetween,
-            theme.bsolid,
-            theme.btw1,
-            theme.byellow,
-          ]}>
-          <View style={[theme.fRow, theme.faCenter]}>
-            <Image
-              source={{uri: currentProgram.image}}
-              style={[
-                theme.w35,
-                theme.h35,
-                theme.bsolid,
-                theme.bw2,
-                {borderColor: '#F8C303'},
-                theme.br34,
-              ]}
-            />
-            <View style={[theme.mx15]}>
-              <Text style={[theme['h14-500'], theme.cwhite]}>
-                Live - {currentProgram.title}
-              </Text>
-              <Text style={[theme['h12-400'], {color: '#919191'}]}>
-                {currentProgram.penyiar_name}
-              </Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              handlePlayPause();
-            }}
-            style={[
-              theme.w35,
-              theme.h35,
-              theme.faCenter,
-              theme.fjCenter,
-              theme.br40,
-              {backgroundColor: '#F8C303'},
-            ]}>
-            <Icon name="stop" color="#1d2226" />
-          </TouchableOpacity>
-        </View>
-      ) : (
-        ''
-      )}
+      {currentScreen != 'Ardan Radio' && radio == 'playing' ? <RadioPlayer /> : ''}
       <ImageBackground
         source={image.bg}
         resizeMode="cover"
@@ -392,7 +405,7 @@ const Nav = ({navigation, ...props}) => {
             </Text>
           </View>
         </TouchableWithoutFeedback>
-        {currentScreen == 'Ardan Social' && user.role != 'guest' ? (
+        {(currentScreen == 'Ardan Social' || currentScreen == 'Profile') && user.role != 'guest' ? (
           <SocialButton />
         ) : (
           <DefaultButton />

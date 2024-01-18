@@ -16,7 +16,9 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {RadioContext} from '../context/RadioContext';
 const Profile = ({route, navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const imageWidth = Dimensions.get('window').width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
@@ -121,7 +123,7 @@ const Profile = ({route, navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, theme.pt60]}>
+    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60]}>
       <ScrollView style={[]}>
         <View style={[theme.px10, theme.pt10, theme.mb100]}>
           <View style={[theme.fRow]}>

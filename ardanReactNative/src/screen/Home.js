@@ -20,7 +20,9 @@ import Share from 'react-native-share';
 // import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
 import RenderHtml from 'react-native-render-html';
+import {RadioContext} from '../context/RadioContext';
 const Home = ({navigation}) => {
+  const radioState = useContext(RadioContext).state;
   let apiKey = 'AIzaSyBOr3JxvvNcGariUrqnvsjUktQKxYGGWiI',
     channelId = 'UCogKRAj4-WLY1INM7vESjhw',
     channelName = '@ardanradio1059FM',
@@ -1102,7 +1104,7 @@ const Home = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, theme.pt160]}>
+    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt160 : theme.pt100]}>
       <ScrollView style={[]}>
         <MainBanner />
         <ProgramPopuler />
