@@ -34,6 +34,7 @@ const Radio = ({navigation}) => {
   const [msg, setMsg] = useState();
   const [ziChat, setZiChat] = useState(1);
   const [favorite, setFavorite] = useState(false);
+  const [remind, setRemind] = useState(false);
   const [currentProgram, setCurrentProgram] = useState({
     id: null,
     image: null,
@@ -55,7 +56,7 @@ const Radio = ({navigation}) => {
     try {
       let req = await Api.programsGet(payload);
       const {status, data, msg} = req.data;
-      console.log(data);
+      console.log('current radio', data);
       if (status && data[0]) {
         setCurrentProgram(data[0]);
       }
@@ -110,12 +111,12 @@ const Radio = ({navigation}) => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: anim.fade,
-        duration: 500, // adjust the duration as needed
+        duration: 500,
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: anim.slide,
-        duration: 500, // adjust the duration as needed
+        duration: 500,
         useNativeDriver: true,
       }),
     ]).start();
@@ -132,7 +133,7 @@ const Radio = ({navigation}) => {
         if (req.status == 200) {
           let {data, status, msg} = req.data;
           if (status) {
-            getLike();
+            getLike(target,type);
           }
         }
       } catch (error) {
@@ -140,10 +141,10 @@ const Radio = ({navigation}) => {
       }
     }
   };
-  const getLike = async () => {
+  const getLike = async (id, type, idx = null) => {
     let payload = {
-      id_target: currentProgram.id,
-      type: 'Program',
+      id_target: id,
+      type: type,
       id_user: user.id,
     };
     try {
@@ -151,13 +152,23 @@ const Radio = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status && data) {
-          setFavorite(true);
+          setFav(true,type);
         } else {
-          setFavorite(false);
+          setFav(false,type);
         }
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+  const setFav = (status, type, idx = null) => {
+    switch (type) {
+      case 'Program':
+        setFavorite(status);
+        break;
+      case 'RemindProgram':
+        setRemind(status);
+        break;
     }
   };
   const doShare = async id => {
@@ -171,7 +182,8 @@ const Radio = ({navigation}) => {
   useEffect(() => {
     listenChat();
     getCurrentProgram();
-    getLike();
+    getLike(currentProgram.id, 'Program');
+    getLike(currentProgram.id, 'RemindProgram');
   }, []);
 
   return (
@@ -243,12 +255,12 @@ const Radio = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={[theme.mt35,theme.fjCenter,theme.faCenter]}>
+          <View style={[theme.mt35, theme.fjCenter, theme.faCenter]}>
             <View style={[theme.faCenter]}>
               <AutoHeightImage
                 width={imageWidth}
                 source={
-                  currentProgram
+                  currentProgram.image
                     ? {uri: currentProgram.image}
                     : require('../assets/images/radio-play-cover.png')
                 }
@@ -265,41 +277,24 @@ const Radio = ({navigation}) => {
               {currentProgram.penyiar_name}
             </Text>
             <Text style={[theme.cwhite, theme['h32-600'], theme.tCenter]}>
-              {currentProgram.title}
+              {currentProgram.title ? currentProgram.title : 'Ardan Radio'}
             </Text>
-            <View style={[theme.fRow,theme.faCenter,theme.fjCenter]}>
+            <View style={[theme.fRow, theme.faCenter, theme.fjCenter]}>
               {user.id ? (
                 <TouchableOpacity
-                  style={[
-                    theme.fRow,
-                    theme.faCenter,
-                    theme.px15,
-                    theme.py5,
-                    theme.byellow,
-                    theme.bsolid,
-                    theme.bw1,
-                    theme.br42,
-                    theme.wAuto,
-                    theme.mx10,
-                    theme.fjCenter,
-                  ]}
                   onPress={() => {
-                    sentLike(currentProgram.id, 'Program');
-                  }}>
-                  
-                  <Text style={[theme['h14-600'], theme.cwhite]}>
-                    {favorite ? (
-                      <Icon
-                      name="check"
-                      size={20}
-                      color={'#F8C303'}
-                    />
-                    ) : 'Remind Me'}
-                  </Text>
+                    sentLike(currentProgram.id, 'RemindProgram');
+                  }}
+                  style={[theme.me5]}>
+                  <Icon
+                    name="bell"
+                    size={20}
+                    color={remind ? '#F8C303' : '#fff'}
+                  />
                 </TouchableOpacity>
               ) : null}
               <TouchableOpacity
-                style={[theme.fRow, theme.faCenter]}
+                style={[theme.fRow, theme.faCenter, theme.ms5]}
                 onPress={() => {
                   doShare(currentProgram.id);
                 }}>
@@ -307,7 +302,7 @@ const Radio = ({navigation}) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[theme.px20,theme.mt20,theme.mb50]}>
+          <View style={[theme.px20, theme.mt20, theme.mb50]}>
             <View style={[theme.fRow, theme.faCenter]}>
               <Text style={[theme.cwhite, theme['h18-700'], theme.me5]}>
                 Live Chat

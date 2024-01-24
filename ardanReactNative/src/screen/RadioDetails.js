@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Api from '../config/Api';
 const RadioDetails = ({navigation}) => {
   const user = useContext(UserContext);
@@ -48,6 +49,8 @@ const RadioDetails = ({navigation}) => {
     let hour = date.getHours();
     let minutes = date.getMinutes().toString();
     minutes = minutes.padStart(2, '0');
+    // let hour = '12';
+    // let minutes = '30';
     let payload = {
       day: day,
       time: `${hour}:${minutes}`,
@@ -58,13 +61,18 @@ const RadioDetails = ({navigation}) => {
       const {status, data, msg} = req.data;
       if (status) {
         setNextProgram(data);
-        console.log(data);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      console.log(nextProgram.length)
+      nextProgram.map((item,i) => {
+        getLike(item.id,'Program',i)
+        getLike(item.id,'RemindProgram',i)
+      })
     }
   };
-  const sentLike = async (target, type, i) => {
+  const sentLike = async (target, type, i=null) => {
     if (user.role != 'guest') {
       let payload = {
         id_user: user.id,
@@ -76,7 +84,7 @@ const RadioDetails = ({navigation}) => {
         if (req.status == 200) {
           let {data, status, msg} = req.data;
           if (status) {
-            getLike();
+            getLike(target,type,i);
           }
         }
       } catch (error) {
@@ -84,10 +92,10 @@ const RadioDetails = ({navigation}) => {
       }
     }
   };
-  const getLike = async () => {
+  const getLike = async (id,type,idx=null) => {
     let payload = {
-      id_target: 1,
-      type: 'Radio',
+      id_target: id,
+      type: type,
       id_user: user.id,
     };
     try {
@@ -95,22 +103,41 @@ const RadioDetails = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status && data) {
-          setFavorite(true);
+          setFav(true,type,idx);
         } else {
-          setFavorite(false);
+          setFav(false,type,idx);
         }
-        console.log(favorite);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error get like',error);
     }
   };
+  const setFav = (status,type,idx=null) => {
+    let nProgram = [...nextProgram]
+    switch (type) {
+      case 'Radio':
+        setFavorite(status)
+      break;
+      case 'Program':
+        if(nProgram.length > 0){
+          nProgram[idx].favorited = status
+        }
+      break;
+      case 'RemindProgram':
+        if(nProgram.length > 0){
+          nProgram[idx].remind = status
+        }
+      break;
+    }
+    if(nProgram.length > 0){
+      setNextProgram(nProgram)
+    }
+  }
   useEffect(() => {
     getCurrentProgram();
-    getLike();
-    getNextProgram();
+    getLike(1,'Radio');
+    getNextProgram()
   }, []);
-
   return (
     <SafeAreaView
       style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
@@ -146,7 +173,7 @@ const RadioDetails = ({navigation}) => {
                 onPress={() => {
                   sentLike(1, 'Radio');
                 }}>
-                <Image source={require('../assets/images/icons/heart.png')} />
+                <Icon name="heart" size={12} color={(favorite) ? '#aa0000': '#fff'} />
                 <Text style={[theme['h14-600'], theme.cwhite, theme.ms5]}>
                   {favorite ? 'Favorited' : 'Favorite'}
                 </Text>
@@ -174,62 +201,69 @@ const RadioDetails = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={[
-              theme.fRow,
-              theme.faCenter,
-              theme.mt35,
-              theme.w320,
-              theme.p10,
-              theme.br12,
-              theme.relative,
-              {backgroundColor: 'rgba(255, 255, 255, 0.16)'},
-            ]}
-            onPress={() => {
-              navigation.navigate('ProgramDetails', {
-                id: currentProgram.id,
-              });
-            }}>
-            <Image
-              source={{uri: currentProgram.image}}
-              style={[theme.h55, theme.w55, theme.br7, theme.me10]}
-            />
-            <View style={[theme.faStart]}>
-              <Text style={[theme['h16-700'], theme.cwhite]}>
-                {currentProgram.title}
-              </Text>
-              <Text style={[theme['h8-600'], theme.cwhite, {opacity: 0.6}]}>
-                {currentProgram.penyiar_name}
-              </Text>
-              <View
-                style={[
-                  theme.bw1,
-                  theme.bsolid,
-                  theme.br5,
-                  theme.byellow,
-                  theme.fRow,
-                  theme.faCenter,
-                  theme.p2,
-                  theme.wauto,
-                ]}>
-                <Image
-                  source={require('../assets/images/icons/network.png')}
-                  style={[theme.h6, theme.w8, theme.me3]}
-                />
-                <Text style={[theme['h5-400'], theme.cyellow]}>Live</Text>
-              </View>
-            </View>
-            <Text
+          {currentProgram && (
+            <TouchableOpacity
               style={[
-                theme.absolute,
-                theme.bottom5,
-                theme.right10,
-                theme.cwhite,
-                theme['h10-500'],
-              ]}>
-              {currentProgram.startTime} - {currentProgram.endTime} WIB
-            </Text>
-          </TouchableOpacity>
+                theme.fRow,
+                theme.faCenter,
+                theme.mt35,
+                theme.w320,
+                theme.p10,
+                theme.br12,
+                theme.relative,
+                {backgroundColor: 'rgba(255, 255, 255, 0.16)'},
+              ]}
+              onPress={() => {
+                navigation.navigate('ProgramDetails', {
+                  id: currentProgram.id,
+                });
+              }}>
+              <Image
+                source={
+                  currentProgram
+                    ? {uri: currentProgram.image}
+                    : require('../assets/images/radio-play-cover.png')
+                }
+                style={[theme.h55, theme.w55, theme.br7, theme.me10]}
+              />
+              <View style={[theme.faStart]}>
+                <Text style={[theme['h16-700'], theme.cwhite]}>
+                  {currentProgram ? currentProgram.title : '-'}
+                </Text>
+                <Text style={[theme['h8-600'], theme.cwhite, {opacity: 0.6}]}>
+                  {currentProgram ? currentProgram.penyiar_name : '-'}
+                </Text>
+                <View
+                  style={[
+                    theme.bw1,
+                    theme.bsolid,
+                    theme.br5,
+                    theme.byellow,
+                    theme.fRow,
+                    theme.faCenter,
+                    theme.p2,
+                    theme.wauto,
+                  ]}>
+                  <Image
+                    source={require('../assets/images/icons/network.png')}
+                    style={[theme.h6, theme.w8, theme.me3]}
+                  />
+                  <Text style={[theme['h5-400'], theme.cyellow]}>Live</Text>
+                </View>
+              </View>
+              <Text
+                style={[
+                  theme.absolute,
+                  theme.bottom5,
+                  theme.right10,
+                  theme.cwhite,
+                  theme['h10-500'],
+                ]}>
+                {currentProgram && currentProgram.startTime} -{' '}
+                {currentProgram && currentProgram.endTime} WIB
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <View style={[theme.fjCenter, theme.faCenter, theme.mt35, theme.mb100]}>
           <View style={[theme.w320, theme.faStart]}>
@@ -248,7 +282,7 @@ const RadioDetails = ({navigation}) => {
             {nextProgram.map((item, i) => {
               if (i > 0) {
                 return (
-                  <TouchableOpacity
+                  <View
                     style={[
                       theme.fRow,
                       theme.faCenter,
@@ -281,7 +315,22 @@ const RadioDetails = ({navigation}) => {
                         {item.time} WIB
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                    <View
+                      style={[
+                        theme.fRow,
+                        theme.faCenter,
+                        theme.absolute,
+                        theme.right10,
+                        theme.bottom10,
+                      ]}>
+                      <TouchableOpacity style={[theme.me10]} onPress={()=>{sentLike(item.id, 'Program',i);}}>
+                        <Icon name="heart" size={15} color={(item.favorited) ? '#aa0000': '#fff'} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={()=>{sentLike(item.id, 'RemindProgram',i);}}>
+                        <Icon name="bell" size={15} color={(item.remind) ? '#F8C303' : '#fff'} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 );
               }
             })}

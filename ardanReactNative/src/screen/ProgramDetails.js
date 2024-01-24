@@ -24,6 +24,7 @@ const ProgramDetails = ({route, navigation}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [favorite, setFavorite] = useState(false);
+  const [remind, setRemind] = useState(false);
   const [programsItem, setProgramsItem] = useState({
     data: {
       image: 'https://placehold.co/600x400',
@@ -82,7 +83,7 @@ const ProgramDetails = ({route, navigation}) => {
         if (req.status == 200) {
           let {data, status, msg} = req.data;
           if (status) {
-            getLike();
+            getLike(type);
           }
         }
       } catch (error) {
@@ -90,10 +91,10 @@ const ProgramDetails = ({route, navigation}) => {
       }
     }
   };
-  const getLike = async () => {
+  const getLike = async (type) => {
     let payload = {
       id_target: id,
-      type: 'Program',
+      type: type,
       id_user: user.id,
     };
     try {
@@ -102,13 +103,23 @@ const ProgramDetails = ({route, navigation}) => {
         let {data, status, msg} = req.data;
         console.log(data);
         if (status && data) {
-          setFavorite(true);
+          setFav(true,type);
         } else {
-          setFavorite(false);
+          setFav(false,type);
         }
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+  const setFav = (status, type, idx = null) => {
+    switch (type) {
+      case 'Program':
+        setFavorite(status);
+        break;
+      case 'RemindProgram':
+        setRemind(status);
+        break;
     }
   };
   const doShare = async id => {
@@ -121,7 +132,8 @@ const ProgramDetails = ({route, navigation}) => {
   };
   useEffect(() => {
     getPrograms();
-    getLike();
+    getLike('Program');
+    getLike('RemindProgram');
   }, []);
 
   return (
@@ -134,11 +146,11 @@ const ProgramDetails = ({route, navigation}) => {
         />
         <View style={[theme.px20]}>
           <View style={[theme.mt10]}>
-            <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
-              <Text style={[theme['h24-700'], theme.cwhite]}>
+            <View style={[]}>
+              <Text style={[theme['h24-700'], theme.cwhite,theme.mb5]}>
                 {programsItem.data.title}
               </Text>
-              <View style={[theme.fRow,theme.faCenter,theme.fjBetween]}>
+              <View style={[theme.fRow,theme.faCenter,theme.fjStart,theme.mb30]}>
                 <TouchableOpacity
                   onPress={() => {
                     sentLike(id, 'Program');
@@ -147,6 +159,17 @@ const ProgramDetails = ({route, navigation}) => {
                     name="heart"
                     size={20}
                     color={favorite ? '#ee0000' : '#fff'}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[theme.ms10]}
+                  onPress={() => {
+                    sentLike(id, 'RemindProgram');
+                  }}>
+                  <Icon
+                    name="bell"
+                    size={20}
+                    color={remind ? '#F8C303' : '#fff'}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity

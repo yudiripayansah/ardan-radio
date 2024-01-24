@@ -95,8 +95,12 @@ class ProgramsController extends Controller
             $g->image = Storage::disk('public')->url('programs/' . $g->image);
             $g->days_label = $this->daysLabel($g->days);
             $g->penyiar_name = $this->penyiarName($g->penyiar);
+            $g->favorited = false;
+            $g->remind = false;
           }
         } else {
+          $getData->favorited = false;
+          $getData->remind = false;
           $getData->image = Storage::disk('public')->url('programs/' . $getData->image);
           $getData->days_label = $this->daysLabel($getData->days);
           $getData->penyiar_name = $this->penyiarName($getData->penyiar);

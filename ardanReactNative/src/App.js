@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {StatusBar} from 'react-native';
+import {StatusBar, Linking} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {RouteAuth, RouteMain} from './config/Router';
@@ -12,12 +12,11 @@ import Splash from './screen/Splash';
 import {useAuth} from './hook/useAuth';
 import {useRadio} from './hook/useRadio';
 import usePushNotification from './hook/usePushNotification';
-import Api from './config/Api'
+import Api from './config/Api';
+import DeepLinking from 'react-native-deep-linking';
 const App = ({}) => {
-  const {
-    requestUserPermission,
-  } = usePushNotification();
-  const {auth, state} = useAuth()
+  const {requestUserPermission} = usePushNotification();
+  const {auth, state} = useAuth();
   const RootStack = createStackNavigator();
   const [loading, setLoading] = useState(true);
   const renderRoute = () => {
@@ -31,7 +30,7 @@ const App = ({}) => {
           <RootStack.Screen name={'RouteMain'}>
             {({navigation}) => (
               <UserContext.Provider value={state.user}>
-                <RouteMain navigation={navigation}/>
+                <RouteMain navigation={navigation} />
               </UserContext.Provider>
             )}
           </RootStack.Screen>
@@ -39,45 +38,22 @@ const App = ({}) => {
       }
     }
   };
-  const linking = {
-    prefixes: ['ardanmobileapps://'],
-    config: {
-      initialRouteName: 'Home',
-      screens: {
-        Home: {
-          path: 'Home'
-        },
-        BannerDetails: {
-          path: 'BannerDetails/:id'
-        },
-        EventsDetails: {
-          path: 'EventsDetails/:id'
-        },
-        MessageDetail: {
-          path: 'MessageDetail/:id'
-        },
-        NewsDetails: {
-          path: 'NewsDetails/:id'
-        },
-        NotificationsDetails: {
-          path: 'NotificationsDetails/:id'
-        },
-        PenyiarDetails: {
-          path: 'PenyiarDetails/:id'
-        },
-        ProgramDetails: {
-          path: 'ProgramDetails/:id'
-        },
-        SocialSharingDetails: {
-          path: 'SocialSharingDetails/:id'
-        },
-        SocialPostDetails: {
-          path: 'SocialPostDetails/:id'
-        }
+  const initDeepLinking = () => {
+    DeepLinking.addScheme('mobileappsardanradio://');
+    DeepLinking.addRoute('/app', (response) => {
+      console.log('Deep link response:', response);
+    });
+    Linking.addEventListener('url', handleUrl);
+  }
+  const handleUrl = ({ url }) => {
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        DeepLinking.evaluateUrl(url);
       }
-    }
-  };
+    });
+  }
   useEffect(() => {
+    initDeepLinking()
     const listenToNotifications = () => {
       try {
         requestUserPermission();
@@ -91,13 +67,13 @@ const App = ({}) => {
       setLoading(false);
     }, 2000);
   }, []);
-  
+
   return (
     <ThemeContext.Provider value={Style}>
       <StatusBar barStyle={'dark-content'} />
       <RadioContext.Provider value={useRadio()}>
         <AuthContext.Provider value={auth}>
-          <NavigationContainer linking={linking}>
+          <NavigationContainer>
             <RootStack.Navigator
               screenOptions={{
                 headerShown: false,

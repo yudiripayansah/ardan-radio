@@ -6700,6 +6700,11 @@ react-native-date-picker@^4.3.5:
   resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-4.3.5.tgz#81797f874a34a75ce2ff57d2bb1519ee2ac062dd"
   integrity sha512-jKOGCM2AUkRJb+tXYiwFHLfbB1Jh7OWXH4TxhLsuh7DWMXpWgUN3cGlFr3vl7G4wy45raAyPqmsZNSqmMr/98g==
 
+react-native-deep-linking@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-deep-linking/-/react-native-deep-linking-2.2.0.tgz#45451c4ebcbe7307e094b8df38979d0bd745bb54"
+  integrity sha512-PKShbOsa/oxjSzZ/Bag98O/J+jaZOI6ic5YdanPirTpRAraAvKUzJWQUhE5Yy0Isl9yfIkSogOClE9BRfSyUbA==
+
 react-native-draggable@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/react-native-draggable/-/react-native-draggable-3.3.0.tgz#6f07c3ad4cff018bf0455fc48dbfe5f0af9b72cd"

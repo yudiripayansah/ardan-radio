@@ -295,7 +295,7 @@ const Nav = ({navigation, ...props}) => {
             navigation.navigate('Radio');
           }}>
           <Image
-            source={{uri: currentProgram.image}}
+            source={(currentProgram.image) ? {uri: currentProgram.image} : require('../assets/images/radio-play-cover.png')}
             style={[
               theme.w35,
               theme.h35,
@@ -307,7 +307,7 @@ const Nav = ({navigation, ...props}) => {
           />
           <View style={[theme.mx15]}>
             <Text style={[theme['h14-500'], theme.cwhite]}>
-              Live - {currentProgram.title}
+              Live - {currentProgram.title ? currentProgram.title : 'Ardan Radio'}
             </Text>
             <Text style={[theme['h12-400'], {color: '#919191'}]}>
               {currentProgram.penyiar_name}
