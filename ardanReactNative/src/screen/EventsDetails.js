@@ -105,7 +105,7 @@ const EventsDetails = ({route, navigation}) => {
               onPress={() => {
                 doShare(eventsItem.id);
               }}>
-              <Image source={Icons.share} width={16} height={16} />
+              <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
             </TouchableOpacity>
             <Text style={[theme['h12-400'], theme.cwhite, theme.mt20]}>
               {eventsItem.data.text}

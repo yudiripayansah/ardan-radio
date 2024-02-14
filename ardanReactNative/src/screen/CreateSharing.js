@@ -36,7 +36,7 @@ const CreateSharing = ({navigation}) => {
   const [title, settitle] = useState();
   const [text, settext] = useState();
   const [type, settype] = useState('SHARING');
-  const [status, setstatus] = useState('UNPUBLISHED');
+  const [status, setstatus] = useState('PUBLISHED');
   const [loading, setloading] = useState(false);
   const [postButton, setpostButton] = useState('SHARING');
   const [selectedCat, setSelectedCat] = useState([]);
@@ -65,7 +65,6 @@ const CreateSharing = ({navigation}) => {
         if (status) {
           theData = [...data];
         }
-        console.log(data);
       }
       setCategory({
         data: theData,
@@ -93,7 +92,6 @@ const CreateSharing = ({navigation}) => {
       } else if (response.error) {
         console.log('Image picker error: ', response.error);
       } else {
-        console.log(response);
         let imageUri = response.uri || response.assets?.[0]?.uri;
         imageUri = 'data:image/jpeg;base64,' + response.assets[0].base64;
         setimage(imageUri);
@@ -161,7 +159,6 @@ const CreateSharing = ({navigation}) => {
       theCat.push(cat);
     }
     setSelectedCat(theCat);
-    console.log(selectedCat);
   };
   useEffect(() => {
     getCategory();

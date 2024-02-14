@@ -28,7 +28,7 @@ const CreatePost = ({navigation}) => {
   const [text, settext] = useState();
   const [category, setcategory] = useState('all');
   const [type, settype] = useState('POST');
-  const [status, setstatus] = useState('UNPUBLISHED');
+  const [status, setstatus] = useState('PUBLISHED');
   const [loading, setloading] = useState(false);
   const [postButton, setpostButton] = useState('POST');
   const openImagePicker = () => {
@@ -45,7 +45,6 @@ const CreatePost = ({navigation}) => {
       } else if (response.error) {
         console.log('Image picker error: ', response.error);
       } else {
-        console.log(response);
         let imageUri = response.uri || response.assets?.[0]?.uri;
         imageUri = 'data:image/jpeg;base64,' + response.assets[0].base64;
         setimage(imageUri);
@@ -96,8 +95,6 @@ const CreatePost = ({navigation}) => {
             setpostButton('POST');
             navigation.navigate('Social');
           }, 1000);
-        } else {
-          console.log(msg);
         }
       }
       setloading(false);

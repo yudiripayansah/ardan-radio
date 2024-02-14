@@ -33,40 +33,119 @@ const LiveStreaming = ({navigation}) => {
   const height = Dimensions.get('window').height;
   const [liveStream, setLivestream] = useState({});
   const [livechat, setLivechat] = useState([]);
+  const [livechatold, setLivechatold] = useState([]);
   const [msg, setMsg] = useState();
   const [mask, setMask] = useState(true);
   const listenChat = () => {
+    let theChat = [...livechat];
     const echo = new Echo({
       broadcaster: 'socket.io',
-      host: 'https://chat.kopikoding.com:6001',
+      host: 'https://mobileapps.ardanradio.com:6001',
       client: io,
     });
-    echo.channel('publicChat').listen('PublicChatEvent', event => {
-      const {target} = event;
-      let theChat = livechat;
-      if (target == 'livestream') {
-        theChat.push(event);
-        console.log(event);
-        setLivechat(theChat);
-      }
-    });
+    echo
+      .channel('laravel_database_publicChat')
+      .listen('PublicChatEvents', event => {
+        const {target_type} = event;
+        if (target_type == 'livestream') {
+          theChat.push(event);
+          setLivechat(theChat);
+        }
+      });
   };
   const sendChat = async () => {
     try {
-      let url = 'https://chat.kopikoding.com/publicchat/send';
+      let url = 'https://mobileapps.ardanradio.com/api/chat/send';
       let payload = {
-        message: msg,
-        target: 'livestream',
-        name: user.name,
+        id_user: user.id,
+        id_target: 0,
+        target_type: 'livestream',
+        title: user.name,
+        chat: msg,
         penyiar: user.penyiar,
         verified: user.verified,
       };
-      console.log(payload);
       let req = await axios.post(url, payload);
       setMsg('');
     } catch (error) {
       console.log(error);
     }
+  };
+  const getChat = async () => {
+    try {
+      let url = 'https://mobileapps.ardanradio.com/api/chat/read';
+      let payload = {
+        page: 1,
+        perPage: 50,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        target_type: 'livestream',
+      };
+      let req = await axios.post(url, payload);
+      const {status, data, msg} = req.data;
+      if (status && data.length > 0) {
+        data.sort((a, b) => a.id - b.id);
+        setLivechatold(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const chatList = list => {
+    return list.map((item, index) => {
+      return (
+        <View style={[theme.fRow, theme.mb10]} key={index}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Profile', {
+                id: item.id_user,
+              });
+            }}>
+            <Image
+              source={{
+                uri:
+                  item.user && item.user.image
+                    ? item.user.image
+                    : 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png',
+              }}
+              style={[
+                theme.br100,
+                theme.w25,
+                theme.h25,
+                {objectFit: 'contain'},
+                theme.me5,
+              ]}
+            />
+          </TouchableOpacity>
+          <View style={[theme.wp80]}>
+            <View style={[theme.fRow, theme.faCenter]}><TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Profile', {
+                id: item.id_user,
+              });
+            }}>
+              <Text style={[theme.cwhite, theme['p14-600']]}>{item.title}</Text>
+              </TouchableOpacity>
+              {item.penyiar == 'Yes' ? (
+                <View
+                  style={[
+                    theme.br100,
+                    theme.faCenter,
+                    theme.fjCenter,
+                    theme.bgyellow,
+                    theme.h10,
+                    theme.w10,
+                    theme.ms5,
+                  ]}>
+                  <Icon name="check" size={6} color="#000" />
+                </View>
+              ) : null}
+            </View>
+            <Text style={[theme.cwhite, theme['p12-400']]}>{item.chat}</Text>
+          </View>
+        </View>
+      );
+    });
   };
   const getLiveStream = async () => {
     let date = new Date(),
@@ -83,7 +162,7 @@ const LiveStreaming = ({navigation}) => {
         setLivestream(data);
       }
     } catch (error) {
-      console.log(error);
+      console.log('Live stream error', error);
     }
   };
   const onStateChange = useCallback(state => {
@@ -104,10 +183,10 @@ const LiveStreaming = ({navigation}) => {
   };
 
   useEffect(() => {
+    getChat();
     listenChat();
     getLiveStream();
     hideMask();
-    console.log(user);
   }, []);
 
   return (
@@ -116,9 +195,7 @@ const LiveStreaming = ({navigation}) => {
       style={[theme.bgblack, {flexGrow: 1}]}>
       {liveStream.url ? (
         <>
-          <View
-            style={[theme.mt57, theme.relative]}
-            >
+          <View style={[theme.mt57, theme.relative]}>
             <YoutubePlayer
               height={height}
               play={playing}
@@ -126,7 +203,7 @@ const LiveStreaming = ({navigation}) => {
               onChangeState={onStateChange}
             />
             {mask ? (
-              <View style={[theme.absolute, {right: 50, top: 175, opacity:1}]}>
+              <View style={[theme.absolute, {right: 50, top: 175, opacity: 1}]}>
                 <Image
                   source={require('../assets/images/radio-play-cover.png')}
                   style={[{width: 80, height: 40, objectFit: 'contain'}]}
@@ -193,48 +270,8 @@ const LiveStreaming = ({navigation}) => {
         onContentSizeChange={() =>
           scrollViewRef.current.scrollToEnd({animated: true})
         }>
-        {livechat.map((item, index) => {
-          return (
-            <View style={[theme.fRow, theme.mb10]} key={index}>
-              <Image
-                source={{
-                  uri: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png',
-                }}
-                style={[
-                  theme.br100,
-                  theme.w25,
-                  theme.h25,
-                  {objectFit: 'contain'},
-                  theme.me5,
-                ]}
-              />
-              <View style={[theme.wp80]}>
-                <View style={[theme.fRow, theme.faCenter]}>
-                  <Text style={[theme.cwhite, theme['p14-600']]}>
-                    {item.name}
-                  </Text>
-                  {item.penyiar == 'Yes' ? (
-                    <View
-                      style={[
-                        theme.br100,
-                        theme.faCenter,
-                        theme.fjCenter,
-                        theme.bgyellow,
-                        theme.h10,
-                        theme.w10,
-                        theme.ms5,
-                      ]}>
-                      <Icon name="check" size={6} color="#000" />
-                    </View>
-                  ) : null}
-                </View>
-                <Text style={[theme.cwhite, theme['p12-400']]}>
-                  {item.message}
-                </Text>
-              </View>
-            </View>
-          );
-        })}
+        {chatList(livechatold)}
+        {chatList(livechat)}
       </ScrollView>
       <View
         style={[

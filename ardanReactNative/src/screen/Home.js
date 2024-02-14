@@ -247,7 +247,6 @@ const Home = ({navigation}) => {
         let {data, status, msg} = req.data;
         if (status) {
           theData = data[0];
-          console.log(theData);
         }
       }
       setHotSharing({
@@ -442,20 +441,13 @@ const Home = ({navigation}) => {
         setYoutube(data.items);
       }
     } catch (error) {
-      console.log(error);
+      console.error('get youtube',error);
     }
   };
   const doLogout = () => {
     removeUser();
   };
   const menuItem = [
-    {
-      title: 'Ardan Content',
-      image: require('../assets/images/icons/menu-content.png'),
-      target: () => {
-        navigation.navigate('ArdanContent');
-      },
-    },
     {
       title: 'Social',
       image: require('../assets/images/icons/menu-social.png'),
@@ -468,6 +460,13 @@ const Home = ({navigation}) => {
       image: require('../assets/images/icons/menu-news.png'),
       target: () => {
         navigation.navigate('News');
+      },
+    },
+    {
+      title: 'Ardan Content',
+      image: require('../assets/images/icons/menu-content.png'),
+      target: () => {
+        navigation.navigate('ArdanContent');
       },
     },
     {
@@ -608,7 +607,7 @@ const Home = ({navigation}) => {
             onPress={() => {
               navigation.navigate('News');
             }}>
-            <Image source={Icons.chevronRight} />
+            <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -738,7 +737,7 @@ const Home = ({navigation}) => {
             onPress={() => {
               navigation.navigate('ArdanContent');
             }}>
-            <Image source={Icons.chevronRight} />
+            <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -816,7 +815,7 @@ const Home = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Program');
               }}>
-              <Image source={Icons.chevronRight} />
+              <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
             </TouchableOpacity>
           </View>
           <ScrollView
@@ -878,7 +877,7 @@ const Home = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Event');
               }}>
-              <Image source={Icons.chevronRight} />
+              <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
             </TouchableOpacity>
           </View>
           <ScrollView
@@ -954,7 +953,7 @@ const Home = ({navigation}) => {
           <View
             style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
             <View style={[theme.fRow, theme.faCenter]}>
-              <Image source={Icons.flame} height={25} style={[theme.me10]} />
+              <Image source={Icons.flame} style={[{height:25,width:25,objectFit:'contain'},theme.me10]} />
               <Text style={[theme['h16-600'], theme.cwhite]}>
                 Hot
                 <Text style={[theme['h16-400'], theme.cwhite]}> Sharing</Text>
@@ -971,7 +970,7 @@ const Home = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Social', {activeTab: 'Sharing'});
               }}>
-              <Image source={Icons.chevronRight} />
+              <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -1077,19 +1076,19 @@ const Home = ({navigation}) => {
                     onPress={() => {
                       doShare(hotSharing.data.id);
                     }}>
-                    <Image source={Icons.share} width={16} height={16} />
+                    <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
                   </TouchableOpacity>
                 </View>
                 <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                   <View style={[theme.fRow, theme.faCenter]}>
-                    <Image source={Icons.love} width={16} height={16} />
+                    <Image source={Icons.love} style={[{height:16,width:16,objectFit:'contain'}]} />
                     <Text
                       style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                       {hotSharing.data.like_count}
                     </Text>
                   </View>
                   <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                    <Image source={Icons.comment} width={16} height={16} />
+                    <Image source={Icons.comment} style={[{height:16,width:16,objectFit:'contain'}]} />
                     <Text
                       style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                       {hotSharing.data.comment_count}
@@ -1104,7 +1103,7 @@ const Home = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt160 : theme.pt100]}>
+    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt80]}>
       <ScrollView style={[]}>
         <MainBanner />
         <ProgramPopuler />

@@ -14,7 +14,9 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
+import {RadioContext} from '../context/RadioContext';
 const PenyiarDetails = ({route, navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const imageWidth = Dimensions.get('window').width - 40;
   const theme = useContext(ThemeContext);
   const [penyiarItem, setPenyiarItem] = useState({
@@ -72,7 +74,7 @@ const PenyiarDetails = ({route, navigation}) => {
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
+      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt60, theme.relative]}>
       <ScrollView style={[]}>
         <View style={[theme.px20]}>
           <AutoHeightImage

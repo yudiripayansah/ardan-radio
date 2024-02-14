@@ -177,7 +177,7 @@ const ProgramDetails = ({route, navigation}) => {
                   onPress={() => {
                     doShare(id);
                   }}>
-                  <Image source={Icons.share} width={16} height={16} />
+                  <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
                 </TouchableOpacity>
               </View>
             </View>

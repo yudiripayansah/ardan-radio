@@ -3,12 +3,14 @@ import {Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Image, Sc
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const Register = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const {setUser} = useContext(AuthContext);
   const [name, setname] = useState();
   const [email, setemail] = useState();
   const [password, setpassword] = useState();
+  const [sPassword, setSpassword] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState()
   const [btnLabel, setbtnLabel] = useState('Daftar Sekarang')
@@ -45,6 +47,7 @@ const Register = ({navigation}) => {
         role: 'member',
         status: 'active',
       };
+      console.log(payload)
       if(payload.email && payload.password && payload.name) {
         if(validateEmail(payload.email)){
           let req = await Api.userCreate(payload, 'randomToken');
@@ -100,8 +103,10 @@ const Register = ({navigation}) => {
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt15]}>Password</Text>
         <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setpassword} placeholder='Password' secureTextEntry={true} placeholderTextColor={'#000'}/>
-          <Image style={[theme.w20,theme.h20, theme.absolute,theme.right20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/eye.png')}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setpassword} placeholder='Password' secureTextEntry={sPassword} placeholderTextColor={'#000'}/>
+          <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>
+            <Icon name={(sPassword) ? "eye-slash" : "eye"} size={20} color="#555" />
+          </TouchableOpacity>
         </View>
         <TouchableOpacity style={[theme.bgyellow, theme.faCenter, theme.py15, theme.br52, theme.mt30]} onPress={() => {doRegister()}} disabled={loading}>
           <Text style={[theme['p14-500'], theme.cblack]}>{(loading) ? 'Processing...' : btnLabel}</Text>

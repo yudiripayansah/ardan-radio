@@ -356,7 +356,7 @@ const SocialSharing = ({navigation}) => {
         <View style={[theme.mb35]}>
           <View style={[theme.fRow, theme.fjBetween, theme.faCenter]}>
             <View style={[theme.fRow, theme.faCenter]}>
-              <Image source={Icons.flame} height={25} style={[theme.me10]} />
+              <Image source={Icons.flame} style={[{height:25,width:25,objectFit:'contain'},theme.me10]} />
               <Text style={[theme['h16-600'], theme.cwhite]}>
                 Hot
                 <Text style={[theme['h16-400'], theme.cwhite]}> Sharing</Text>
@@ -372,7 +372,7 @@ const SocialSharing = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Social');
               }}>
-              <Image source={Icons.chevronRight} />
+              <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -414,7 +414,7 @@ const SocialSharing = ({navigation}) => {
                   theme.faCenter,
                   theme.fjBetween,
                 ]}>
-                <View style={[theme.fRow]}>
+                <View style={[theme.fRow,theme.wp60]}>
                   <View
                     style={[
                       theme.faCenter,
@@ -451,6 +451,7 @@ const SocialSharing = ({navigation}) => {
                     theme.faCenter,
                     theme.fjCenter,
                     theme.px15,
+                    theme.wp40
                   ]}>
                   <Text style={[theme['h12-500'], {color: '#000'}]}>
                     {hotSharing.data.category}
@@ -475,19 +476,19 @@ const SocialSharing = ({navigation}) => {
                     onPress={() => {
                       doShare(hotSharing.data.id);
                     }}>
-                    <Image source={Icons.share} width={16} height={16} />
+                    <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
                   </TouchableOpacity>
                 </View>
                 <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                   <View style={[theme.fRow, theme.faCenter]}>
-                    <Image source={Icons.love} width={16} height={16} />
+                    <Image source={Icons.love} style={[{height:16,width:16,objectFit:'contain'}]} />
                     <Text
                       style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                       {hotSharing.data.like_count}
                     </Text>
                   </View>
                   <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                    <Image source={Icons.comment} width={16} height={16} />
+                    <Image source={Icons.comment} style={[{height:16,width:16,objectFit:'contain'}]} />
                     <Text
                       style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                       {hotSharing.data.comment_count}
@@ -682,8 +683,8 @@ const SocialSharing = ({navigation}) => {
                     ) : null}
                   </View>
                   {item.image_url ? (
-                    <AutoHeightImage
-                      width={imageWidth}
+                    <Image
+                      style={[{width:imageWidth,height:imageWidth,objectFit: 'contain',backgroundColor:'#fafafa'}]}
                       source={{uri: item.image_url}}
                     />
                   ) : null}
@@ -701,19 +702,19 @@ const SocialSharing = ({navigation}) => {
                       onPress={() => {
                         doShare(item.id);
                       }}>
-                      <Image source={Icons.share} width={16} height={16} />
+                      <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
                         doBookmark(item.id, 'Bookmark');
                       }}
                       style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                      <Image source={Icons.bookmark} width={16} height={16} />
+                      <Image source={Icons.bookmark} style={[{height:16,width:16,objectFit:'contain'}]} />
                     </TouchableOpacity>
                   </View>
                   <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                     <View style={[theme.fRow, theme.faCenter]}>
-                      <Image source={Icons.love} width={16} height={16} />
+                      <Image source={Icons.love} style={[{height:16,width:16,objectFit:'contain'}]} />
                       <Text
                         style={[
                           theme.ms5,
@@ -724,7 +725,7 @@ const SocialSharing = ({navigation}) => {
                       </Text>
                     </View>
                     <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                      <Image source={Icons.comment} width={16} height={16} />
+                      <Image source={Icons.comment} style={[{height:16,width:16,objectFit:'contain'}]} />
                       <Text
                         style={[
                           theme.ms5,

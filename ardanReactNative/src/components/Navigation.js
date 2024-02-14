@@ -10,7 +10,11 @@ import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
 import {AuthContext} from '../context/AuthContext';
 import {RadioContext} from '../context/RadioContext';
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, {
+  AppKilledPlaybackBehavior,
+  Capability,
+  RepeatMode,
+} from 'react-native-track-player';
 import {useProgress} from 'react-native-track-player';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import ActionButton from 'react-native-circular-action-menu';
@@ -51,12 +55,33 @@ const Nav = ({navigation, ...props}) => {
   });
   const {position, buffered, duration} = useProgress();
   const setupTrackPlayer = async () => {
+    let isSetup = false;
     try {
+      await TrackPlayer.getCurrentTrack();
+      isSetup = true;
+    }
+    catch {
       TrackPlayer.registerPlaybackService(() =>
         require('../services/TrackPlayer.js'),
       );
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add(track);
+      await TrackPlayer.updateOptions({
+        android: {
+          appKilledPlaybackBehavior:
+            AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
+        },
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+        ],
+        compactCapabilities: [
+          Capability.Play,
+          Capability.Pause,
+        ],
+        progressUpdateEventInterval: 2,
+      });
+      isSetup = true;
       const playerState = await TrackPlayer.getState();
       if (
         playerState === 'paused' ||
@@ -69,37 +94,40 @@ const Nav = ({navigation, ...props}) => {
       } else {
         setRadio('playing');
       }
-    } catch (error) {
-      console.log('error init', error);
+    }
+    finally {
+      return isSetup;
     }
   };
   const handlePlayPause = async () => {
-    try {
-      const playerState = await TrackPlayer.getState();
-      if (playerState === 'stopped') {
-        await TrackPlayer.reset();
+    if((currentScreen != 'Ardan Radio' && radio == 'paused') || currentScreen == 'Ardan Radio'){
+      try {
+        const playerState = await TrackPlayer.getState();
+        if (playerState === 'stopped') {
+          await TrackPlayer.reset();
+        }
+        if (
+          playerState === 'paused' ||
+          playerState === 'ready' ||
+          playerState === 'idle' ||
+          playerState === 'connecting' ||
+          playerState === 'stopped' ||
+          playerState === 'idle'
+        ) {
+          await TrackPlayer.play();
+          setRadio('playing');
+          radioAct.setRadio('playing')
+          getCurrentProgram();
+        } else {
+          await TrackPlayer.pause();
+          await TrackPlayer.reset();
+          await TrackPlayer.add(track);
+          setRadio('paused');
+          radioAct.setRadio('paused')
+        }
+      } catch (error) {
+        console.log('error toggled', error);
       }
-      if (
-        playerState === 'paused' ||
-        playerState === 'ready' ||
-        playerState === 'idle' ||
-        playerState === 'connecting' ||
-        playerState === 'stopped' ||
-        playerState === 'idle'
-      ) {
-        await TrackPlayer.play();
-        setRadio('playing');
-        radioAct.setRadio('playing')
-        getCurrentProgram();
-      } else {
-        await TrackPlayer.pause();
-        await TrackPlayer.reset();
-        await TrackPlayer.add(track);
-        setRadio('paused');
-        radioAct.setRadio('paused')
-      }
-    } catch (error) {
-      console.log('error toggled', error);
     }
   };
   const DefaultButton = () => {
@@ -198,7 +226,7 @@ const Nav = ({navigation, ...props}) => {
           !showLive ? (theme.right0, theme.relative) : null,
         ]}>
         {showLive ? (
-          <Draggable x={300} y={60}>
+          <Draggable x={290} y={60}>
             <View style={[theme.relative]}>
               <TouchableOpacity
                 style={[
@@ -280,7 +308,7 @@ const Nav = ({navigation, ...props}) => {
           {backgroundColor: 'rgba(29,34,38,.9)'},
           theme.p10,
           theme.px40,
-          currentScreen == 'Home' ? theme.top160 : theme.top63,
+          currentScreen == 'Home' ? theme.top140 : theme.top63,
           theme.wp100,
           theme.fRow,
           theme.faCenter,
@@ -348,7 +376,7 @@ const Nav = ({navigation, ...props}) => {
         setCurrentProgram(data[0]);
       }
     } catch (error) {
-      console.log(error);
+      console.log('error current program:',error);
     }
   };
   useEffect(() => {
@@ -390,9 +418,9 @@ const Nav = ({navigation, ...props}) => {
               },
             ]}>
             {currentScreen == 'Home' ? (
-              <Image source={Icons.navHomeActive} />
+              <Image source={Icons.navHomeActive} style={[{height:30,width:30,objectFit:'contain'}]}/>
             ) : (
-              <Image source={Icons.navHome} />
+              <Image source={Icons.navHome} style={[{height:30,width:30,objectFit:'contain'}]}/>
             )}
             <Text
               style={[
@@ -405,7 +433,7 @@ const Nav = ({navigation, ...props}) => {
             </Text>
           </View>
         </TouchableWithoutFeedback>
-        {(currentScreen == 'Ardan Social' || currentScreen == 'Profile') && user.role != 'guest' ? (
+        {(currentScreen == 'Ardan Social' || currentScreen == 'My Profile') && user.role != 'guest' ? (
           <SocialButton />
         ) : (
           <DefaultButton />
@@ -415,7 +443,7 @@ const Nav = ({navigation, ...props}) => {
             if (user.role == 'guest') {
               removeUser();
             } else {
-              navigation.navigate('Profile');
+              navigation.navigate('MyProfile');
             }
           }}>
           <View
@@ -428,20 +456,20 @@ const Nav = ({navigation, ...props}) => {
               theme.bsolid,
               {
                 borderColor:
-                  currentScreen == 'Profile' ? '#FDD100' : 'transparent',
+                  currentScreen == 'My Profile' ? '#FDD100' : 'transparent',
               },
             ]}>
-            {currentScreen == 'Profile' ? (
-              <Image source={Icons.navProfileActive} />
+            {currentScreen == 'My Profile' ? (
+              <Image source={Icons.navProfileActive} style={[{height:30,width:30,objectFit:'contain'}]}/>
             ) : (
-              <Image source={Icons.navProfile} />
+              <Image source={Icons.navProfile} style={[{height:30,width:30,objectFit:'contain'}]}/>
             )}
             {/* <Image source={image.profile} /> */}
             <Text
               style={[
                 theme['h10-500'],
                 {
-                  color: currentScreen == 'Profile' ? '#FDD100' : '#FFF',
+                  color: currentScreen == 'My Profile' ? '#FDD100' : '#FFF',
                 },
               ]}>
               Profile

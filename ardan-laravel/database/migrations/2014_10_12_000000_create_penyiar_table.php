@@ -20,6 +20,7 @@ class CreatePenyiarTable extends Migration
             $table->text('text')->nullable();
             $table->text('instagram')->nullable();
             $table->text('twitter')->nullable();
+            $table->integer('id_user')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ class AuthController extends Controller
      * @return void
      */
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register','sendotp','checkotp','updatePassword']]);
     }
     /**
      * Get a JWT via given credentials.
@@ -111,5 +111,24 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => auth()->user()
         ]);
+    }
+
+    public function sendotp() {
+        $res = [
+            'status' => true
+        ];
+        return response()->json($res);
+    }
+    public function checkotp() {
+        $res = [
+            'status' => true
+        ];
+        return response()->json($res);
+    }
+    public function updatePassword() {
+        $res = [
+            'status' => true
+        ];
+        return response()->json($res);
     }
 }

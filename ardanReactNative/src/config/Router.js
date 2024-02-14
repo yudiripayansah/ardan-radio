@@ -8,10 +8,13 @@ import Event from '../screen/Event';
 import EventsDetails from '../screen/EventsDetails';
 import Feed from '../screen/Feed';
 import Forgot from '../screen/Forgot';
+import CheckOtp from '../screen/CheckOtp';
+import UpdatePassword from '../screen/UpdatePassword';
 import Home from '../screen/Home';
 import Intro from '../screen/Intro';
 import LiveStreaming from '../screen/LiveStreaming';
 import Login from '../screen/Login';
+import ListUser from '../screen/ListUser';
 import Music from '../screen/Music';
 import Message from '../screen/Message';
 import MessageDetail from '../screen/MessageDetail';
@@ -58,6 +61,11 @@ export const RouteMain = ({navigation}) => {
                             || routeName == 'RadioDetails'
                             ){
                             routeName = 'Ardan Radio'
+                        }
+                        if(
+                            routeName == 'MessageDetail'
+                            ){
+                            routeName = 'Message'
                         }
                         if(
                             routeName == 'ProfileUpdate'
@@ -124,6 +132,11 @@ export const RouteMain = ({navigation}) => {
                             ){
                             routeName = 'Create New'
                         }
+                        if(
+                            routeName == 'MyProfile'
+                            ){
+                            routeName = 'My Profile'
+                        }
                         setActiveHeader(routeName)
                     },
                 })}
@@ -136,6 +149,8 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'EventsDetails'} component={EventsDetails} options={options}/>
                 <MainStack.Screen name={'Feed'} component={Feed} options={options}/>
                 <MainStack.Screen name={'LiveStreaming'} component={LiveStreaming} options={options}/>
+                <MainStack.Screen name={'Followers'} component={ListUser} options={options}/>
+                <MainStack.Screen name={'Following'} component={ListUser} options={options}/>
                 <MainStack.Screen name={'Music'} component={Music} options={options}/>
                 <MainStack.Screen name={'Message'} component={Message} options={options}/>
                 <MainStack.Screen name={'MessageDetail'} component={MessageDetail} options={options}/>
@@ -144,6 +159,7 @@ export const RouteMain = ({navigation}) => {
                 <MainStack.Screen name={'Notifications'} component={Notifications} options={options}/>
                 <MainStack.Screen name={'NotificationsDetails'} component={NotificationsDetails} options={options}/>
                 <MainStack.Screen name={'Profile'} component={Profile} options={options}/>
+                <MainStack.Screen name={'MyProfile'} component={Profile} options={options}/>
                 <MainStack.Screen name={'ProfileUpdate'} component={ProfileUpdate} options={options}/>
                 <MainStack.Screen name={'Penyiar'} component={Penyiar} options={options}/>
                 <MainStack.Screen name={'PenyiarDetails'} component={PenyiarDetails} options={options}/>
@@ -173,6 +189,8 @@ export const RouteAuth = ({navigation}) => {
                 <AuthStack.Screen name={'Login'} component={Login} options={options}/>
                 <AuthStack.Screen name={'Register'} component={Register} options={options}/>
                 <AuthStack.Screen name={'Forgot'} component={Forgot} options={options}/>
+                <AuthStack.Screen name={'CheckOtp'} component={CheckOtp} options={options}/>
+                <AuthStack.Screen name={'UpdatePassword'} component={UpdatePassword} options={options}/>
             </AuthStack.Navigator>
         </>
     );

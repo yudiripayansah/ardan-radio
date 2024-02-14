@@ -41,7 +41,7 @@ const App = ({}) => {
   const initDeepLinking = () => {
     DeepLinking.addScheme('mobileappsardanradio://');
     DeepLinking.addRoute('/app', (response) => {
-      console.log('Deep link response:', response);
+      // console.log('Deep link response:', response);
     });
     Linking.addEventListener('url', handleUrl);
   }
@@ -58,7 +58,7 @@ const App = ({}) => {
       try {
         requestUserPermission();
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 

@@ -11,7 +11,7 @@ class Penyiar extends Model
     use SoftDeletes;
     protected $table = 'penyiar';
     protected $fillable = [
-      'image','name','text','instagram','twitter'
+      'image','name','text','instagram','twitter','id_user'
     ];
     public static function validate($validate)
     {

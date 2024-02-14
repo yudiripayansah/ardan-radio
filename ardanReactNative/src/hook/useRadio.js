@@ -11,7 +11,6 @@ export function useRadio() {
     (state, action) => {
       switch (action.type) {
         case 'SET_RADIO':
-          console.log(action)
           return {
             status: action.payload,
           };

@@ -65,14 +65,14 @@ const RadioDetails = ({navigation}) => {
     } catch (error) {
       console.log(error);
     } finally {
-      console.log(nextProgram.length)
-      nextProgram.map((item,i) => {
-        getLike(item.id,'Program',i)
-        getLike(item.id,'RemindProgram',i)
-      })
+      console.log(nextProgram.length);
+      nextProgram.map((item, i) => {
+        getLike(item.id, 'Program', i);
+        getLike(item.id, 'RemindProgram', i);
+      });
     }
   };
-  const sentLike = async (target, type, i=null) => {
+  const sentLike = async (target, type, i = null) => {
     if (user.role != 'guest') {
       let payload = {
         id_user: user.id,
@@ -84,7 +84,7 @@ const RadioDetails = ({navigation}) => {
         if (req.status == 200) {
           let {data, status, msg} = req.data;
           if (status) {
-            getLike(target,type,i);
+            getLike(target, type, i);
           }
         }
       } catch (error) {
@@ -92,7 +92,7 @@ const RadioDetails = ({navigation}) => {
       }
     }
   };
-  const getLike = async (id,type,idx=null) => {
+  const getLike = async (id, type, idx = null) => {
     let payload = {
       id_target: id,
       type: type,
@@ -103,40 +103,40 @@ const RadioDetails = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status && data) {
-          setFav(true,type,idx);
+          setFav(true, type, idx);
         } else {
-          setFav(false,type,idx);
+          setFav(false, type, idx);
         }
       }
     } catch (error) {
-      console.error('Error get like',error);
+      console.error('Error get like', error);
     }
   };
-  const setFav = (status,type,idx=null) => {
-    let nProgram = [...nextProgram]
+  const setFav = (status, type, idx = null) => {
+    let nProgram = [...nextProgram];
     switch (type) {
       case 'Radio':
-        setFavorite(status)
-      break;
+        setFavorite(status);
+        break;
       case 'Program':
-        if(nProgram.length > 0){
-          nProgram[idx].favorited = status
+        if (nProgram.length > 0) {
+          nProgram[idx].favorited = status;
         }
-      break;
+        break;
       case 'RemindProgram':
-        if(nProgram.length > 0){
-          nProgram[idx].remind = status
+        if (nProgram.length > 0) {
+          nProgram[idx].remind = status;
         }
-      break;
+        break;
     }
-    if(nProgram.length > 0){
-      setNextProgram(nProgram)
+    if (nProgram.length > 0) {
+      setNextProgram(nProgram);
     }
-  }
+  };
   useEffect(() => {
     getCurrentProgram();
-    getLike(1,'Radio');
-    getNextProgram()
+    getLike(1, 'Radio');
+    getNextProgram();
   }, []);
   return (
     <SafeAreaView
@@ -173,7 +173,11 @@ const RadioDetails = ({navigation}) => {
                 onPress={() => {
                   sentLike(1, 'Radio');
                 }}>
-                <Icon name="heart" size={12} color={(favorite) ? '#aa0000': '#fff'} />
+                <Icon
+                  name="heart"
+                  size={12}
+                  color={favorite ? '#aa0000' : '#fff'}
+                />
                 <Text style={[theme['h14-600'], theme.cwhite, theme.ms5]}>
                   {favorite ? 'Favorited' : 'Favorite'}
                 </Text>
@@ -293,28 +297,34 @@ const RadioDetails = ({navigation}) => {
                       theme.relative,
                       {backgroundColor: 'rgba(255, 255, 255, 0.16)'},
                     ]}
+                    key={i}>
+                    <TouchableOpacity 
                     onPress={() => {
                       navigation.navigate('ProgramDetails', {
                         id: item.id,
                       });
-                    }}
-                    key={i}>
-                    <Image
-                      source={{uri: item.image}}
-                      style={[theme.h55, theme.w55, theme.br7, theme.me10]}
-                    />
-                    <View style={[theme.faStart]}>
-                      <Text style={[theme['h16-700'], theme.cwhite]}>
-                        {item.title}
-                      </Text>
-                      <Text
-                        style={[theme['h8-600'], theme.cwhite, {opacity: 0.6}]}>
-                        {item.penyiar_name}
-                      </Text>
-                      <Text style={[theme.cwhite, theme['h10-500']]}>
-                        {item.time} WIB
-                      </Text>
-                    </View>
+                    }} style={[theme.fRow,theme.wp80]}>
+                      <Image
+                        source={{uri: item.image}}
+                        style={[theme.h55, theme.w55, theme.br7, theme.me10]}
+                      />
+                      <View style={[theme.faStart]}>
+                        <Text style={[theme['h16-700'], theme.cwhite]}>
+                          {item.title}
+                        </Text>
+                        <Text
+                          style={[
+                            theme['h8-600'],
+                            theme.cwhite,
+                            {opacity: 0.6},
+                          ]}>
+                          {item.penyiar_name}
+                        </Text>
+                        <Text style={[theme.cwhite, theme['h10-500']]}>
+                          {item.time} WIB
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
                     <View
                       style={[
                         theme.fRow,
@@ -323,11 +333,26 @@ const RadioDetails = ({navigation}) => {
                         theme.right10,
                         theme.bottom10,
                       ]}>
-                      <TouchableOpacity style={[theme.me10]} onPress={()=>{sentLike(item.id, 'Program',i);}}>
-                        <Icon name="heart" size={15} color={(item.favorited) ? '#aa0000': '#fff'} />
+                      <TouchableOpacity
+                        style={[theme.me10]}
+                        onPress={() => {
+                          sentLike(item.id, 'Program', i);
+                        }}>
+                        <Icon
+                          name="heart"
+                          size={15}
+                          color={item.favorited ? '#aa0000' : '#fff'}
+                        />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={()=>{sentLike(item.id, 'RemindProgram',i);}}>
-                        <Icon name="bell" size={15} color={(item.remind) ? '#F8C303' : '#fff'} />
+                      <TouchableOpacity
+                        onPress={() => {
+                          sentLike(item.id, 'RemindProgram', i);
+                        }}>
+                        <Icon
+                          name="bell"
+                          size={15}
+                          color={item.remind ? '#F8C303' : '#fff'}
+                        />
                       </TouchableOpacity>
                     </View>
                   </View>

@@ -33,6 +33,6 @@ class PrivateMessageEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('private-chat-room-' . $this->message->chat_room_id);
+        return new Channel('privateChat-' . $this->message->chat_room_id);
     }
 }

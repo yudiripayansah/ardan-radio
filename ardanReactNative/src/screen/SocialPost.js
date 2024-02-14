@@ -242,17 +242,24 @@ const SocialPost = ({navigation}) => {
             feedsItem.data.map((item, i) => {
               return (
                 <View style={[theme.my20]} key={i}>
-                  <View style={[theme.fRow]}>
-                    <Image
-                      source={
-                        item.user.image_url
-                          ? {uri: item.user.image_url}
-                          : {
-                              uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                            }
-                      }
-                      style={[theme.h40, theme.w40, theme.br12, theme.me15]}
-                    />
+                  <View style={[theme.fRow,theme.mb5]}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('Profile', {
+                          id: item.user.id,
+                        });
+                      }}>
+                      <Image
+                        source={
+                          item.user.image_url
+                            ? {uri: item.user.image_url}
+                            : {
+                                uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                              }
+                        }
+                        style={[theme.h40, theme.w40, theme.br12, theme.me15]}
+                      />
+                    </TouchableOpacity>
                     <View>
                       <TouchableOpacity
                         onPress={() => {
@@ -283,14 +290,21 @@ const SocialPost = ({navigation}) => {
                       html: `<div style="color:#fff;">${item.text}</div>`,
                     }}
                   />
+                  <View style={[theme.mt5]}></View>
                   {/* <Text style={[theme['p14-400'],theme.cwhite,theme.mb20]}>{item.text}</Text> */}
                   {item.image_url ? (
-                    <AutoHeightImage
-                      width={imageWidth}
+                    <Image
+                      style={[{width:imageWidth,height:imageWidth,objectFit: 'contain',backgroundColor:'#fafafa'}]}
                       source={{uri: item.image_url}}
                     />
                   ) : null}
-                  <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.mt10]}>
+                  <View
+                    style={[
+                      theme.fRow,
+                      theme.faCenter,
+                      theme.fjBetween,
+                      theme.mt10,
+                    ]}>
                     <View style={[theme.fRow, theme.faCenter]}>
                       <TouchableOpacity
                         onPress={() => {
@@ -298,7 +312,8 @@ const SocialPost = ({navigation}) => {
                         }}
                         style={[theme.fRow, theme.faCenter, theme.me15]}>
                         <Icon name="heart" size={20} color="#F8C303" />
-                        <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
+                        <Text
+                          style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
                           {item.like_count}
                         </Text>
                       </TouchableOpacity>
@@ -308,7 +323,8 @@ const SocialPost = ({navigation}) => {
                           showChat(item.id);
                         }}>
                         <Icon name="comment" size={20} color="#F8C303" />
-                        <Text style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
+                        <Text
+                          style={[theme['p12-400'], theme.cwhite, theme.ms5]}>
                           {item.comment_count}
                         </Text>
                       </TouchableOpacity>

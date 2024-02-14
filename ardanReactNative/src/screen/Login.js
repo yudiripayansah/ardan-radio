@@ -3,11 +3,13 @@ import { Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView } 
 import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api'
+import Icon from 'react-native-vector-icons/FontAwesome';
 const Login = ({navigation}) => {
   const theme = useContext(ThemeContext)
   const {setUser} = useContext(AuthContext);
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
+  const [sPassword, setSpassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [login, setLogin] = useState({
     status: true,
@@ -97,14 +99,16 @@ const Login = ({navigation}) => {
         </View>
         <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt15, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Password' secureTextEntry={true} onChangeText={setPassword} value={password} placeholderTextColor={'#000'}/>
-          <Image style={[theme.w20,theme.h20, theme.absolute,theme.right20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/eye.png')}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Password' secureTextEntry={sPassword} onChangeText={setPassword} value={password} placeholderTextColor={'#000'}/>
+          <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>
+            <Icon name={(sPassword) ? "eye-slash" : "eye"} size={20} color="#555" />
+          </TouchableOpacity>
         </View>
         <View style={[theme.fRow, theme.mt5, theme.fjBetween]}>
           <TouchableOpacity onPress={() => {navigation.navigate('Register');}}>
             <Text style={[theme.cindian_red, theme['p14-500']]}>Daftar?</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => {navigation.navigate('Forgot');}}>
           <Text style={[theme.cindian_red, theme['p14-500']]}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>

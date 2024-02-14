@@ -40,6 +40,10 @@ class Likes extends Model
     {
       return $this->belongsTo(User::class, 'id_user', 'id');
     }
+    public function user_target()
+    {
+      return $this->belongsTo(User::class, 'id_target', 'id');
+    }
     public function tokens()
     {
       return $this->hasMany(UserToken::class, 'id_user', 'id_user');

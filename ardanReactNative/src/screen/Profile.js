@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -17,7 +18,9 @@ import Helper from '../config/Helper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {RadioContext} from '../context/RadioContext';
+import {AuthContext} from '../context/AuthContext';
 const Profile = ({route, navigation}) => {
+  const {removeUser} = useContext(AuthContext);
   const radioState = useContext(RadioContext).state;
   const imageWidth = Dimensions.get('window').width - 20;
   const theme = useContext(ThemeContext);
@@ -28,6 +31,7 @@ const Profile = ({route, navigation}) => {
     data: [],
     loading: false,
   });
+  const [follow, setFollow] = useState(false);
   const getFeeds = async () => {
     setFeedsItem({
       data: [],
@@ -71,6 +75,7 @@ const Profile = ({route, navigation}) => {
     let id = user.id;
     if (route.params) {
       id = route.params.id;
+      console.log('profile user id:', route.params.id);
     }
     try {
       let theData = {};
@@ -85,6 +90,7 @@ const Profile = ({route, navigation}) => {
         }
       }
       setDUser(theData);
+      getLike(theData.id, 'FOLLOW');
     } catch (error) {
       console.error(error);
       setDUser({});
@@ -111,19 +117,41 @@ const Profile = ({route, navigation}) => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    let mounted = true;
-    navigation.addListener('focus', () => {
-      if (mounted) {
-        getFeeds();
-        getUser();
+  const getLike = async (id, type, idx = null) => {
+    let payload = {
+      id_target: id,
+      type: type,
+      id_user: user.id,
+    };
+    try {
+      let req = await Api.likeGet(payload, user.access_token);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status && data) {
+          setFollow(true);
+        } else {
+          setFollow(false);
+        }
       }
-    });
-    return () => (mounted = false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const doLogout = () => {
+    removeUser();
+  };
+  useEffect(() => {
+    getFeeds();
+    getUser();
   }, []);
 
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60]}>
+    <SafeAreaView
+      style={[
+        theme.bgblack,
+        {flexGrow: 1},
+        radioState && radioState.status == 'playing' ? theme.pt130 : theme.pt60,
+      ]}>
       <ScrollView style={[]}>
         <View style={[theme.px10, theme.pt10, theme.mb100]}>
           <View style={[theme.fRow]}>
@@ -147,6 +175,16 @@ const Profile = ({route, navigation}) => {
               <Text style={[theme.cpale_white, theme['h12-400']]}>
                 {dUser.email}
               </Text>
+              {dUser.id == user.id && (
+                <TouchableOpacity
+                  onPress={() => {
+                    doLogout();
+                  }}>
+                  <Text style={[theme.cyellow, theme['p12-600']]}>
+                    Sign Out
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
           <View style={[theme.fRow, theme.py30]}>
@@ -157,20 +195,38 @@ const Profile = ({route, navigation}) => {
               <Text style={[theme.cpale_white, theme['h14-500']]}>Post</Text>
             </View>
             <View style={[theme.wp33, theme.faCenter, theme.fjCenter]}>
-              <Text style={[theme.cwhite, theme['h18-600']]}>
-                {dUser.followers_count}
-              </Text>
-              <Text style={[theme.cpale_white, theme['h14-500']]}>
-                Followers
-              </Text>
+              <TouchableOpacity
+                style={[theme.faCenter, theme.fjCenter]}
+                onPress={() => {
+                  navigation.push('Followers', {
+                    id: dUser.id,
+                    type: 'followers',
+                  });
+                }}>
+                <Text style={[theme.cwhite, theme['h18-600']]}>
+                  {dUser.followers_count}
+                </Text>
+                <Text style={[theme.cpale_white, theme['h14-500']]}>
+                  Followers
+                </Text>
+              </TouchableOpacity>
             </View>
             <View style={[theme.wp33, theme.faCenter, theme.fjCenter]}>
-              <Text style={[theme.cwhite, theme['h18-600']]}>
-                {dUser.following_count}
-              </Text>
-              <Text style={[theme.cpale_white, theme['h14-500']]}>
-                Following
-              </Text>
+              <TouchableOpacity
+                style={[theme.faCenter, theme.fjCenter]}
+                onPress={() => {
+                  navigation.push('Following', {
+                    id: dUser.id,
+                    type: 'following',
+                  });
+                }}>
+                <Text style={[theme.cwhite, theme['h18-600']]}>
+                  {dUser.following_count}
+                </Text>
+                <Text style={[theme.cpale_white, theme['h14-500']]}>
+                  Following
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
           <View
@@ -191,7 +247,9 @@ const Profile = ({route, navigation}) => {
                 onPress={() => {
                   doFollow(dUser.id, 'FOLLOW');
                 }}>
-                <Text style={[theme.cwhite, theme['h16-600']]}>Follow</Text>
+                <Text style={[theme.cwhite, theme['h16-600']]}>
+                  {follow ? 'Unfollow' : 'Follow'}
+                </Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -207,7 +265,7 @@ const Profile = ({route, navigation}) => {
                   theme.br100,
                 ]}
                 onPress={() => {
-                  navigation.navigate('ProfileUpdate');
+                  navigation.push('ProfileUpdate');
                 }}>
                 <Text style={[theme.cwhite, theme['h16-600']]}>Edit</Text>
               </TouchableOpacity>
@@ -226,11 +284,11 @@ const Profile = ({route, navigation}) => {
               ]}
               onPress={() => {
                 if (user.id != dUser.id) {
-                  navigation.navigate('MessageDetail', {
+                  navigation.push('MessageDetail', {
                     id: dUser.id,
                   });
                 } else {
-                  navigation.navigate('Message');
+                  navigation.push('Message');
                 }
               }}>
               <Text style={[theme.cwhite, theme['h16-600']]}>Message</Text>
@@ -283,8 +341,8 @@ const Profile = ({route, navigation}) => {
                   <View style={[theme.h10]} />
                   {/* <Text style={[theme['p14-400'],theme.cwhite,theme.mb20]}>{item.text}</Text> */}
                   {item.image_url && (
-                    <AutoHeightImage
-                      width={imageWidth}
+                    <Image
+                      style={[{width:imageWidth,height:imageWidth,objectFit: 'contain',backgroundColor:'#fafafa'}]}
                       source={{uri: item.image_url}}
                     />
                   )}

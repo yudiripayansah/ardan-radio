@@ -76,7 +76,7 @@ const ArdanContent = ({navigation}) => {
         setYoutube(data.items)
       }
     } catch (error) {
-      console.log(error);
+      console.error('get youtube:',error);
     }
   };
   const goToUrl = async (url) => {

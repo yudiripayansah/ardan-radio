@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Penyiar;
+use App\Models\User;
 
 class PenyiarController extends Controller
 {
@@ -97,6 +99,8 @@ class PenyiarController extends Controller
       unset($dataCreate['image']);
     }
     DB::beginTransaction();
+    $uc = $this->createUser($request->all());
+    $dataCreate['id_user'] = $uc->id;
     $validate = Penyiar::validate($dataCreate);
     if ($validate['status']) {
       try {
@@ -145,6 +149,10 @@ class PenyiarController extends Controller
     DB::beginTransaction();
     if ($validate['status']) {
       try {
+        if(!$dataFind->id_user){
+          $uc = $this->createUser($request->all());
+          $dataUpdate['id_user'] = $uc->id;
+        }
         $du = Penyiar::where('id',$request->id)->update($dataUpdate);
         $dg = Penyiar::find($request->id);
         $res = array(
@@ -193,5 +201,26 @@ class PenyiarController extends Controller
             );
     }
     return response()->json($res, 200);
+  }
+  public function createUser($req) {
+    $password = Hash::make(uniqid());
+    $dataCreate = [
+      'username' => $req['name'].time(),
+      'email' => $req['name'].time().'@ardanradio.com',
+      'name' => $req['name'],
+      'password' => $password,
+      'role' => 'member',
+      'penyiar' => 'Yes',
+      'verified' => 'Yes'
+    ];
+    if($req['image']) {
+      $filename = uniqid().time().'-'. '-users.png';
+      $filePath = 'user/' .$filename;
+      $image = $filename;
+      Storage::disk('public')->put($filePath, file_get_contents($req['image']));
+      $dataCreate['image'] = $image;
+    }
+    $dc = User::create($dataCreate);
+    return $dc;
   }
 }

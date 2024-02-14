@@ -16,6 +16,7 @@ use App\Http\Controllers\LiveStreamingsController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PublicChatControllers;
+use App\Http\Controllers\PrivateChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,9 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);    
+    Route::post('/sendotp', [AuthController::class, 'sendotp']);
+    Route::post('/checkotp', [AuthController::class, 'checkotp']);
+    Route::post('/updatePassword', [AuthController::class, 'updatePassword']);
 });
 Route::group([
     'middleware' => 'api',
@@ -143,6 +147,7 @@ Route::group([
     Route::post('/delete', [UserController::class, 'delete']); 
     Route::post('/registerToken', [UserController::class, 'createToken']);
     Route::post('/readToken', [UserController::class, 'readToken']);
+    Route::post('/userFollow', [UserController::class, 'userFollow']);
 });
 Route::group([
     'middleware' => 'api',
@@ -164,5 +169,17 @@ Route::group([
     Route::post('/update', [LikeController::class, 'update']); 
     Route::post('/delete', [LikeController::class, 'delete']); 
 });
-
-Route::post('/chat/send', [PublicChatControllers::class, 'send']);
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'chat'
+], function ($router) {
+    Route::post('/read', [PublicChatControllers::class, 'read']); 
+    Route::post('/send', [PublicChatControllers::class, 'send']);
+});
+Route::group([
+    'prefix' => 'privatechat'
+], function ($router) {
+    Route::post('/', [PrivateChatController::class, 'index']); 
+    Route::post('/send', [PrivateChatController::class, 'send']);
+    Route::post('/get', [PrivateChatController::class, 'get']);
+});

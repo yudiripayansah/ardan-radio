@@ -13,23 +13,31 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class PublicChatEvents implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets;
-    public $message;
-    public $target;
-    public $name;
+    public $id_user;
+    public $id_target;
+    public $target_type;
+    public $title;
+    public $chat;
     public $penyiar;
     public $verified;
+    public $date;
+    public $user;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message,$target,$name,$penyiar,$verified)
+    public function __construct($id_user,$id_target,$target_type,$title,$chat,$penyiar,$verified,$date,$user)
     {
-        $this->message = $message;
-        $this->target = $target;
-        $this->name = $name;
+        $this->id_user = $id_user;
+        $this->id_target = $id_target;
+        $this->target_type = $target_type;
+        $this->title = $title;
+        $this->chat = $chat;
         $this->penyiar = $penyiar;
         $this->verified = $verified;
+        $this->date = $date;
+        $this->user = $user;
     }
 
     /**

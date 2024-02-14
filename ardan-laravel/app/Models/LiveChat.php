@@ -37,4 +37,12 @@ class LiveChat extends Model
         }
         return $res;
     }
+    public function user()
+    {
+      return $this->belongsTo(User::class, 'id_user', 'id');
+    }
+    public function reciever()
+    {
+      return $this->belongsTo(User::class, 'id_target', 'id');
+    }
 }

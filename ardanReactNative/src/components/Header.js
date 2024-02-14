@@ -126,7 +126,7 @@ const Header = ({navigation, ...props}) => {
             onPress={() => {
               toggleSearch();
             }}>
-            <Image source={Icons.back} width={25} height={25} />
+            <Image source={Icons.back} style={[{height:25,width:25,objectFit:'contain'}]} />
           </TouchableOpacity>
           <TextInput
             placeholder="Search..."
@@ -148,7 +148,7 @@ const Header = ({navigation, ...props}) => {
           style={[
             {backgroundColor: '#28353b'},
             theme.wp100,
-            theme.py15,
+            theme.py5,
             theme.px40,
             theme.fRow,
             theme.fjBetween,
@@ -197,13 +197,13 @@ const Header = ({navigation, ...props}) => {
               onPress={() => {
                 toggleSearch();
               }}>
-              <Image source={Icons.search} width={25} height={25} />
+              <Image source={Icons.search} style={[{height:25,width:25,objectFit:'contain'}]} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Notifications');
               }}>
-              <Image source={Icons.notif} width={25} height={25} />
+              <Image source={Icons.notif} style={[{height:25,width:25,objectFit:'contain'}]} />
             </TouchableOpacity>
           </View>
           <SearchBar />
@@ -269,7 +269,7 @@ const Header = ({navigation, ...props}) => {
               onPress={() => {
                 navigation.goBack();
               }}>
-              <Image source={Icons.back} width={25} height={25} />
+              <Image source={Icons.back} style={[{height:25,width:25,objectFit:'contain'}]} />
             </TouchableOpacity>
           </View>
           <View style={[theme.fRow, theme.faCenter]}>
@@ -283,13 +283,13 @@ const Header = ({navigation, ...props}) => {
               onPress={() => {
                 toggleSearch();
               }}>
-              <Image source={Icons.search} width={25} height={25} />
+              <Image source={Icons.search} style={[{height:25,width:25,objectFit:'contain'}]} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Notifications');
               }}>
-              <Image source={Icons.notif} width={25} height={25} />
+              <Image source={Icons.notif} style={[{height:25,width:25,objectFit:'contain'}]} />
             </TouchableOpacity>
           </View>
           <SearchBar />
@@ -319,7 +319,7 @@ const Header = ({navigation, ...props}) => {
   };
   const foregroundnotif = async () => {
     const unsubscribe = messaging().onMessage(async msg => {
-      console.log(msg.data);
+      // console.log(msg.data);
     });
   };
   useEffect(() => {

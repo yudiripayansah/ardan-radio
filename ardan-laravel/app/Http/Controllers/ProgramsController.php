@@ -187,6 +187,8 @@ class ProgramsController extends Controller
     unset($dataUpdate['time_end']);
     unset($dataUpdate['days_label']);
     unset($dataUpdate['penyiar_name']);
+    unset($dataUpdate['favorited']);
+    unset($dataUpdate['remind']);
     DB::beginTransaction();
     if ($validate['status']) {
       try {

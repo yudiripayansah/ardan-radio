@@ -4,11 +4,12 @@ import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api'
 import Icon from 'react-native-vector-icons/FontAwesome';
-const Forgot = ({navigation}) => {
+const UpdatePassword = ({route,navigation}) => {
   const theme = useContext(ThemeContext)
   const {setUser} = useContext(AuthContext);
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
+  const [Cpassword, setCpassword] = useState()
   const [sPassword, setSpassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [login, setLogin] = useState({
@@ -27,34 +28,34 @@ const Forgot = ({navigation}) => {
     setLoading(true)
     try {
       let payload = {
-        email: email
+        email: route.params.email,
+        password: password
       }
-      if(email) {
-        if(validateEmail(email)) {
-          let req = await Api.sendotp(payload)
+      if(password == Cpassword) {
+          let req = await Api.updatePassword(payload)
           if(req.status == 200){
             let {data,status,msg} = req.data
             if(status) {
-              navigation.navigate('CheckOtp',{email: email})
+              setLogin({
+                status: false,
+                msg: 'Reset password success',
+                data: null
+              })
+              setTimeout(() => {
+                navigation.navigate('Login',{email: route.params.email})
+              },2000)
             }
           } else {
             setLogin({
               status: false,
-              msg: 'Failed to send OTP',
+              msg: 'Failed to update Password',
               data: null
             })
           }
-        } else {
-          setLogin({
-            status: false,
-            msg: 'Please enter valid email',
-            data: null
-          })
-        }
       } else {
         setLogin({
           status: false,
-          msg: 'Please enter email',
+          msg: 'Password doesnt match',
           data: null
         })
       }
@@ -87,11 +88,21 @@ const Forgot = ({navigation}) => {
         />
       </View>
       <View style={[theme.w%100, theme.mt50,]}>
-        <Text style={[theme.cwhite,theme['p24-500'], theme.tCenter]}>Forgot Password</Text>
-        <Text style={[theme.cblue_grey,theme['p14-500'], theme.tCenter]}>Please enter your email</Text>
-        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt20, theme.br12]}>
-          <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/envelope.png')}/>
-          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Email' onChangeText={setEmail} value={email} placeholderTextColor={'#000'}/>
+        <Text style={[theme.cwhite,theme['p24-500'], theme.tCenter]}>Update Password</Text>
+        <Text style={[theme.cblue_grey,theme['p14-500'], theme.tCenter]}>Please enter your new password</Text>
+        <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt15, theme.br12]}>
+          <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Password' secureTextEntry={sPassword} onChangeText={setPassword} value={password} placeholderTextColor={'#000'}/>
+          <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>
+            <Icon name={(sPassword) ? "eye-slash" : "eye"} size={20} color="#555" />
+          </TouchableOpacity>
+        </View>
+        <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt15, theme.br12]}>
+          <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
+          <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Reenter Password' secureTextEntry={sPassword} onChangeText={setCpassword} value={Cpassword} placeholderTextColor={'#000'}/>
+          <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>
+            <Icon name={(sPassword) ? "eye-slash" : "eye"} size={20} color="#555" />
+          </TouchableOpacity>
         </View>
         <View style={[theme.fRow, theme.mt5, theme.fjEnd]}>
           <TouchableOpacity onPress={() => {navigation.navigate('Login');}}>
@@ -111,4 +122,4 @@ const Forgot = ({navigation}) => {
   )
 }
 
-export default Forgot
+export default UpdatePassword

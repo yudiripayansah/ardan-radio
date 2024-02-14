@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Penyiar;
 use App\Models\UserToken;
 use App\Models\Feeds;
 use App\Models\Likes;
@@ -14,7 +15,7 @@ use App\Models\Likes;
 class UserController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['read', 'get','create','update','createToken','readToken']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get','create','update','createToken','readToken','userFollow']]);
   }
   public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;
@@ -118,6 +119,9 @@ class UserController extends Controller
         try {
           $dc = User::create($dataCreate);
           $dg = User::find($dc->id);
+          if(isset($dataCreate['penyiar']) && $dataCreate['penyiar'] == 'Yes'){
+            $cp = $this->processPenyiar($dg);
+          }
           $res = array(
                   'status' => true,
                   'data' => $dg,
@@ -177,6 +181,9 @@ class UserController extends Controller
       try {
         $du = User::where('id',$request->id)->update($dataUpdate);
         $dg = User::find($request->id);
+        if(isset($dataUpdate['penyiar']) && $dataUpdate['penyiar'] == 'Yes'){
+          $cp = $this->processPenyiar($dg);
+        }
         $res = array(
                 'status' => true,
                 'data' => $dg,
@@ -295,6 +302,88 @@ class UserController extends Controller
         $total = $total->count();
     } else {
         $total = UserToken::all()->count();
+    }
+    if ($perPage != '~') {
+        $totalPage = ceil($total / $perPage);
+    }
+    $res = array(
+        'status' => true,
+        'data' => $listData,
+        'msg' => 'List data available',
+        'total' => $total,
+        'totalPage' => $totalPage,
+        'paging' => array(
+          'page' => $page,
+          'perPage' => $perPage,
+          'sortDir' => $sortDir,
+          'sortBy' => $sortBy,
+          'search' => $search
+        )
+    );
+    return response()->json($res, 200);
+  }
+  public function processPenyiar($req) {
+    $dataCreate = [
+      'name' => $req['name'],
+      'id_user' => $req['id'],
+    ];
+    if($req['image']) {
+      $filename = uniqid().time().'-'. '-penyiar.png';
+      $filePath = 'penyiar/' .$filename;
+      $image = $filename;
+      Storage::disk('public')->put($filePath, file_get_contents($req['image']));
+      $dataCreate['image'] = $image;
+    }
+    $dc = Penyiar::create($dataCreate);
+    return $dc;
+  }
+  public function userFollow(Request $request){
+    $page = ($request->page) ? $request->page : 1;
+    $perPage = ($request->perPage) ? $request->perPage : '~';
+    $offset = ($page > 1) ? ($page - 1) * $perPage : 0;
+    $sortDir = ($request->sortDir) ? $request->sortDir : 'DESC';
+    $sortBy = ($request->sortBy) ? $request->sortBy : 'updated_at';
+    $search = ($request->search) ? $request->search : null;
+    $total = 0;
+    $totalPage = 1;
+    $id_user = ($request->id_user) ? $request->id_user : null;
+    $id_target = ($request->id_target) ? $request->id_target : null;
+    $listData = Likes::select('likes.*')->where('type','FOLLOW')->orderBy('id', 'DESC')->with('user')->with('user_target');
+    if ($perPage != '~') {
+      $listData->skip($offset)->take($perPage);
+    }
+    if ($search != null) {
+        $listData->whereRaw('(likes.name LIKE "%'.$search.'%")');
+    }
+    if ($id_user != null) {
+        $listData->where('likes.id_user',$id_user);
+    }
+    if ($id_target != null) {
+        $listData->where('likes.id_target',$id_target);
+    }
+    $listData = $listData->get();
+    foreach($listData as $ld) {
+      if($ld->user){
+        $ld->user->image_url = Storage::disk('public')->url('user/'.$ld->user->image);
+      }
+      if($ld->user_target){
+        $ld->user_target->image_url = Storage::disk('public')->url('user/'.$ld->user_target->image);
+      }
+    }
+    if ($search || $id_user || $id_target) {
+        $total = Likes::orderBy($sortBy, $sortDir);
+        if ($search) {
+            $total->whereRaw('(likes.name LIKE "%'.$search.'%")');
+        }
+        if ($id_user) {
+            $total->where('likes.id_user',$id_user);
+        }
+        if ($id_target) {
+            $total->where('likes.id_target',$id_target);
+        }
+        $total = $total->count();
+    } else {
+        $total = Likes::all()->count();
     }
     if ($perPage != '~') {
         $totalPage = ceil($total / $perPage);

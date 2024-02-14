@@ -13,6 +13,18 @@ const Api = {
     let url = '/auth/login';
     return defAxios.post(url, payload);
   },
+  sendotp(payload) {
+    let url = '/auth/sendotp';
+    return defAxios.post(url, payload);
+  },
+  checkotp(payload) {
+    let url = '/auth/checkotp';
+    return defAxios.post(url, payload);
+  },
+  updatePassword(payload) {
+    let url = '/auth/updatePassword';
+    return defAxios.post(url, payload);
+  },
   logout(payload) {
     let url = '/auth/logout';
     return defAxios.post(url, payload);
@@ -46,6 +58,15 @@ const Api = {
   },
   userDelete(payload, token) {
     let url = '/user/delete';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  userFollow(payload, token) {
+    let url = '/user/userFollow';
     let config = {
       headers: {
         Authorization: 'Bearer ' + token,
@@ -442,6 +463,34 @@ const Api = {
   },
   notificationsDelete(payload, token) {
     let url = '/notifications/delete';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  // private chat
+  PrivateChatRead(payload, token) {
+    let url = '/privatechat/';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  PrivateChatSend(payload, token) {
+    let url = '/privatechat/send';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  PrivateChatGet(payload, token) {
+    let url = '/privatechat/get';
     let config = {
       headers: {
         Authorization: 'Bearer ' + token,

@@ -91,6 +91,7 @@ const Penyiar = ({navigation}) => {
       <ScrollView style={[theme.px20,theme.pt20]}>
         {penyiarsItem.data.map((item, i) => {
           return (
+            
             <TouchableOpacity
               style={[
                 {backgroundColor:'#252d3a'},
@@ -100,8 +101,8 @@ const Penyiar = ({navigation}) => {
                 theme.mb15,
               ]}
               onPress={() => {
-                navigation.navigate('PenyiarDetails', {
-                  id: item.id,
+                navigation.navigate('Profile', {
+                  id: item.id_user,
                 });
               }}
               key={i}
@@ -137,11 +138,11 @@ const Penyiar = ({navigation}) => {
                     <Text style={[theme['p14-400'],theme.cwhite,theme.ms10]}>{item.twitter}</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={[theme.fjCenter,theme.faCenter,theme.wp100,theme.mtAuto]}>
+                {/* <View style={[theme.fjCenter,theme.faCenter,theme.wp100,theme.mtAuto]}>
                   <TouchableOpacity style={[theme.px10,theme.py5,theme.bgyellow,theme.br5]}>
                     <Text style={[theme['p12-700'],theme.cblack]}>Follow</Text>
                   </TouchableOpacity>
-                </View>
+                </View> */}
               </View>
             </TouchableOpacity>
           );

@@ -30,6 +30,7 @@ const Radio = ({navigation}) => {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
+  const [radiochatold, setRadiochatold] = useState([]);
   const [radiochat, setRadiochat] = useState([]);
   const [msg, setMsg] = useState();
   const [ziChat, setZiChat] = useState(1);
@@ -56,7 +57,6 @@ const Radio = ({navigation}) => {
     try {
       let req = await Api.programsGet(payload);
       const {status, data, msg} = req.data;
-      console.log('current radio', data);
       if (status && data[0]) {
         setCurrentProgram(data[0]);
       }
@@ -64,33 +64,58 @@ const Radio = ({navigation}) => {
       console.log(error);
     }
   };
-  const listenChat = async () => {
+  const listenChat = () => {
+    let theChat = [...radiochat];
     const echo = new Echo({
       broadcaster: 'socket.io',
-      host: 'https://chat.kopikoding.com:6001',
+      host: 'https://mobileapps.ardanradio.com:6001',
       client: io,
     });
-    let listen = echo.channel('publicChat').listen('PublicChatEvent', event => {
-      const {target} = event;
-      let theChat = radiochat;
-      if (target == 'radio') {
-        console.log(event);
-        theChat.push(event);
-        setRadiochat(theChat);
-      }
-    });
+    echo
+      .channel('laravel_database_publicChat')
+      .listen('PublicChatEvents', event => {
+        const {target_type} = event;
+        if (target_type == 'radio') {
+          console.log('chat count:', theChat.length);
+          theChat.push(event);
+          setRadiochat(theChat);
+        }
+      });
   };
   const sendChat = async () => {
     try {
-      let url = 'https://chat.kopikoding.com/publicchat/send';
+      let url = 'https://mobileapps.ardanradio.com/api/chat/send';
       let payload = {
-        message: msg,
-        target: 'radio',
-        name: user.name,
+        id_user: user.id,
+        id_target: 0,
+        target_type: 'radio',
+        title: user.name,
+        chat: msg,
+        penyiar: user.penyiar,
+        verified: user.verified,
       };
       let req = await axios.post(url, payload);
       setMsg('');
-      Keyboard.dismiss();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getChat = async () => {
+    try {
+      let url = 'https://mobileapps.ardanradio.com/api/chat/read';
+      let payload = {
+        page: 1,
+        perPage: 50,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        target_type: 'radio',
+      };
+      let req = await axios.post(url, payload);
+      const {status, data, msg} = req.data;
+      if (status && data.length > 0) {
+        data.sort((a, b) => a.id - b.id);
+        setRadiochatold(data);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -133,7 +158,7 @@ const Radio = ({navigation}) => {
         if (req.status == 200) {
           let {data, status, msg} = req.data;
           if (status) {
-            getLike(target,type);
+            getLike(target, type);
           }
         }
       } catch (error) {
@@ -152,9 +177,9 @@ const Radio = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status && data) {
-          setFav(true,type);
+          setFav(true, type);
         } else {
-          setFav(false,type);
+          setFav(false, type);
         }
       }
     } catch (error) {
@@ -179,7 +204,65 @@ const Radio = ({navigation}) => {
     };
     let share = Share.open(opt);
   };
+  const chatList = list => {
+    return list.map((item, index) => {
+      return (
+        <View style={[theme.fRow, theme.mb10]} key={index}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Profile', {
+                id: item.id_user,
+              });
+            }}>
+            <Image
+              source={{
+                uri:
+                  item.user && item.user.image
+                    ? item.user.image
+                    : 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png',
+              }}
+              style={[
+                theme.br100,
+                theme.w25,
+                theme.h25,
+                {objectFit: 'contain'},
+                theme.me5,
+              ]}
+            />
+          </TouchableOpacity>
+          <View style={[theme.wp80]}>
+            <View style={[theme.fRow, theme.faCenter]}>
+            <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Profile', {
+                id: item.id_user,
+              });
+            }}>
+              <Text style={[theme.cwhite, theme['p14-600']]}>{item.title}</Text>
+              </TouchableOpacity>
+              {item.penyiar == 'Yes' ? (
+                <View
+                  style={[
+                    theme.br100,
+                    theme.faCenter,
+                    theme.fjCenter,
+                    theme.bgyellow,
+                    theme.h10,
+                    theme.w10,
+                    theme.ms5,
+                  ]}>
+                  <Icon name="check" size={6} color="#000" />
+                </View>
+              ) : null}
+            </View>
+            <Text style={[theme.cwhite, theme['p12-400']]}>{item.chat}</Text>
+          </View>
+        </View>
+      );
+    });
+  };
   useEffect(() => {
+    getChat();
     listenChat();
     getCurrentProgram();
     getLike(currentProgram.id, 'Program');
@@ -298,7 +381,10 @@ const Radio = ({navigation}) => {
                 onPress={() => {
                   doShare(currentProgram.id);
                 }}>
-                <Image source={Icons.share} width={16} height={16} />
+                <Image
+                  source={Icons.share}
+                  style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -316,41 +402,8 @@ const Radio = ({navigation}) => {
               onContentSizeChange={() =>
                 scrollViewRef.current.scrollToEnd({animated: true})
               }>
-              {radiochat.map((item, i) => {
-                return (
-                  <View
-                    style={[theme.fRow, theme.mb15, theme.faCenter]}
-                    key={i}>
-                    <View
-                      style={[
-                        theme.faCenter,
-                        theme.fjCenter,
-                        theme.w40,
-                        theme.h40,
-                        theme.br100,
-                        theme.me15,
-                        {backgroundColor: 'rgba(45, 171, 210, 0.12)'},
-                      ]}>
-                      <Image
-                        source={require('../assets/images/icons/user-grey.png')}
-                      />
-                    </View>
-                    <View style={[theme.wp80]}>
-                      <Text
-                        style={[
-                          theme.cwhite,
-                          theme['h10-500'],
-                          {opacity: 0.6},
-                        ]}>
-                        {item.name}
-                      </Text>
-                      <Text style={[theme.cwhite, theme['h12-500']]}>
-                        {item.message}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              })}
+              {chatList(radiochatold)}
+              {chatList(radiochat)}
             </ScrollView>
             <View
               style={[
@@ -362,7 +415,7 @@ const Radio = ({navigation}) => {
                 theme.fjBetween,
               ]}>
               <TextInput
-                style={[theme.wp85, theme.cwhite, theme['h12-400']]}
+                style={[theme.wp80, theme.cwhite, theme['h12-400']]}
                 placeholderTextColor={'#fff'}
                 onFocus={() =>
                   mainScrollViewRef.current.scrollToEnd({animated: true})

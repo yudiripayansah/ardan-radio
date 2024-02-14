@@ -338,7 +338,7 @@ const Search = ({route, navigation}) => {
               (type == 'post' || type == 'sharing') ?
               navigation.navigate(prop.all,{activeTab:prop.title}) : navigation.navigate(prop.all) 
             }}>
-            <Image source={Icons.chevronRight} />
+            <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
           </TouchableOpacity>
         </View>
         {prop.listData.loading ? (

@@ -261,7 +261,9 @@ const SocialSharingDetails = ({route, navigation}) => {
         style={[
           theme.bgblack,
           {flexGrow: 1, zIndex: 2},
-          (radioState && radioState.status == 'playing') ? theme.pt120 : theme.pt60,
+          radioState && radioState.status == 'playing'
+            ? theme.pt120
+            : theme.pt60,
           theme.relative,
         ]}>
         <ScrollView style={[theme.px15]}>
@@ -273,16 +275,23 @@ const SocialSharingDetails = ({route, navigation}) => {
               theme.br12,
             ]}>
             <View style={[theme.fRow, theme.faCenter, theme.me10]}>
-              <Image
-                source={
-                  feedsItem.data.user.image_url
-                    ? {uri: feedsItem.data.user.image_url}
-                    : {
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                      }
-                }
-                style={[theme.w55, theme.h55, theme.br100, theme.me15]}
-              />
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Profile', {
+                    id: feedsItem.data.user.id,
+                  });
+                }}>
+                <Image
+                  source={
+                    feedsItem.data.user.image_url
+                      ? {uri: feedsItem.data.user.image_url}
+                      : {
+                          uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                        }
+                  }
+                  style={[theme.w55, theme.h55, theme.br100, theme.me15]}
+                />
+              </TouchableOpacity>
               <View>
                 <TouchableOpacity
                   onPress={() => {
@@ -370,20 +379,34 @@ const SocialSharingDetails = ({route, navigation}) => {
                 ]}
                 key={i}>
                 <View style={[theme.fRow, theme.faCenter, theme.me10]}>
-                  <Image
-                    source={
-                      item.user.image_url
-                        ? {uri: item.user.image_url}
-                        : {
-                            uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                          }
-                    }
-                    style={[theme.w55, theme.h55, theme.br100, theme.me15]}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('Profile', {
+                        id: item.user.id,
+                      });
+                    }}>
+                    <Image
+                      source={
+                        item.user.image_url
+                          ? {uri: item.user.image_url}
+                          : {
+                              uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                            }
+                      }
+                      style={[theme.w55, theme.h55, theme.br100, theme.me15]}
+                    />
+                  </TouchableOpacity>
                   <View>
-                    <Text style={[theme['h20-500'], theme.cwhite]}>
-                      {item.name}
-                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('Profile', {
+                          id: item.user.id,
+                        });
+                      }}>
+                      <Text style={[theme['h20-500'], theme.cwhite]}>
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
                     <View style={[theme.fRow, theme.faCenter]}>
                       <Text
                         style={[theme['p12-400'], theme.cyellow, theme.me3]}>

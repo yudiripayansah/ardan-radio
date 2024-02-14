@@ -1,5 +1,5 @@
-POST https://mobileapps.ardanradio.com/api/user/registerToken
+POST https://mobileapps.ardanradio.com/api/privatechat/send
 Content-Type: application/json
 Accept: application/json
 
- {"id_user": 14, "name": "Yudi Ripayansah", "token": "f3BlKa-7RqS4Nkz17iiZmd:APA91bGIt1gYYJrfozEiroI3EMLsnaqKxvmsdDra3UCS9aGtu5KhIEIzpIpVoaqvnmVvgkqnse1yTq9rgDXwb3e32AZW1TKPJYZdvKbB0gyHPPDSQf3t6go7NkABxDi2jXu5H28aKNSw"}
+{"chat_room_id": 1, "message": "Wah iya ternyata bisa panjang banget sampai sampai kotaknya jadi lebih tinggi", "reciever_id": 93, "sender_id": 7}

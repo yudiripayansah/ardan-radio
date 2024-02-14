@@ -13,7 +13,9 @@ import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
+import {RadioContext} from '../context/RadioContext';
 const Message = ({navigation}) => {
+  const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const OnlineMessage = () => {
@@ -28,7 +30,7 @@ const Message = ({navigation}) => {
         </View>
         <View style={[theme.faEnd]}>
           <Text style={[theme.cyellow]}>New</Text>
-          <Text style={[theme.cgrey]}>08:32 PM</Text>
+          <Text style={[theme.cwhite,theme['p12-400']]}>08:32 PM</Text>
         </View>
       </TouchableOpacity>
     )
@@ -45,18 +47,54 @@ const Message = ({navigation}) => {
         </View>
         <View style={[theme.faEnd]}>
           <Text style={[theme.cyellow]}></Text>
-          <Text style={[theme.cgrey]}>08:32 PM</Text>
+          <Text style={[theme.cwhite,theme['p12-400']]}>08:32 PM</Text>
         </View>
       </TouchableOpacity>
     )
   }
+  const getMessage = async () => {
+    setUserList({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 100,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+      };
+      if (route.params) {
+        payload.id_user = user.id;
+      }
+      let req = await Api.userFollow(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setUserList({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setUserList({
+        data: [],
+        loading: false,
+      });
+    }
+  };
   useEffect(() => {
   }, []);
 
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, theme.pt60]}>
+    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt60]}>
       <ScrollView style={[theme.mx15]}>
-        <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.py10]}>
+        {/* <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.py10]}>
           <Text style={[theme['p14-400'],theme.cyellow]}>Online</Text>
           <TouchableOpacity>
             <Text style={[theme['p14-400'],theme.cyellow]}>Mark all as read</Text>
@@ -64,8 +102,8 @@ const Message = ({navigation}) => {
         </View>
         <OnlineMessage/>
         <OnlineMessage/>
-        <OnlineMessage/>
-        <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.py10]}>
+        <OnlineMessage/> */}
+        {/* <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.py10]}>
           <Text style={[theme['p14-400'],theme.cyellow]}>Offline</Text>
         </View>
         <OfflineMessage/>
@@ -74,7 +112,7 @@ const Message = ({navigation}) => {
         <OfflineMessage/>
         <OfflineMessage/>
         <OfflineMessage/>
-        <OfflineMessage/>
+        <OfflineMessage/> */}
       </ScrollView>
     </SafeAreaView>
   );

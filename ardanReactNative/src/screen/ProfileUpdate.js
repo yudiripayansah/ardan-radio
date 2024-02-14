@@ -91,7 +91,6 @@ const ProfileUpdate = ({route, navigation}) => {
           setphone(data.phone);
           setaddress(data.address);
           setgender(data.gender);
-          setpassword(data.password);
           setdob(data.dob);
         }
       }
