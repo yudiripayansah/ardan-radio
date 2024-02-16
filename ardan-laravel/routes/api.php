@@ -182,4 +182,5 @@ Route::group([
     Route::post('/', [PrivateChatController::class, 'index']); 
     Route::post('/send', [PrivateChatController::class, 'send']);
     Route::post('/get', [PrivateChatController::class, 'get']);
+    Route::post('/messageList', [PrivateChatController::class, 'messageList']);
 });

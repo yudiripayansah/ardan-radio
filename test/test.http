@@ -1,5 +1,7 @@
-POST https://mobileapps.ardanradio.com/api/privatechat/send
+POST https://mobileapps.ardanradio.com/api/privatechat/messageList
 Content-Type: application/json
 Accept: application/json
 
-{"chat_room_id": 1, "message": "Wah iya ternyata bisa panjang banget sampai sampai kotaknya jadi lebih tinggi", "reciever_id": 93, "sender_id": 7}
+{
+  "user_id": 14
+}

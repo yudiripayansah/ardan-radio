@@ -12,28 +12,41 @@ import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
+import axios from 'axios'
 import Helper from '../config/Helper';
 import {RadioContext} from '../context/RadioContext';
 const Message = ({navigation}) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
-  const OnlineMessage = () => {
-    return (
-      <TouchableOpacity style={[theme.py10,theme.fRow,theme.fjBetween,theme.faCenter]} onPress={()=>{navigation.navigate('MessageDetail')}}>
-        <View style={[theme.fRow,theme.faCenter]}>
-          {/* <Image source={require('../assets/images/penyiar/1.png')} style={[theme.w50,theme.h50,{objectFit:'cover'},theme.br100,theme.me15]}/> */}
-          <View>
-            <Text style={[theme.cwhite,theme['h16-600']]}>Salsabila</Text>
-            <Text style={[theme.cwhite,theme['p14-400']]}>Hallo yang disana...</Text>
+  const [messageList, setMessageList] = useState({
+    data: [],
+    loading: true,
+  })
+  const MessageList = () => {
+    return messageList.data.map((item) => {
+      return (
+        <TouchableOpacity style={[theme.py10,theme.fRow,theme.fjBetween,theme.faCenter]} onPress={()=>{navigation.navigate('MessageDetail',{id:item.with.id,data:item})}}>
+          <View style={[theme.fRow,theme.faCenter]}>
+            <Image source={
+                          item.with.image_url
+                            ? {uri: item.with.image_url}
+                            : {
+                                uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                              }
+                        } style={[theme.w50,theme.h50,{objectFit:'cover'},theme.br100,theme.me15]}/>
+            <View>
+              <Text style={[theme.cwhite,theme['h16-600']]}>{item.with.name}</Text>
+              <Text style={[theme.cwhite,theme['p14-400']]}>{item.message.message}</Text>
+            </View>
           </View>
-        </View>
-        <View style={[theme.faEnd]}>
-          <Text style={[theme.cyellow]}>New</Text>
-          <Text style={[theme.cwhite,theme['p12-400']]}>08:32 PM</Text>
-        </View>
-      </TouchableOpacity>
-    )
+          <View style={[theme.faEnd]}>
+            {/* <Text style={[theme.cyellow]}>New</Text> */}
+            <Text style={[theme.cwhite,theme['p12-400']]}>{item.message.on}</Text>
+          </View>
+        </TouchableOpacity>
+      )
+    })
   }
   const OfflineMessage = () => {
     return (
@@ -52,44 +65,47 @@ const Message = ({navigation}) => {
       </TouchableOpacity>
     )
   }
-  const getMessage = async () => {
-    setUserList({
+  const getMessageList = async () => {
+    setMessageList({
       data: [],
       loading: true,
     });
     try {
       let theData = [];
+      let url = 'https://mobileapps.ardanradio.com/api/privatechat/messageList'
       let payload = {
-        page: 1,
-        perPage: 100,
-        sortDir: 'DESC',
-        sortBy: 'id',
-        search: null,
+        user_id: user.id
       };
-      if (route.params) {
-        payload.id_user = user.id;
-      }
-      let req = await Api.userFollow(payload);
+      let req = await axios.post(url,payload);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
           theData = [...data];
         }
       }
-      setUserList({
+      setMessageList({
         data: theData,
         loading: false,
       });
     } catch (error) {
       console.error(error);
-      setUserList({
+      setMessageList({
         data: [],
         loading: false,
       });
     }
   };
   useEffect(() => {
+
+    let mounted = true;
+    navigation.addListener('focus', () => {
+      if (mounted) {
+        getMessageList()
+      }
+    });
+    return () => (mounted = false);
   }, []);
+  
 
   return (
     <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt60]}>
@@ -99,10 +115,8 @@ const Message = ({navigation}) => {
           <TouchableOpacity>
             <Text style={[theme['p14-400'],theme.cyellow]}>Mark all as read</Text>
           </TouchableOpacity>
-        </View>
-        <OnlineMessage/>
-        <OnlineMessage/>
-        <OnlineMessage/> */}
+        </View> */}
+        <MessageList/>
         {/* <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.py10]}>
           <Text style={[theme['p14-400'],theme.cyellow]}>Offline</Text>
         </View>

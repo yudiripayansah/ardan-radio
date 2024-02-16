@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Events\PrivateMessageEvent;
 use App\Models\User;
@@ -135,6 +137,37 @@ class PrivateChatController extends Controller
         'msg' => 'Failed'
       );
     }
+    return response()->json($res, 200);
+  }
+
+  public function messageList(Request $request)
+  {
+    $user_id = $request->user_id;
+    $data = Message::select('messages.*','receivers.*',DB::raw('MAX(messages.id) as msg_id'))->with('sender')
+                    ->leftJoin('users as s','messages.sender_id','s.id')
+                    ->leftJoin('receivers','messages.id','receivers.message_id')
+                    ->leftJoin('users as r','receivers.receiver_id','r.id')
+                    ->whereRaw('(messages.sender_id = '.$user_id.' OR receivers.receiver_id = '.$user_id.')')
+                    ->groupBy('messages.chat_room_id')
+                    ->orderBy('msg_id','DESC')
+                    ->get();
+    foreach($data as $d) {
+      $d->receiver = User::find($d->receiver_id);
+      $d->message = Message::find($d->msg_id);
+      $d->message->on = date('Y-m-d H:i',strtotime($d->message->created_at));
+      $d->receiver->image_url = ($d->receiver->image) ? Storage::disk('public')->url('user/'.$d->receiver->image) : null;
+      $d->sender->image_url = ($d->sender->image) ? Storage::disk('public')->url('user/'.$d->sender->image) : null;
+      $d->on = date('Y-m-d H:i',strtotime($d->created_at));
+      if($user_id == $d->sender->id) {
+        $d->with = $d->receiver;
+      } else {
+        $d->with = $d->sender;
+      }
+    }
+    $res = [
+      'status' => true,
+      'data' => $data
+    ];
     return response()->json($res, 200);
   }
 }
