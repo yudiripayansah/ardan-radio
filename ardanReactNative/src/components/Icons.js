@@ -1,5 +1,6 @@
 const Icons = {
   search: require('../assets/images/svg/icon-search.png'),
+  searchDark: require('../assets/images/svg/icon-search-dark.png'),
   back: require('../assets/images/svg/icon-back.png'),
   bookmark: require('../assets/images/svg/icon-bookmark.png'),
   chevronRight: require('../assets/images/svg/icon-chevron-right.png'),
@@ -7,6 +8,7 @@ const Icons = {
   flame: require('../assets/images/svg/icon-flame.png'),
   love: require('../assets/images/svg/icon-love.png'),
   notif: require('../assets/images/svg/icon-notif.png'),
+  notifDark: require('../assets/images/svg/icon-notif-dark.png'),
   pause: require('../assets/images/svg/icon-pause.png'),
   share: require('../assets/images/svg/icon-share.png'),
   user: require('../assets/images/svg/icon-user.png'),

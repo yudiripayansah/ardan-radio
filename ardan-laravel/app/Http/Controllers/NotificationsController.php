@@ -257,7 +257,6 @@ class NotificationsController extends Controller
         $fcm = $fcm->withIcon($data->icon);
       }
       $fcm = $fcm->withSound('default');
-      $fcm = $fcm->withClickAction('https://www.google.com');
       $fcm = $fcm->withPriority('high');
       $fcm = $fcm->withAdditionalData($data);
       $fcm = $fcm->asNotification($tokens);

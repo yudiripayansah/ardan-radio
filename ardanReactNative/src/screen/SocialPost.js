@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
@@ -22,7 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 const SocialPost = ({navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -32,6 +32,8 @@ const SocialPost = ({navigation}) => {
   const [comment, setComment] = useState();
   const [target, setTarget] = useState();
   const [loading, setLoading] = useState(false);
+  const [showDelete, setShowDelete] = useState(-1);
+  const [page, setPage] = useState(1);
   const [feedsItem, setFeedsItem] = useState({
     data: [],
     loading: false,
@@ -40,15 +42,11 @@ const SocialPost = ({navigation}) => {
     data: [],
     loading: false,
   });
-  const getFeeds = async () => {
-    setFeedsItem({
-      data: [],
-      loading: true,
-    });
+  const getFeeds = async (page = 1) => {
     try {
-      let theData = [];
+      let theData = feedsItem.data;
       let payload = {
-        page: 1,
+        page: page,
         perPage: 10,
         sortDir: 'DESC',
         sortBy: 'id',
@@ -60,7 +58,10 @@ const SocialPost = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
-          theData = [...data];
+          if (data.length > 0) {
+            setPage(page);
+          }
+          theData = [...theData, ...data];
         }
       }
       setFeedsItem({
@@ -220,6 +221,18 @@ const SocialPost = ({navigation}) => {
     };
     let share = Share.open(opt);
   };
+  const handleScroll = event => {
+    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+    const paddingToBottom = 20;
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+    if (isCloseToBottom) {
+      let nextPage = page + 1;
+      getFeeds(nextPage);
+    } else {
+    }
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
@@ -233,7 +246,10 @@ const SocialPost = ({navigation}) => {
     <>
       <KeyboardAvoidingView
         style={[theme.bgblack, {flexGrow: 1, zIndex: 2}, theme.relative]}>
-        <ScrollView style={[]}>
+        <ScrollView
+          style={[]}
+          onScroll={handleScroll}
+          scrollEventThrottle={400}>
           {feedsItem.loading ? (
             <View style={[theme.py100]}>
               <ActivityIndicator size="large" color="#F8C303" />
@@ -242,47 +258,91 @@ const SocialPost = ({navigation}) => {
             feedsItem.data.map((item, i) => {
               return (
                 <View style={[theme.my20]} key={i}>
-                  <View style={[theme.fRow,theme.mb5]}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate('Profile', {
-                          id: item.user.id,
-                        });
-                      }}>
-                      <Image
-                        source={
-                          item.user.image_url
-                            ? {uri: item.user.image_url}
-                            : {
-                                uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                              }
-                        }
-                        style={[theme.h40, theme.w40, theme.br12, theme.me15]}
-                      />
-                    </TouchableOpacity>
-                    <View>
+                  <View
+                    style={[
+                      theme.fRow,
+                      theme.fjBetween,
+                      theme.mb5,
+                      theme.relative,
+                    ]}>
+                    <View style={[theme.fRow]}>
                       <TouchableOpacity
                         onPress={() => {
                           navigation.navigate('Profile', {
                             id: item.user.id,
                           });
                         }}>
-                        <Text style={[theme['p16-700'], theme.cwhite]}>
-                          {item.user.name}
-                        </Text>
-                      </TouchableOpacity>
-                      <View style={[theme.fRow, theme.faCenter]}>
-                        {/* <Image source={require('../assets/images/icons/map-pin.png')} style={[theme.h15,theme.w15,theme.me5]}/>
-                      <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{item.location}</Text> */}
                         <Image
-                          source={require('../assets/images/icons/discovery.png')}
-                          style={[theme.h15, theme.w15, theme.me5]}
+                          source={
+                            item.user.image_url
+                              ? {uri: item.user.image_url}
+                              : {
+                                  uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                                }
+                          }
+                          style={[theme.h40, theme.w40, theme.br12, theme.me15]}
                         />
-                        <Text style={[theme['p12-400'], {color: 'grey'}]}>
-                          {Helper.dateIndo(item.created_at)}
-                        </Text>
+                      </TouchableOpacity>
+                      <View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            navigation.navigate('Profile', {
+                              id: item.user.id,
+                            });
+                          }}>
+                          <Text style={[theme['p16-700'], theme.cwhite]}>
+                            {item.user.name}
+                          </Text>
+                        </TouchableOpacity>
+                        <View style={[theme.fRow, theme.faCenter]}>
+                          {/* <Image source={require('../assets/images/icons/map-pin.png')} style={[theme.h15,theme.w15,theme.me5]}/>
+                        <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{item.location}</Text> */}
+                          <Image
+                            source={require('../assets/images/icons/discovery.png')}
+                            style={[theme.h15, theme.w15, theme.me5]}
+                          />
+                          <Text style={[theme['p12-400'], {color: 'grey'}]}>
+                            {Helper.dateIndo(item.created_at)}
+                          </Text>
+                        </View>
                       </View>
                     </View>
+                    {item.id_user == user.id && (
+                      <>
+                        <TouchableOpacity
+                          onPress={() => {
+                            showDelete == i
+                              ? setShowDelete('x')
+                              : setShowDelete(i);
+                          }}>
+                          <Icon name="ellipsis-h" size={20} color="#bbb" />
+                        </TouchableOpacity>
+                        <View
+                          style={[
+                            theme.bgwhite,
+                            theme.absolute,
+                            theme.top20,
+                            theme.right0,
+                            theme.p5,
+                            theme.br5,
+                            {display: showDelete == i ? 'flex' : 'none'},
+                          ]}>
+                          <TouchableOpacity>
+                            <View style={[theme.fRow, theme.faCenter]}>
+                              <Icon name="trash" size={10} color="#ff9999" />
+                              <Text
+                                style={[
+                                  theme['p10-600'],
+                                  {color: '#ff9999'},
+                                  theme.ms5,
+                                ]}>
+                                Delete
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      </>
+                    )}
                   </View>
                   <RenderHtml
                     contentWidth={imageWidth}
@@ -294,7 +354,14 @@ const SocialPost = ({navigation}) => {
                   {/* <Text style={[theme['p14-400'],theme.cwhite,theme.mb20]}>{item.text}</Text> */}
                   {item.image_url ? (
                     <Image
-                      style={[{width:imageWidth,height:imageWidth,objectFit: 'contain',backgroundColor:'#fafafa'}]}
+                      style={[
+                        {
+                          width: imageWidth,
+                          height: imageWidth,
+                          objectFit: 'contain',
+                          backgroundColor: '#fafafa',
+                        },
+                      ]}
                       source={{uri: item.image_url}}
                     />
                   ) : null}

@@ -12,7 +12,7 @@ use App\Models\Likes;
 class FeedsController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['read', 'get','create', 'update']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get','create', 'update','delete']]);
   }
   public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;

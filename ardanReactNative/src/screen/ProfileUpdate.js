@@ -6,13 +6,14 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
-  Dimensions,
+  useWindowDimensions,
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
+import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -22,15 +23,16 @@ import {Picker} from '@react-native-picker/picker';
 import {RadioContext} from '../context/RadioContext';
 const ProfileUpdate = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
+  const {setUser} = useContext(AuthContext);
   const [image, setimage] = useState(user.image_url);
   const [name, setname] = useState(user.name);
   const [phone, setphone] = useState(user.phone);
   const [address, setaddress] = useState(user.address);
   const [gender, setgender] = useState(user.gender);
-  const [password, setpassword] = useState(null);
+  const [password, setpassword] = useState();
   const [dob, setdob] = useState(Helper.dateFormatId(user.dob));
   const [open, setOpen] = useState(false);
   const [loading, setloading] = useState(false);
@@ -110,22 +112,26 @@ const ProfileUpdate = ({route, navigation}) => {
         phone: phone,
         address: address,
         gender: gender,
-        password: password,
         dob: dob,
         role: user.role,
       };
-      console.log(payload);
+      if(password) {
+        payload.password = password;
+      }
       let req = await Api.userUpdate(payload, user.access_token);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
+          let newData = {...data}
+          newData.access_token = user.access_token
+          setUser(data)
           setsaveButton('Success!!!');
           setTimeout(() => {
             setsaveButton('Save');
             navigation.navigate('Profile');
           }, 1000);
         } else {
-          console.log(msg);
+          console.log(req.data);
         }
       }
       setloading(false);
@@ -139,7 +145,12 @@ const ProfileUpdate = ({route, navigation}) => {
   }, []);
 
   return (
-    <KeyboardAvoidingView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60]}>
+    <KeyboardAvoidingView
+      style={[
+        theme.bgblack,
+        {flexGrow: 1},
+        radioState && radioState.status == 'playing' ? theme.pt130 : theme.pt60,
+      ]}>
       <ScrollView style={[]}>
         <KeyboardAvoidingView style={[theme.px20, theme.pt10, theme.pb150]}>
           <TouchableOpacity
@@ -147,7 +158,11 @@ const ProfileUpdate = ({route, navigation}) => {
               openImagePicker();
             }}>
             {image ? (
-              <AutoHeightImage width={imageWidth} source={{uri: image}} />
+              <AutoHeightImage
+                contentWidth={imageWidth}
+                width={imageWidth}
+                source={{uri: image}}
+              />
             ) : (
               <Image
                 source={require('../assets/images/user.jpg')}

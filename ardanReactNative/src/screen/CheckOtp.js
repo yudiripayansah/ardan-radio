@@ -23,7 +23,8 @@ const CheckOtp = ({route,navigation}) => {
     setLoading(true)
     try {
       let payload = {
-        otp: otp
+        otp: otp,
+        email: route.params.email
       }
       if(otp) {
           let req = await Api.checkotp(payload)

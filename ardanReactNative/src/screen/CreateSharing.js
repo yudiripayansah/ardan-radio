@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -28,7 +28,7 @@ const h5 = ({tintColor}) => <Text style={{color: tintColor}}>H5</Text>;
 const h6 = ({tintColor}) => <Text style={{color: tintColor}}>H6</Text>;
 const CreateSharing = ({navigation}) => {
   const richText = React.useRef();
-  const imageWidth = Dimensions.get('window').width - 20;
+  const imageWidth = useWindowDimensions().width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [id_user, setid_user] = useState(user.id);
@@ -71,7 +71,7 @@ const CreateSharing = ({navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('Get Category Sharing',error);
+      console.error('Get Category Sharing', error);
       setCategory({
         data: [],
         loading: false,
@@ -138,15 +138,19 @@ const CreateSharing = ({navigation}) => {
         let {data, status, msg} = req.data;
         if (status) {
           setpostButton('Success!!!');
+          setimage('')
+          settitle('')
+          settext('')
+          setSelectedCat([])
           setTimeout(() => {
             setpostButton('SHARING');
-            navigation.navigate('Social');
+            navigation.navigate('Social',{activeTab:'Sharing'});
           }, 1000);
         }
       }
       setloading(false);
     } catch (error) {
-      console.error('Save Sharing',error);
+      console.error('Save Sharing', error);
       setloading(false);
     }
   };
@@ -169,7 +173,11 @@ const CreateSharing = ({navigation}) => {
       <ScrollView style={[]}>
         <View style={[theme.pb100]}>
           {image && (
-            <AutoHeightImage width={imageWidth} source={{uri: image}} />
+            <AutoHeightImage
+              contentWidth={imageWidth}
+              width={imageWidth}
+              source={{uri: image}}
+            />
           )}
           <TextInput
             multiline={true}
@@ -234,6 +242,7 @@ const CreateSharing = ({navigation}) => {
               {category.data.map((item, i) => {
                 return (
                   <TouchableOpacity
+                    key={i}
                     onPress={() => {
                       setCat(item.title);
                     }}

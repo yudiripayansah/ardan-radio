@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   Linking,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -19,7 +19,7 @@ import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 const EventsDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width;
+  const imageWidth = useWindowDimensions().width;
   const theme = useContext(ThemeContext);
   const [eventsItem, setEventsItem] = useState({
     data: {
@@ -56,7 +56,7 @@ const EventsDetails = ({route, navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('get events details',error);
+      console.error('get events details', error);
       setEventsItem({
         data: {
           image: 'https://placehold.co/600x400',
@@ -86,9 +86,15 @@ const EventsDetails = ({route, navigation}) => {
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1},  (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative]}>
+      style={[
+        theme.bgblack,
+        {flexGrow: 1},
+        radioState && radioState.status == 'playing' ? theme.pt130 : theme.pt60,
+        theme.relative,
+      ]}>
       <ScrollView style={[]}>
         <AutoHeightImage
+          contentWidth={imageWidth}
           width={imageWidth}
           source={{uri: eventsItem.data.image}}
         />
@@ -105,7 +111,10 @@ const EventsDetails = ({route, navigation}) => {
               onPress={() => {
                 doShare(eventsItem.id);
               }}>
-              <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
+              <Image
+                source={Icons.share}
+                style={[{height: 16, width: 16, objectFit: 'contain'}]}
+              />
             </TouchableOpacity>
             <Text style={[theme['h12-400'], theme.cwhite, theme.mt20]}>
               {eventsItem.data.text}

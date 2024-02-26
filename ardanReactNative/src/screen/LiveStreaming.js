@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
-  Dimensions,
+  useWindowDimensions,
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
@@ -30,7 +30,7 @@ const LiveStreaming = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [playing, setPlaying] = useState(true);
-  const height = Dimensions.get('window').height;
+  const height = useWindowDimensions().height;
   const [liveStream, setLivestream] = useState({});
   const [livechat, setLivechat] = useState([]);
   const [livechatold, setLivechatold] = useState([]);
@@ -40,7 +40,7 @@ const LiveStreaming = ({navigation}) => {
     let theChat = [...livechat];
     const echo = new Echo({
       broadcaster: 'socket.io',
-      host: 'https://mobileapps.ardanradio.com:6001',
+      host: 'https://ardanmobileapps.ardangroup.fm:6001',
       client: io,
     });
     echo
@@ -55,7 +55,7 @@ const LiveStreaming = ({navigation}) => {
   };
   const sendChat = async () => {
     try {
-      let url = 'https://mobileapps.ardanradio.com/api/chat/send';
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/chat/send';
       let payload = {
         id_user: user.id,
         id_target: 0,
@@ -73,7 +73,7 @@ const LiveStreaming = ({navigation}) => {
   };
   const getChat = async () => {
     try {
-      let url = 'https://mobileapps.ardanradio.com/api/chat/read';
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/chat/read';
       let payload = {
         page: 1,
         perPage: 50,
@@ -262,7 +262,7 @@ const LiveStreaming = ({navigation}) => {
           theme.my15,
           theme.absolute,
           theme.top265,
-          theme.bottom100,
+          theme.bottom80,
           theme.wp100,
           // {backgroundColor:'red'}
         ]}
@@ -279,17 +279,19 @@ const LiveStreaming = ({navigation}) => {
           theme.py20,
           theme.fRow,
           theme.absolute,
-          theme.bottom40,
+          theme.bottom20,
+          theme.wp100,
           theme.faCenter,
-          theme.fjBetween,
+          theme.fjCenter,
+          {flexWrap:'nowrap'}
         ]}>
         <View
           style={[
             theme.bgwhite,
             theme.px15,
             theme.br16,
-            theme.me10,
-            theme.wp84,
+            theme.wp80,
+            theme.me10
           ]}>
           <TextInput
             placeholder="Send Message"

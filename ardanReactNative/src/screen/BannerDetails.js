@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
@@ -15,7 +15,7 @@ import {RadioContext} from '../context/RadioContext';
 import Api from '../config/Api';
 const BannerDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width - 60;
+  const imageWidth = useWindowDimensions().width - 60;
   const theme = useContext(ThemeContext);
   const [bannerItem, setBannerItem] = useState({
     data: {
@@ -52,7 +52,7 @@ const BannerDetails = ({route, navigation}) => {
         loading: false,
       });
     } catch (error) {
-      console.error('get Banner',error);
+      console.error('get Banner', error);
       setBannerItem({
         data: {
           image: 'https://placehold.co/600x400',
@@ -69,10 +69,16 @@ const BannerDetails = ({route, navigation}) => {
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt150 : theme.pt60, theme.relative]}>
+      style={[
+        theme.bgblack,
+        {flexGrow: 1},
+        radioState && radioState.status == 'playing' ? theme.pt150 : theme.pt60,
+        theme.relative,
+      ]}>
       <ScrollView style={[]}>
         <View style={[theme.px30]}>
           <AutoHeightImage
+            contentWidth={imageWidth}
             width={imageWidth}
             source={{uri: bannerItem.data.image}}
           />

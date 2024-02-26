@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
@@ -25,7 +25,7 @@ import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 const SocialSharingDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width - 60;
+  const imageWidth = useWindowDimensions().width - 60;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -316,11 +316,13 @@ const SocialSharingDetails = ({route, navigation}) => {
               {feedsItem.data.title}
             </Text>
             <AutoHeightImage
+              contentWidth={imageWidth}
               width={imageWidth}
               source={{uri: feedsItem.data.image}}
             />
             <RenderHtml
               contentWidth={imageWidth}
+              width={imageWidth}
               source={{
                 html: `<div style="color:#9DA3AF;">${feedsItem.data.text}</div>`,
               }}

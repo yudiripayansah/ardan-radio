@@ -8,7 +8,7 @@ import {
   Image,
   TextInput,
   Animated,
-  Dimensions,
+  useWindowDimensions,
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -25,7 +25,7 @@ import Icons from '../components/Icons';
 const Radio = ({navigation}) => {
   const scrollViewRef = useRef();
   const mainScrollViewRef = useRef();
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -68,7 +68,7 @@ const Radio = ({navigation}) => {
     let theChat = [...radiochat];
     const echo = new Echo({
       broadcaster: 'socket.io',
-      host: 'https://mobileapps.ardanradio.com:6001',
+      host: 'https://ardanmobileapps.ardangroup.fm:6001',
       client: io,
     });
     echo
@@ -84,7 +84,7 @@ const Radio = ({navigation}) => {
   };
   const sendChat = async () => {
     try {
-      let url = 'https://mobileapps.ardanradio.com/api/chat/send';
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/chat/send';
       let payload = {
         id_user: user.id,
         id_target: 0,
@@ -102,7 +102,7 @@ const Radio = ({navigation}) => {
   };
   const getChat = async () => {
     try {
-      let url = 'https://mobileapps.ardanradio.com/api/chat/read';
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/chat/read';
       let payload = {
         page: 1,
         perPage: 50,
@@ -232,13 +232,15 @@ const Radio = ({navigation}) => {
           </TouchableOpacity>
           <View style={[theme.wp80]}>
             <View style={[theme.fRow, theme.faCenter]}>
-            <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('Profile', {
-                id: item.id_user,
-              });
-            }}>
-              <Text style={[theme.cwhite, theme['p14-600']]}>{item.title}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Profile', {
+                    id: item.id_user,
+                  });
+                }}>
+                <Text style={[theme.cwhite, theme['p14-600']]}>
+                  {item.title}
+                </Text>
               </TouchableOpacity>
               {item.penyiar == 'Yes' ? (
                 <View
@@ -281,7 +283,7 @@ const Radio = ({navigation}) => {
         ]}>
         <ScrollView
           nestedScrollEnabled={true}
-          style={[theme.mb70]}
+          style={[theme.mb110]}
           ref={mainScrollViewRef}>
           <View
             style={[theme.fRow, theme.fjCenter, theme.faCenter, theme.mt25]}>
@@ -341,6 +343,7 @@ const Radio = ({navigation}) => {
           <View style={[theme.mt35, theme.fjCenter, theme.faCenter]}>
             <View style={[theme.faCenter]}>
               <AutoHeightImage
+                contentWidth={imageWidth}
                 width={imageWidth}
                 source={
                   currentProgram.image
@@ -407,7 +410,8 @@ const Radio = ({navigation}) => {
             </ScrollView>
             <View
               style={[
-                {backgroundColor: 'rgba(45, 171, 210, 0.12)'},
+                {backgroundColor: 'rgba(45, 171, 210, 0.12)',
+                flexWrap:'nowrap'},
                 theme.br30,
                 theme.ps15,
                 theme.fRow,
@@ -415,7 +419,7 @@ const Radio = ({navigation}) => {
                 theme.fjBetween,
               ]}>
               <TextInput
-                style={[theme.wp80, theme.cwhite, theme['h12-400']]}
+                style={[theme.wp75, theme.cwhite, theme['h12-400']]}
                 placeholderTextColor={'#fff'}
                 onFocus={() =>
                   mainScrollViewRef.current.scrollToEnd({animated: true})

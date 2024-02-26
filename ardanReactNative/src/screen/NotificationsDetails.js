@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   Linking,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -19,7 +19,7 @@ import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 const Notifications = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width;
+  const imageWidth = useWindowDimensions().width;
   const theme = useContext(ThemeContext);
   const [notificationsItem, setNotificationsItem] = useState({
     data: {
@@ -89,6 +89,7 @@ const Notifications = ({route, navigation}) => {
       style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative]}>
       <ScrollView style={[]}>
         <AutoHeightImage
+          contentWidth={imageWidth}
           width={imageWidth}
           source={{uri: notificationsItem.data.image}}
         />

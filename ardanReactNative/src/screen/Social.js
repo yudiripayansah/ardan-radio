@@ -10,9 +10,7 @@ const Social = ({ route,navigation }) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext)
   useEffect(() => {
-    if(route.params.activeTab){
-      navigation.navigate(route.params.activeTab)
-    }
+    
   }, [])
 
   return (
@@ -24,6 +22,7 @@ const Social = ({ route,navigation }) => {
           tabBarStyle: { backgroundColor: 'transparent' },
           tabBarIndicatorStyle:{backgroundColor: '#F8C303'}
         }}
+        initialRouteName={route.params.activeTab}
       >
         <SocialTab.Screen name="Post" component={SocialPost} />
         <SocialTab.Screen name="Sharing" component={SocialSharing} />

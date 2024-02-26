@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {StatusBar, Linking} from 'react-native';
+import {StatusBar, Linking, AppState} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {RouteAuth, RouteMain} from './config/Router';
@@ -15,6 +15,7 @@ import usePushNotification from './hook/usePushNotification';
 import Api from './config/Api';
 import DeepLinking from 'react-native-deep-linking';
 const App = ({}) => {
+  const [appState, setAppState] = useState(AppState.currentState);
   const {requestUserPermission} = usePushNotification();
   const {auth, state} = useAuth();
   const RootStack = createStackNavigator();
@@ -38,22 +39,30 @@ const App = ({}) => {
       }
     }
   };
-  const initDeepLinking = () => {
-    DeepLinking.addScheme('mobileappsardanradio://');
-    DeepLinking.addRoute('/app', (response) => {
-      // console.log('Deep link response:', response);
-    });
-    Linking.addEventListener('url', handleUrl);
+  const linking = {
+    prefixes: ['https://ardanmobileapps.ardangroup.fm','ardanmobileapps://']
   }
-  const handleUrl = ({ url }) => {
-    Linking.canOpenURL(url).then((supported) => {
-      if (supported) {
-        DeepLinking.evaluateUrl(url);
-      }
-    });
-  }
+  const handleDeepLink = ({ url }) => {
+    const route = url.replace(/.*?:\/\//g, '');
+    const routeName = route.split('/')[1];
+    if (routeName === 'profile') {
+      // Navigate to ProfileScreen
+      // Example: navigation.navigate('Profile')
+    }
+  };
+  const getUrlAsync = async () => {
+    // Get the deep link used to open the app
+    const initialUrl = await Linking.getInitialURL();
+    if (initialUrl !== null) {
+      handleDeepLink(initialUrl)
+      return;
+    }
+    console.warn(initialUrl)
+    if(initialUrl.includes('post')) {
+
+    }
+  };
   useEffect(() => {
-    initDeepLinking()
     const listenToNotifications = () => {
       try {
         requestUserPermission();
@@ -66,14 +75,35 @@ const App = ({}) => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
+    getUrlAsync();
+    Linking.addEventListener('url', handleDeepLink);
   }, []);
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState) => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('App has come to the foreground!');
+        // Logic for when the application is opened or maximized
+      } else if (appState === 'active' && nextAppState.match(/inactive|background/)) {
+        console.log('App has gone to the background or minimized!');
+        // Logic for when the application is backgrounded or minimized
+      }
+      setAppState(nextAppState);
+    };
+
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      
+    };
+  }, [appState]);
 
   return (
     <ThemeContext.Provider value={Style}>
       <StatusBar barStyle={'dark-content'} />
       <RadioContext.Provider value={useRadio()}>
         <AuthContext.Provider value={auth}>
-          <NavigationContainer>
+          <NavigationContainer linking={linking}>
             <RootStack.Navigator
               screenOptions={{
                 headerShown: false,

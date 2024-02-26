@@ -12,7 +12,7 @@ import {
   Keyboard,
   Image,
   Animated,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import Icons from '../components/Icons';
 import {ThemeContext} from '../context/ThemeContext';
@@ -24,7 +24,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 import {RadioContext} from '../context/RadioContext';
 const MessageDetail = ({route, navigation}) => {
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = useWindowDimensions().width;
   const widthAnim = useRef(new Animated.Value(screenWidth)).current;
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
@@ -53,7 +53,7 @@ const MessageDetail = ({route, navigation}) => {
   };
   const getChat = async id => {
     try {
-      let url = 'https://mobileapps.ardanradio.com/api/privatechat/get';
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/privatechat/get';
       let payload = {
         page: 1,
         perPage: 20,
@@ -74,7 +74,7 @@ const MessageDetail = ({route, navigation}) => {
   const listenChat = async () => {
     let theChat = [...privatechat];
     try {
-      let url = 'https://mobileapps.ardanradio.com/api/privatechat';
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/privatechat';
       let payload = {
         reciever: route.params.id,
         sender: user.id,
@@ -83,7 +83,7 @@ const MessageDetail = ({route, navigation}) => {
       const {status, data, msg} = req.data;
       const echo = new Echo({
         broadcaster: 'socket.io',
-        host: 'https://mobileapps.ardanradio.com:6001',
+        host: 'https://ardanmobileapps.ardangroup.fm:6001',
         client: io,
       });
       setChatRoomId(data.chatRoom.id);
@@ -100,7 +100,7 @@ const MessageDetail = ({route, navigation}) => {
   };
   const sendChat = async () => {
     try {
-      let url = 'https://mobileapps.ardanradio.com/api/privatechat/send';
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/privatechat/send';
       let payload = {
         chat_room_id: chatRoomId,
         sender_id: user.id,
@@ -165,7 +165,7 @@ const MessageDetail = ({route, navigation}) => {
           style={[
             theme.fRow,
             theme.faCenter,
-            {backgroundColor: '#12120B'},
+            {backgroundColor: '#12120B', flexWrap: 'nowrap'},
             theme.br12,
             theme.px15,
             theme.wp90,
@@ -182,7 +182,7 @@ const MessageDetail = ({route, navigation}) => {
           </TouchableOpacity>
           <TextInput
             placeholder="Search..."
-            style={[theme.cwhite, theme['p14-400'], theme.wp89, theme.h40]}
+            style={[theme.cwhite, theme['p14-400'], theme.wp80, theme.h40]}
             placeholderTextColor="#fff"
             onSubmitEditing={e => {
               doSearch(e.nativeEvent.text);
@@ -277,10 +277,10 @@ const MessageDetail = ({route, navigation}) => {
         </ScrollView>
         <View
           style={[
-            theme.px30,
+            theme.px20,
             theme.fRow,
             theme.absolute,
-            theme.pb110,
+            theme.pb60,
             theme.pt20,
             theme.bottom0,
             theme.faCenter,

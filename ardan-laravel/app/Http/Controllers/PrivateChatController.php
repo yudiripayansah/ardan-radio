@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\ChatRoom;
 use App\Models\Message;
 use App\Models\Receiver;
+use App\Models\UserToken;
+use Kutia\Larafirebase\Messages\FirebaseMessage;
 
 class PrivateChatController extends Controller
 {
@@ -121,14 +123,27 @@ class PrivateChatController extends Controller
     $receiver = new Receiver;
     $receiver->message_id = $message->id;
     $receiver->receiver_id = $request->reciever_id;
+    $sender = User::find($request->sender_id);
+    $userToken = UserToken::where('id_user', $request->reciever_id)->get();
     if($receiver->save()) {
       $message = Message::with('sender')->find($message->id);
       broadcast(new PrivateMessageEvent($message))->toOthers();
+      // if($user->online == 'No') {
+      $notif = new \stdClass();
+      $notif->title = 'You have new message from '.$sender->name;
+      $notif->message = $request->message;
+      $notif->tokens = $userToken;
+      $notif->id_user_target = $request->reciever_id;
+      $notif->image = null;
+      $notif->icon = null;
+      $this->notif($notif);
+      // }
       $res = array(
         'status' => true,
         'msg' => 'Success',
         'data' => [
-          'message' => $message
+          'message' => $message,
+          'token' => $userToken
         ]
       );
     } else {
@@ -169,5 +184,35 @@ class PrivateChatController extends Controller
       'data' => $data
     ];
     return response()->json($res, 200);
+  }
+  function notif($data){
+    $tokens = [];
+    foreach($data->tokens as $t){
+      array_push($tokens, $t->token);
+    }
+    if($data->id_user_target == 'all') {
+      $getToken = UserToken::all();
+      foreach($getToken as $t){
+        array_push($tokens, $t->token);
+      }
+    }
+    if(count($tokens) > 0){
+      $fcm = (new FirebaseMessage);
+      $fcm = $fcm->withTitle($data->title);
+      $fcm = $fcm->withBody($data->message);
+      if($data->image){
+        $fcm = $fcm->withImage($data->image);
+      }
+      if($data->icon){
+        $fcm = $fcm->withIcon($data->icon);
+      }
+      $fcm = $fcm->withSound('default');
+      $fcm = $fcm->withPriority('high');
+      $fcm = $fcm->withAdditionalData($data);
+      $fcm = $fcm->asNotification($tokens);
+    } else {
+      $fcm = 'No token to send';
+    }
+    return $fcm;
   }
 }

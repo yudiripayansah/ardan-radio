@@ -72,7 +72,7 @@ const Message = ({navigation}) => {
     });
     try {
       let theData = [];
-      let url = 'https://mobileapps.ardanradio.com/api/privatechat/messageList'
+      let url = 'https://ardanmobileapps.ardangroup.fm/api/privatechat/messageList'
       let payload = {
         user_id: user.id
       };

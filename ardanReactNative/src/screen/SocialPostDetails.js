@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
@@ -21,7 +21,7 @@ import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const SocialPostDetails = ({route, navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -291,12 +291,14 @@ const SocialPostDetails = ({route, navigation}) => {
             </View>
             <RenderHtml
               contentWidth={imageWidth}
+              width={imageWidth}
               source={{
                 html: `<div style="color:#fff;">${feedsItem.data.text}</div>`,
               }}
             />
             {/* <Text style={[theme['p14-400'],theme.cwhite,theme.mb20]}>{feedsItem.data.text}</Text> */}
             <AutoHeightImage
+              contentWidth={imageWidth}
               width={imageWidth}
               source={{uri: feedsItem.data.image_url}}
             />

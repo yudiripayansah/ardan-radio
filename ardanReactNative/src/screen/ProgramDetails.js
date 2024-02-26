@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
@@ -20,7 +20,7 @@ import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 const ProgramDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width;
+  const imageWidth = useWindowDimensions().width;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [favorite, setFavorite] = useState(false);
@@ -91,7 +91,7 @@ const ProgramDetails = ({route, navigation}) => {
       }
     }
   };
-  const getLike = async (type) => {
+  const getLike = async type => {
     let payload = {
       id_target: id,
       type: type,
@@ -103,9 +103,9 @@ const ProgramDetails = ({route, navigation}) => {
         let {data, status, msg} = req.data;
         console.log(data);
         if (status && data) {
-          setFav(true,type);
+          setFav(true, type);
         } else {
-          setFav(false,type);
+          setFav(false, type);
         }
       }
     } catch (error) {
@@ -138,19 +138,26 @@ const ProgramDetails = ({route, navigation}) => {
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative]}>
+      style={[
+        theme.bgblack,
+        {flexGrow: 1},
+        radioState && radioState.status == 'playing' ? theme.pt130 : theme.pt60,
+        theme.relative,
+      ]}>
       <ScrollView style={[]}>
         <AutoHeightImage
+          contentWidth={imageWidth}
           width={imageWidth}
           source={{uri: programsItem.data.image}}
         />
         <View style={[theme.px20]}>
           <View style={[theme.mt10]}>
             <View style={[]}>
-              <Text style={[theme['h24-700'], theme.cwhite,theme.mb5]}>
+              <Text style={[theme['h24-700'], theme.cwhite, theme.mb5]}>
                 {programsItem.data.title}
               </Text>
-              <View style={[theme.fRow,theme.faCenter,theme.fjStart,theme.mb30]}>
+              <View
+                style={[theme.fRow, theme.faCenter, theme.fjStart, theme.mb30]}>
                 <TouchableOpacity
                   onPress={() => {
                     sentLike(id, 'Program');
@@ -173,11 +180,14 @@ const ProgramDetails = ({route, navigation}) => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[theme.fRow, theme.faCenter,theme.ms10]}
+                  style={[theme.fRow, theme.faCenter, theme.ms10]}
                   onPress={() => {
                     doShare(id);
                   }}>
-                  <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
+                  <Image
+                    source={Icons.share}
+                    style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                  />
                 </TouchableOpacity>
               </View>
             </View>

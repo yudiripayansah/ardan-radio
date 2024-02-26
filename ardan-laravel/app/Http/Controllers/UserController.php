@@ -171,12 +171,12 @@ class UserController extends Controller
     unset($dataUpdate['followers_count']);
     unset($dataUpdate['following_count']);
     unset($dataUpdate['post_count']);
-    if($request->password || $request->password != null || $request->password != 'null'){
+    if($request->password && $request->password != null && $request->password != 'null'){
       $dataUpdate['password'] = Hash::make($request->password);
     } else {
       unset($dataUpdate['password']);
     }
-    DB::beginTransaction();
+    // DB::beginTransaction();
     if ($validate['status']) {
       try {
         $du = User::where('id',$request->id)->update($dataUpdate);
@@ -184,18 +184,23 @@ class UserController extends Controller
         if(isset($dataUpdate['penyiar']) && $dataUpdate['penyiar'] == 'Yes'){
           $cp = $this->processPenyiar($dg);
         }
+        $dg->image_url = ($dg->image) ? Storage::disk('public')->url('user/'.$dg->image) : null;
+        $dg->followers_count = Likes::where('id_target',$dg->id)->where('type','FOLLOW')->count();
+        $dg->following_count = Likes::where('id_user',$dg->id)->where('type','FOLLOW')->count();
+        $dg->post_count = Feeds::where('id_user',$dg->id)->where('type','POST')->count();
         $res = array(
                 'status' => true,
                 'data' => $dg,
+                'data_update' => $dataUpdate,
                 'msg' => 'Data Successfully Saved'
               );
-        DB::commit();
+        // DB::commit();
       } catch (Exception $e) {
         $res = array(
                 'status' => false,
                 'msg' => 'Failed to Save Data'
               );
-        DB::rollback();
+        // DB::rollback();
       }
     } else {
       $res = array(

@@ -4,7 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Mail\ForgotMail;
+use Illuminate\Support\Facades\Mail;
 use Validator;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -112,23 +115,96 @@ class AuthController extends Controller
             'user' => auth()->user()
         ]);
     }
+    function generateOTP($length = 6) {
+        // Generate a random sequence of numbers
+        $otp = '';
+        for ($i = 0; $i < $length; $i++) {
+            $otp .= rand(0, 9);
+        }
+        return $otp;
+    }
 
-    public function sendotp() {
-        $res = [
-            'status' => true
-        ];
+    public function sendotp(Request $request) {
+        if($request->email){
+            $user = User::where('email',$request->email);
+            if(count($user->get()) > 0){
+                $user = $user->first();
+                $name = $user->name;
+                $email = $user->email;
+                $otp = $this->generateOTP(6);
+                $user->otp = $otp;
+                $user->save();
+                $this->sendEmail($name, $email, $otp);
+                $res = [
+                    'status' => true,
+                    'msg' => 'OTP code successfully sent to email '.$request->email
+                ];
+            } else {
+                $res = [
+                    'status' => false,
+                    'msg' => 'Account not found',
+                    'data' => null
+                ];
+            }
+        } else {
+            $res = [
+                'status' => false,
+                'msg' => 'Please enter email'
+            ];
+        }
         return response()->json($res);
     }
-    public function checkotp() {
-        $res = [
-            'status' => true
-        ];
+    public function checkotp(Request $request) {
+        $email = $request->email;
+        $otp = $request->otp;
+        $user = User::where('email',$email)->where('otp',$otp);
+        if(count($user->get()) > 0){
+            $res = [
+                'status' => true,
+                'msg' => 'Account found. Please enter new password'
+            ];
+        } else {
+            $res = [
+                'status' => false,
+                'msg' => 'OTP doesnt match'
+            ];
+        }
         return response()->json($res);
     }
-    public function updatePassword() {
-        $res = [
-            'status' => true
-        ];
+    public function updatePassword(Request $request) {
+        $email = $request->email;
+        $password = Hash::make($request->password);
+        $user = User::where('email',$email)->first();
+        $user->password = $password;
+        if($user->save()){
+            $res = [
+                'status' => true,
+                'msg' => 'Password successfully updated.'
+            ];
+        } else {
+            $res = [
+                'status' => false,
+                'msg' => 'Failed update password, please try again.'
+            ];
+        }
         return response()->json($res);
+    }
+    function sendEmail($name, $email, $otp)
+    {
+        $mailInfo = new \stdClass();
+        $mailInfo->recieverName = $name;
+        $mailInfo->sender = "Ardan Radio";
+        $mailInfo->senderCompany = "ardanradio.com";
+        $mailInfo->to = $email;
+        $mailInfo->subject = "Forgot Password";
+        $mailInfo->name = "Ardan Radio";
+        $mailInfo->cc = "ripayansahyudi@gmail.com";
+        $mailInfo->bcc = "yudiripayansah@gmail.com";
+        $mailInfo->from = "forgot@ardanradio.com";
+        $mailInfo->title = 'Forgot Password';
+        $mailInfo->name = $name;
+        $mailInfo->email = $email;
+        $mailInfo->otp = $otp;
+        Mail::to($email)->send(new ForgotMail($mailInfo));
     }
 }

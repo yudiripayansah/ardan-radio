@@ -6,7 +6,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
-  Dimensions,
+  useWindowDimensions,
   TouchableWithoutFeedback,
   Animated,
   TextInput,
@@ -27,18 +27,19 @@ import Share from 'react-native-share';
 const Profile = ({route, navigation}) => {
   const {removeUser} = useContext(AuthContext);
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width - 20;
+  const imageWidth = useWindowDimensions().width - 20;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
-  const [active, setActive] = useState('Post')
+  const [active, setActive] = useState('POST');
   const [dUser, setDUser] = useState({});
   const [showC, setShowC] = useState(true);
   const [ziChat, setZiChat] = useState(1);
   const [comment, setComment] = useState();
   const [target, setTarget] = useState();
   const [loading, setLoading] = useState(false);
+  const [showDelete, setShowDelete] = useState(-1);
   const [feedsItem, setFeedsItem] = useState({
     data: [],
     loading: false,
@@ -48,7 +49,7 @@ const Profile = ({route, navigation}) => {
     loading: false,
   });
   const [follow, setFollow] = useState(false);
-  const getFeeds = async (type='POST') => {
+  const getFeeds = async (type = 'POST') => {
     setFeedsItem({
       data: [],
       loading: true,
@@ -68,7 +69,7 @@ const Profile = ({route, navigation}) => {
         id_user: id,
         type: type,
       };
-      let req = await Api.feedsRead(payload);
+      let req = await Api.feedsRead(payload,user.token);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
@@ -85,6 +86,23 @@ const Profile = ({route, navigation}) => {
         data: [],
         loading: false,
       });
+    }
+  };
+  const deletePost = async (id = -1,idx) => {
+    try {
+      let payload = {
+        id: id
+      };
+      let req = await Api.feedsDelete(payload);
+      if (req.status == 200) {
+        let {status} = req.data;
+        if (status) {
+          getFeeds(active)
+          setShowDelete(-1)
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   const getUser = async () => {
@@ -311,37 +329,69 @@ const Profile = ({route, navigation}) => {
       feedsItem.data.map((item, i) => {
         return (
           <View style={[theme.my20]} key={i}>
-            <View style={[theme.fRow]}>
-              <Image
-                source={
-                  item.user.image_url
-                    ? {uri: item.user.image_url}
-                    : {
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                      }
-                }
-                style={[theme.h40, theme.w40, theme.br12, theme.me15]}
-              />
-              <View>
-                <Text style={[theme['p16-700'], theme.cwhite]}>
-                  {item.user.name}
-                </Text>
-                <View style={[theme.fRow, theme.faCenter]}>
-                  {/* <Image source={require('../assets/images/icons/map-pin.png')} style={[theme.h15,theme.w15,theme.me5]}/>
-                    <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{item.location}</Text> */}
-                  <Image
-                    source={require('../assets/images/icons/discovery.png')}
-                    style={[theme.h15, theme.w15, theme.me5]}
-                  />
-                  <Text style={[theme['p12-400'], {color: 'grey'}]}>
-                    {Helper.dateIndo(item.created_at)}
+            <View style={[theme.fRow, theme.relative, theme.fjBetween]}>
+              <View style={[theme.fRow]}>
+                <Image
+                  source={
+                    item.user.image_url
+                      ? {uri: item.user.image_url}
+                      : {
+                          uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                        }
+                  }
+                  style={[theme.h40, theme.w40, theme.br12, theme.me15]}
+                />
+                <View>
+                  <Text style={[theme['p16-700'], theme.cwhite]}>
+                    {item.user.name}
                   </Text>
+                  <View style={[theme.fRow, theme.faCenter]}>
+                    {/* <Image source={require('../assets/images/icons/map-pin.png')} style={[theme.h15,theme.w15,theme.me5]}/>
+                      <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{item.location}</Text> */}
+                    <Image
+                      source={require('../assets/images/icons/discovery.png')}
+                      style={[theme.h15, theme.w15, theme.me5]}
+                    />
+                    <Text style={[theme['p12-400'], {color: 'grey'}]}>
+                      {Helper.dateIndo(item.created_at)}
+                    </Text>
+                  </View>
                 </View>
+              </View>
+
+              <TouchableOpacity
+                onPress={() => {
+                  showDelete == 'POST_' + i
+                    ? setShowDelete(-1)
+                    : setShowDelete('POST_' + i);
+                }}>
+                <Icon name="ellipsis-h" size={20} color="#bbb" />
+              </TouchableOpacity>
+              <View
+                style={[
+                  theme.bgwhite,
+                  theme.absolute,
+                  theme.top20,
+                  theme.right0,
+                  theme.p5,
+                  theme.br5,
+                  {display: showDelete == 'POST_' + i ? 'flex' : 'none'},
+                ]}>
+                <TouchableOpacity onPress={()=>{deletePost(item.id,i)}}>
+                  <View style={[theme.fRow, theme.faCenter]}>
+                    <Icon name="trash" size={10} color="#ff9999" />
+                    <Text
+                      style={[theme['p10-600'], {color: '#ff9999'}, theme.ms5]}>
+                      Delete
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={[theme.h15]} />
             <RenderHtml
               contentWidth={imageWidth}
+              width={imageWidth}
               source={{
                 html: `<div style="color:#fff;">${item.text}</div>`,
               }}
@@ -441,11 +491,46 @@ const Profile = ({route, navigation}) => {
               onPress={() => {
                 navigation.navigate('SocialSharingDetails', {id: item.id});
               }}>
-              <Text style={[theme['h16-500'], {color: '#fff'}]}>
-                {item.title}
-              </Text>
+              <View style={[theme.fRow, theme.fjBetween, theme.relative]}>
+                <Text style={[theme['h16-500'], {color: '#fff'}]}>
+                  {item.title}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    showDelete == 'SHARING_' + i
+                      ? setShowDelete(-1)
+                      : setShowDelete('SHARING_' + i);
+                  }}>
+                  <Icon name="ellipsis-h" size={20} color="#bbb" />
+                </TouchableOpacity>
+                <View
+                  style={[
+                    theme.bgwhite,
+                    theme.absolute,
+                    theme.top20,
+                    theme.right0,
+                    theme.p5,
+                    theme.br5,
+                    {display: showDelete == 'SHARING_' + i ? 'flex' : 'none',zIndex:99},
+                  ]}>
+                  <TouchableOpacity onPress={()=>{deletePost(item.id,i)}}>
+                    <View style={[theme.fRow, theme.faCenter]}>
+                      <Icon name="trash" size={10} color="#ff9999" />
+                      <Text
+                        style={[
+                          theme['p10-600'],
+                          {color: '#ff9999'},
+                          theme.ms5,
+                        ]}>
+                        Delete
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
               <View
                 style={[
+                  theme.mt20,
                   theme.fRow,
                   theme.mb10,
                   theme.faCenter,
@@ -720,6 +805,9 @@ const Profile = ({route, navigation}) => {
                   if (user.id != dUser.id) {
                     navigation.push('MessageDetail', {
                       id: dUser.id,
+                      data: {
+                        with: dUser,
+                      },
                     });
                   } else {
                     navigation.push('Message');
@@ -737,13 +825,16 @@ const Profile = ({route, navigation}) => {
                     {width: '100%'},
                     theme.bbw2,
                     theme.bsolid,
-                    (active == 'Post') ? theme.byellow : theme.bwhite,
+                    active == 'POST' ? theme.byellow : theme.bwhite,
                   ]}
-                  onPress={()=>{setActive('Post');getFeeds('POST')}}>
+                  onPress={() => {
+                    setActive('POST');
+                    getFeeds('POST');
+                  }}>
                   <Text
                     style={[
                       theme.cwhite,
-                      (active == 'Post') ? theme['p16-600']: theme['p16-400'],
+                      active == 'POST' ? theme['p16-600'] : theme['p16-400'],
                       theme.wp100,
                       {textAlign: 'center'},
                     ]}>
@@ -759,13 +850,16 @@ const Profile = ({route, navigation}) => {
                     {width: '100%'},
                     theme.bbw2,
                     theme.bsolid,
-                    (active == 'Sharing') ? theme.byellow : theme.bwhite,
+                    active == 'SHARING' ? theme.byellow : theme.bwhite,
                   ]}
-                  onPress={()=>{setActive('Sharing');getFeeds('SHARING')}}>
+                  onPress={() => {
+                    setActive('SHARING');
+                    getFeeds('SHARING');
+                  }}>
                   <Text
                     style={[
                       theme.cwhite,
-                      (active == 'Sharing') ? theme['p16-600']: theme['p16-400'],
+                      active == 'SHARING' ? theme['p16-600'] : theme['p16-400'],
                       theme.wp100,
                       {textAlign: 'center'},
                     ]}>
@@ -774,13 +868,7 @@ const Profile = ({route, navigation}) => {
                 </TouchableOpacity>
               </View>
             </View>
-            {
-              (active == 'Post') ? (
-                <SocialPost />
-              ) : (
-                <SocialSharing />
-              )
-            }
+            {active == 'Post' ? <SocialPost /> : <SocialSharing />}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

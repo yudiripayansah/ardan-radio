@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   Linking,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
@@ -17,7 +17,7 @@ import Helper from '../config/Helper';
 import {RadioContext} from '../context/RadioContext';
 const PenyiarDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const [penyiarItem, setPenyiarItem] = useState({
     data: {
@@ -78,6 +78,7 @@ const PenyiarDetails = ({route, navigation}) => {
       <ScrollView style={[]}>
         <View style={[theme.px20]}>
           <AutoHeightImage
+            contentWidth={imageWidth}
             width={imageWidth}
             source={{uri: penyiarItem.data.image}}
           />

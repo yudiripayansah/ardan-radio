@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
@@ -18,7 +18,7 @@ import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 const NewsDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const [newsItem, setNewsItem] = useState({
     data: {
@@ -84,6 +84,7 @@ const NewsDetails = ({route, navigation}) => {
       <ScrollView style={[]}>
         <View style={[theme.px20]}>
           <AutoHeightImage
+            contentWidth={imageWidth}
             width={imageWidth}
             source={{uri: newsItem.data.image}}
           />

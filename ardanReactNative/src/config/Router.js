@@ -232,7 +232,7 @@ export const RouteMain = ({navigation}) => {
           options={options}
         />
       </MainStack.Navigator>
-      {activeHeader != 'LiveStreaming' ? (
+      {activeHeader != 'LiveStreaming' && activeHeader != 'MessageDetail' ? (
         <Nav navigation={navigation} currentScreen={activeHeader} />
       ) : null}
     </>

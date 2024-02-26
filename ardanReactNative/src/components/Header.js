@@ -6,7 +6,7 @@ import {
   TextInput,
   Text,
   Animated,
-  Dimensions,
+  useWindowDimensions,
   KeyboardAvoidingView,
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
@@ -30,7 +30,7 @@ const Header = ({navigation, ...props}) => {
     onNotificationOpenedAppFromQuit,
   } = usePushNotification();
   const route = useRoute();
-  const screenWidth = Dimensions.get('window').width
+  const screenWidth = useWindowDimensions().width
   const widthAnim = useRef(new Animated.Value(screenWidth)).current;
   const opacityAnim = useRef(new Animated.Value(100)).current;
   const [keyword, setKeyword] = useState(null);
@@ -39,17 +39,11 @@ const Header = ({navigation, ...props}) => {
   const user = useContext(UserContext);
   const {removeUser} = useContext(AuthContext);
   const [openSearch, setOpenSearch] = useState(false);
+  const [dUser, setDUser] = useState({});
   const doLogout = () => {
     removeUser();
   };
   const menu = [
-    {
-      icon: Icons.menuContent,
-      title: 'Content',
-      target: () => {
-        navigation.navigate('ArdanContent');
-      },
-    },
     {
       icon: Icons.menuSocial,
       title: 'Social',
@@ -62,6 +56,13 @@ const Header = ({navigation, ...props}) => {
       title: 'News',
       target: () => {
         navigation.navigate('News');
+      },
+    },
+    {
+      icon: Icons.menuContent,
+      title: 'Content',
+      target: () => {
+        navigation.navigate('ArdanContent');
       },
     },
     {
@@ -116,7 +117,8 @@ const Header = ({navigation, ...props}) => {
           style={[
             theme.fRow,
             theme.faCenter,
-            {backgroundColor: '#12120B'},
+            {backgroundColor: '#12120B',
+            flexWrap: 'nowrap'},
             theme.br12,
             theme.px15,
             theme.wp90,
@@ -130,7 +132,7 @@ const Header = ({navigation, ...props}) => {
           </TouchableOpacity>
           <TextInput
             placeholder="Search..."
-            style={[theme.cwhite, theme['p14-400'], theme.wp89, theme.h40]}
+            style={[theme.cwhite, theme['p14-400'], theme.wp80, theme.h40]}
             placeholderTextColor="#fff"
             onSubmitEditing={e => {
               doSearch(e.nativeEvent.text);
@@ -146,7 +148,8 @@ const Header = ({navigation, ...props}) => {
       <>
         <View
           style={[
-            {backgroundColor: '#28353b'},
+            // {backgroundColor: '#28353b'},
+            theme.bgyellow,
             theme.wp100,
             theme.py5,
             theme.px40,
@@ -162,19 +165,19 @@ const Header = ({navigation, ...props}) => {
                 theme.fjCenter,
                 theme.w35,
                 theme.h35,
-                {backgroundColor: '#fff', borderColor: '#F8C303'},
+                {backgroundColor: '#fff', borderColor: '#28353b', overflow: 'hidden'},
                 theme.br100,
                 theme.bsolid,
                 theme.bw2,
                 theme.me17,
               ]}>
               <Image
-                source={Icons.user}
-                style={[{objectFit: 'contain', width: 20}]}
+                source={user.image_url ? {uri:user.image_url} : Icons.user}
+                style={[{objectFit: 'contain', width: user.image_url ? 35: 20,height: user.image_url ? 35: 20}]}
               />
             </View>
             <View>
-              <Text style={[theme['h15-700'], {color: '#fff'}]}>
+              <Text style={[theme['h15-700'], {color: '#28353b'}]}>
                 Welcome back!
               </Text>
               <TouchableOpacity
@@ -183,8 +186,8 @@ const Header = ({navigation, ...props}) => {
                 }}>
                 <Text
                   style={[
-                    theme['h12-400'],
-                    {color: '#fff', opacity: 0.5, marginTop: -5},
+                    theme['h12-600'],
+                    {color: '#28353b', opacity: 0.5, marginTop: -5},
                   ]}>
                   {user.name}
                 </Text>
@@ -197,13 +200,13 @@ const Header = ({navigation, ...props}) => {
               onPress={() => {
                 toggleSearch();
               }}>
-              <Image source={Icons.search} style={[{height:25,width:25,objectFit:'contain'}]} />
+              <Image source={Icons.searchDark} style={[{height:25,width:25,objectFit:'contain'}]} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Notifications');
               }}>
-              <Image source={Icons.notif} style={[{height:25,width:25,objectFit:'contain'}]} />
+              <Image source={Icons.notifDark} style={[{height:25,width:25,objectFit:'contain'}]} />
             </TouchableOpacity>
           </View>
           <SearchBar />
@@ -322,13 +325,34 @@ const Header = ({navigation, ...props}) => {
       // console.log(msg.data);
     });
   };
+  const getUser = async () => {
+    let id = user.id;
+    try {
+      let theData = {};
+      let payload = {
+        id: id,
+      };
+      let req = await Api.userGet(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = data;
+        }
+      }
+      setDUser(theData);
+    } catch (error) {
+      console.error(error);
+      setDUser({});
+    }
+  };
   useEffect(() => {
     onNotificationOpenedAppFromQuit();
     listenToBackgroundNotifications();
     foregroundnotif();
-    listenToForegroundNotifications;
+    listenToForegroundNotifications();
     onNotificationOpenedAppFromBackground();
     registerToken();
+    getUser();
   }, []);
 
   return (

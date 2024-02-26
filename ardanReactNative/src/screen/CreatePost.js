@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -19,7 +19,7 @@ import Helper from '../config/Helper';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const CreatePost = ({navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 20;
+  const imageWidth = useWindowDimensions().width - 20;
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const [id_user, setid_user] = useState(user.id);
@@ -91,15 +91,18 @@ const CreatePost = ({navigation}) => {
         let {data, status, msg} = req.data;
         if (status) {
           setpostButton('Success!!!');
+          setimage('')
+          settitle('')
+          settext('')
           setTimeout(() => {
             setpostButton('POST');
-            navigation.navigate('Social');
+            navigation.navigate('Social',{activeTab:"Post"});
           }, 1000);
         }
       }
       setloading(false);
     } catch (error) {
-      console.error('Save Post',error);
+      console.error('Save Post', error);
       setloading(false);
     }
   };
@@ -110,7 +113,11 @@ const CreatePost = ({navigation}) => {
       <ScrollView style={[]}>
         <View style={[theme.pb100]}>
           {image && (
-            <AutoHeightImage width={imageWidth} source={{uri: image}} />
+            <AutoHeightImage
+              contentWidth={imageWidth}
+              width={imageWidth}
+              source={{uri: image}}
+            />
           )}
           <TextInput
             multiline={true}

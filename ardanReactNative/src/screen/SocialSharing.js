@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
+  useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -22,9 +22,10 @@ import Share from 'react-native-share';
 // import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
 const SocialSharing = ({navigation}) => {
-  const imageWidth = Dimensions.get('window').width - 40;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const [search, setSearch] = useState(null);
+  const [page, setPage] = useState(1);
   const [feedsItem, setFeedsItem] = useState({
     data: [],
     loading: false,
@@ -108,15 +109,11 @@ const SocialSharing = ({navigation}) => {
       });
     }
   };
-  const getFeeds = async (cat = null) => {
-    setFeedsItem({
-      data: [],
-      loading: true,
-    });
+  const getFeeds = async (cat = null,page=1) => {
     try {
-      let theData = [];
+      let theData = feedsItem.data;
       let payload = {
-        page: 1,
+        page: page,
         perPage: 5,
         sortDir: 'DESC',
         sortBy: 'id',
@@ -136,7 +133,10 @@ const SocialSharing = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
-          theData = [...data];
+          if(data.length > 0){
+            setPage(page)
+          }
+          theData = [...theData,...data];
         }
       }
       setFeedsItem({
@@ -506,7 +506,7 @@ const SocialSharing = ({navigation}) => {
     let opt = {
       title: 'Check my Sharing on Ardan Radio',
       message: 'Check my sharing on Ardan Radio',
-      url: 'https://mobileapps.ardanradio.com/ardansocial/sharing/' + id,
+      url: 'https://ardanmobileapps.ardangroup.fm/ardansocial/sharing/' + id,
     };
     let share = Share.open(opt);
   };
@@ -525,6 +525,18 @@ const SocialSharing = ({navigation}) => {
       } catch (error) {
         console.error(error);
       }
+    }
+  };
+  const handleScroll = (event) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const paddingToBottom = 20;
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+    if (isCloseToBottom) {
+      let nextPage = page + 1
+      getFeeds(activeCat,nextPage)
+    } else {
     }
   };
   useEffect(() => {
@@ -599,7 +611,9 @@ const SocialSharing = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <ScrollView style={[theme.mb230]} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[theme.mb230]} showsVerticalScrollIndicator={false} 
+        onScroll={handleScroll}
+        scrollEventThrottle={400}>
         <HotSharing />
         {feedsItem.loading ? (
           <View style={[theme.py100]}>
