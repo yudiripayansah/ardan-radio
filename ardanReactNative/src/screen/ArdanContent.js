@@ -94,7 +94,7 @@ const ArdanContent = ({navigation}) => {
   const Content = () => {
     return (
       <View style={[theme.mt35]}>
-        <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
+        <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Content</Text>
           <TouchableOpacity
             onPress={() => {goToUrl(`https://www.youtube.com/${channelName}`)}}
@@ -114,7 +114,7 @@ const ArdanContent = ({navigation}) => {
             theme.wp100,
             {flexGrow: 1},
             theme.fRow,
-            theme.px10,
+            theme.px20,
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
@@ -149,7 +149,7 @@ const ArdanContent = ({navigation}) => {
   const Instagram = () => {
     return (
       <View style={[theme.mt35]}>
-        <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
+        <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Instagram</Text>
           <TouchableOpacity
             onPress={() => {goToUrl(`https://www.instagram.com/${instagramUsername}`)}}
@@ -169,7 +169,7 @@ const ArdanContent = ({navigation}) => {
             theme.wp100,
             {flexGrow: 1},
             theme.fRow,
-            theme.px10,
+            theme.px20,
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
@@ -195,7 +195,7 @@ const ArdanContent = ({navigation}) => {
   const Tiktok = () => {
     return (
       <View style={[theme.mt35]}>
-        <View style={[theme.fRow, theme.fjBetween, theme.px10, theme.faCenter]}>
+        <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Tiktok</Text>
           <TouchableOpacity
             onPress={() => {goToUrl(`https://www.tiktok.com/${tiktokUsername}`)}}
@@ -215,7 +215,7 @@ const ArdanContent = ({navigation}) => {
             theme.wp100,
             {flexGrow: 1},
             theme.fRow,
-            theme.px10,
+            theme.px20,
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
@@ -247,12 +247,6 @@ const ArdanContent = ({navigation}) => {
       <ScrollView style={[]}>
         <Content />
         <Instagram />
-        <View style={[theme.mt35, theme.px10, theme.wp100]}>
-          {/* <Image
-            source={require('../assets/images/ads-1.png')}
-            style={[theme.wp100, {objectFit: 'contain'}]}
-          /> */}
-        </View>
         <Tiktok />
         <View style={[theme.mb180]} />
       </ScrollView>

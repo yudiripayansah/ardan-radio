@@ -97,7 +97,7 @@ const Notifications = ({navigation}) => {
                 theme.bbw1,
                 theme.bsolid,
                 theme.py10,
-                theme.px25,
+                theme.px20,
                 {borderColor: '#101010'},
               ]}
               onPress={() => {
@@ -131,7 +131,7 @@ const Notifications = ({navigation}) => {
                 theme.bbw1,
                 theme.bsolid,
                 theme.py10,
-                theme.px25,
+                theme.px20,
                 {borderColor: '#101010'},
               ]}
               onPress={() => {

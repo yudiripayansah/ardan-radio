@@ -491,8 +491,8 @@ const Profile = ({route, navigation}) => {
               onPress={() => {
                 navigation.navigate('SocialSharingDetails', {id: item.id});
               }}>
-              <View style={[theme.fRow, theme.fjBetween, theme.relative]}>
-                <Text style={[theme['h16-500'], {color: '#fff'}]}>
+              <View style={[theme.fRow, theme.fjBetween, theme.relative,{flexWrap:'nowrap'}]}>
+                <Text style={[theme['h16-500'], {color: '#fff'},theme.wp80]}>
                   {item.title}
                 </Text>
                 <TouchableOpacity
@@ -670,7 +670,7 @@ const Profile = ({route, navigation}) => {
             : theme.pt60,
         ]}>
         <ScrollView style={[]}>
-          <View style={[theme.px10, theme.pt10, theme.mb100]}>
+          <View style={[theme.px20, theme.pt10, theme.mb100]}>
             <View style={[theme.fRow]}>
               <Image
                 source={

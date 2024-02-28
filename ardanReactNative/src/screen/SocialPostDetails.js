@@ -373,11 +373,11 @@ const SocialPostDetails = ({route, navigation}) => {
               theme.br10,
             ]}>
             <View
-              style={[theme.br10, theme.fRow, theme.faCenter, theme.fjBetween]}>
+              style={[theme.br10, theme.fRow, theme.faCenter, theme.fjCenter,{flexWrap:'nowrap'}]}>
               <TextInput
                 style={[
                   {backgroundColor: 'rgba(45, 171, 210, 0.12)'},
-                  theme.wp83,
+                  theme.wp75,
                   theme.br10,
                   theme.cwhite,
                   theme['h12-400'],

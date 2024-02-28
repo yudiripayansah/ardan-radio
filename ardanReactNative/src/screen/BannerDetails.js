@@ -15,7 +15,7 @@ import {RadioContext} from '../context/RadioContext';
 import Api from '../config/Api';
 const BannerDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
-  const imageWidth = useWindowDimensions().width - 60;
+  const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
   const [bannerItem, setBannerItem] = useState({
     data: {
@@ -76,7 +76,7 @@ const BannerDetails = ({route, navigation}) => {
         theme.relative,
       ]}>
       <ScrollView style={[]}>
-        <View style={[theme.px30]}>
+        <View style={[theme.px20]}>
           <AutoHeightImage
             contentWidth={imageWidth}
             width={imageWidth}

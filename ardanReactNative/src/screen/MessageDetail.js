@@ -123,10 +123,10 @@ const MessageDetail = ({route, navigation}) => {
           <Text
             style={[
               theme['p14-400'],
-              item.sender.id == user.id ? theme.cwhite : theme.cblack,
+              item.sender.id == user.id ? theme.cblack : theme.cblack,
               {
                 backgroundColor:
-                  item.sender.id == user.id ? '#304BF7' : '#EDEDED',
+                  item.sender.id == user.id ? '#F8C303' : '#EDEDED',
               },
               theme.px15,
               theme.py10,
@@ -280,12 +280,14 @@ const MessageDetail = ({route, navigation}) => {
             theme.px20,
             theme.fRow,
             theme.absolute,
-            theme.pb60,
-            theme.pt20,
+            theme.pb70,
+            theme.pt10,
             theme.bottom0,
             theme.faCenter,
-            theme.fjBetween,
+            theme.fjCenter,
             theme.bgblack,
+            {flexWrap:'nowrap'},
+            theme.wp100
           ]}>
           <View
             style={[
@@ -293,7 +295,7 @@ const MessageDetail = ({route, navigation}) => {
               theme.px15,
               theme.br16,
               theme.me10,
-              theme.wp84,
+              theme.wp75,
             ]}>
             <TextInput
               placeholder="Send Message"

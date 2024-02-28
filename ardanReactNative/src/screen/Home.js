@@ -447,36 +447,6 @@ const Home = ({navigation}) => {
   const doLogout = () => {
     removeUser();
   };
-  const menuItem = [
-    {
-      title: 'Social',
-      image: require('../assets/images/icons/menu-social.png'),
-      target: () => {
-        navigation.navigate('Social');
-      },
-    },
-    {
-      title: 'News',
-      image: require('../assets/images/icons/menu-news.png'),
-      target: () => {
-        navigation.navigate('News');
-      },
-    },
-    {
-      title: 'Ardan Content',
-      image: require('../assets/images/icons/menu-content.png'),
-      target: () => {
-        navigation.navigate('ArdanContent');
-      },
-    },
-    {
-      title: 'Event',
-      image: require('../assets/images/icons/menu-event.png'),
-      target: () => {
-        navigation.navigate('Event');
-      },
-    },
-  ];
   const goToBanner = id => {
     navigation.navigate('BannerDetails', {
       id: id,
@@ -560,36 +530,6 @@ const Home = ({navigation}) => {
       );
     }
   };
-  const HomeMenu = () => {
-    return (
-      <View style={[theme.fRow, theme.fjCenter, theme.mt40]}>
-        {menuItem.map((item, i) => {
-          return (
-            <TouchableOpacity
-              style={[theme.fjCenter, theme.faCenter]}
-              onPress={item.target}
-              key={i}>
-              <View
-                style={[
-                  theme.w50,
-                  theme.h50,
-                  theme.faCenter,
-                  theme.fjCenter,
-                  theme.bgyellow,
-                  theme.mx15,
-                  theme.br100,
-                ]}>
-                <Image source={item.image} />
-              </View>
-              <Text style={[theme['h10-500'], theme.cblack_green, theme.mt5]}>
-                {item.title}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    );
-  };
   const News = () => {
     return (
       <View style={[theme.mt35]}>
@@ -601,7 +541,7 @@ const Home = ({navigation}) => {
             style={[
               theme.bgblack_chocolate,
               theme.fjCenter,
-              theme.px10,
+              theme.ps10,
               theme.br40,
             ]}
             onPress={() => {
@@ -731,7 +671,7 @@ const Home = ({navigation}) => {
               theme.bgblack_chocolate,
               theme.fjCenter,
               theme.py5,
-              theme.px10,
+              theme.ps10,
               theme.br40,
             ]}
             onPress={() => {
@@ -809,7 +749,7 @@ const Home = ({navigation}) => {
                 theme.bgblack_chocolate,
                 theme.fjCenter,
                 theme.py5,
-                theme.px10,
+                theme.ps10,
                 theme.br40,
               ]}
               onPress={() => {
@@ -871,7 +811,7 @@ const Home = ({navigation}) => {
                 theme.bgblack_chocolate,
                 theme.fjCenter,
                 theme.py5,
-                theme.px10,
+                theme.ps10,
                 theme.br40,
               ]}
               onPress={() => {
@@ -925,7 +865,7 @@ const Home = ({navigation}) => {
     } else {
       return bannerAdsItem.data.map((item, i) => {
         return (
-          <View style={[theme.mt35, theme.px10, theme.wp100]} key={i}>
+          <View style={[theme.mt35, theme.px20, theme.wp100]} key={i}>
             <TouchableOpacity
               onPress={() => {
                 goToBanner(item.id);
@@ -964,7 +904,7 @@ const Home = ({navigation}) => {
                 theme.bgblack_chocolate,
                 theme.fjCenter,
                 theme.py5,
-                theme.px10,
+                theme.ps10,
                 theme.br40,
               ]}
               onPress={() => {
@@ -1057,7 +997,7 @@ const Home = ({navigation}) => {
               </View>
               <RenderHtml
                 source={{
-                  html: `<div style="color:#fff;">${hotSharing.data.text}</div>`,
+                  html: `<div style="color:#fff;">${Helper.limitWords(hotSharing.data.text,200)}</div>`,
                 }}
               />
               {/* <Text style={[theme['h12-500'], {color: '#fff'}, theme.mt15]}>

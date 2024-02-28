@@ -266,7 +266,7 @@ const SocialSharingDetails = ({route, navigation}) => {
             : theme.pt60,
           theme.relative,
         ]}>
-        <ScrollView style={[theme.px15]}>
+        <ScrollView style={[theme.px20]}>
           <View
             style={[
               theme.mt25,

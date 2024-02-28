@@ -73,6 +73,7 @@ const Program = ({navigation}) => {
             theme.my25,
             theme.br12,
             theme.px15,
+            {flexWrap:'nowrap'}
           ]}>
           <TouchableOpacity
             onPress={() => {
@@ -85,7 +86,7 @@ const Program = ({navigation}) => {
           </TouchableOpacity>
           <TextInput
             placeholder="Search..."
-            style={[theme.cwhite, theme['p14-400'], theme.wp90]}
+            style={[theme.cwhite, theme['p14-400'], theme.wp75]}
             placeholderTextColor="#fff"
             onChangeText={setSearch}
             value={search}

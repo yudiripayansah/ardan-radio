@@ -327,7 +327,7 @@ const SocialSharing = ({navigation}) => {
     } else {
       return bannerAdsItem.data.map((item, i) => {
         return (
-          <View style={[theme.px10, theme.wp100]} key={i}>
+          <View style={[theme.wp100]} key={i}>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('BannerDetails', {
@@ -460,7 +460,7 @@ const SocialSharing = ({navigation}) => {
               </View>
               <RenderHtml
                 source={{
-                  html: `<div style="color:#fff;">${hotSharing.data.text}</div>`,
+                  html: `<div style="color:#fff;">${Helper.limitWords(hotSharing.data.text,200)}</div>`,
                 }}
               />
               <View

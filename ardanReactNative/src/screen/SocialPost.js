@@ -454,11 +454,11 @@ const SocialPost = ({navigation}) => {
           <View
             style={[
               {backgroundColor: '#30302B'},
-              theme.py22,
+              theme.py10,
               theme.px20,
               theme.br10,
             ]}>
-            <ScrollView style={[theme.h300]}>
+            <ScrollView style={[theme.h250]}>
               {comments.loading ? (
                 <View style={[theme.py100]}>
                   <ActivityIndicator size="large" color="#F8C303" />
@@ -498,15 +498,16 @@ const SocialPost = ({navigation}) => {
                   theme.br10,
                   theme.fRow,
                   theme.faCenter,
-                  theme.fjBetween,
+                  theme.fjCenter,
                 ]}>
                 <TextInput
                   style={[
                     {backgroundColor: 'rgba(45, 171, 210, 0.12)'},
-                    theme.wp83,
+                    theme.wp75,
                     theme.br10,
                     theme.cwhite,
                     theme['h12-400'],
+                    theme.px10
                   ]}
                   placeholderTextColor={'#fff'}
                   onChangeText={setComment}
@@ -524,6 +525,7 @@ const SocialPost = ({navigation}) => {
                     theme.bgyellow,
                     theme.fjCenter,
                     theme.faCenter,
+                    theme.ms10
                   ]}
                   onPress={() => {
                     sentComment();

@@ -422,7 +422,7 @@ const Search = ({route, navigation}) => {
             ]}>
             <TextInput
               placeholder="Search..."
-              style={[theme.cwhite, theme['p14-400'], theme.wp89, theme.h40]}
+              style={[theme.cwhite, theme['p14-400'], theme.wp75, theme.h40]}
               placeholderTextColor="#fff"
               onSubmitEditing={e => {
                 doSearch(e.nativeEvent.text);

@@ -120,7 +120,7 @@ const Header = ({navigation, ...props}) => {
             {backgroundColor: '#12120B',
             flexWrap: 'nowrap'},
             theme.br12,
-            theme.px15,
+            theme.px20,
             theme.wp90,
           ]}>
           <TouchableOpacity
@@ -132,7 +132,7 @@ const Header = ({navigation, ...props}) => {
           </TouchableOpacity>
           <TextInput
             placeholder="Search..."
-            style={[theme.cwhite, theme['p14-400'], theme.wp80, theme.h40]}
+            style={[theme.cwhite, theme['p14-400'], theme.wp75, theme.h40]}
             placeholderTextColor="#fff"
             onSubmitEditing={e => {
               doSearch(e.nativeEvent.text);
@@ -152,7 +152,7 @@ const Header = ({navigation, ...props}) => {
             theme.bgyellow,
             theme.wp100,
             theme.py5,
-            theme.px40,
+            theme.px20,
             theme.fRow,
             theme.fjBetween,
             theme.faCenter,
@@ -216,7 +216,7 @@ const Header = ({navigation, ...props}) => {
             {backgroundColor: '#21292f'},
             theme.wp100,
             theme.py10,
-            theme.px40,
+            theme.px20,
             theme.fRow,
             theme.faCenter,
             theme.fjBetween,

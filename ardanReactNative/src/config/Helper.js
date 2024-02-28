@@ -83,16 +83,11 @@ const helper = {
     return String(s).substring(0,l);
   },
   limitWords(textToLimit, wordLimit) {
-    var finalText = "";
-    var text2 = textToLimit.replace(/\s+/g, " ");
-    var text3 = text2.split(" ");
-    var numberOfWords = text3.length;
-    var i = 0;
-    if (numberOfWords > wordLimit) {
-      for (i = 0; i < wordLimit; i++)
-        finalText = finalText + " " + text3[i] + " ";
-      return finalText + "…";
-    } else return textToLimit;
+    if(textToLimit){
+      let text = textToLimit.replace(/<[^>]+>/g, '');
+      let ret = text.length > wordLimit ? text.substring(0, wordLimit) : text
+      return  ret + '...';
+    }
   },
   hari(days) {
     let d = days.split(',')
