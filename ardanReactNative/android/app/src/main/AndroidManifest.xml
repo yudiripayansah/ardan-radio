@@ -19,7 +19,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="https"/>
         <data android:scheme="http"/>
-        <data android:host="mobileapps.ardanradio.com"/>
+        <data android:host="ardanmobileapps.ardangroup.fm"/>
       </intent-filter>
     </activity>
   </application>
