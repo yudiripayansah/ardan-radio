@@ -8,7 +8,7 @@ const Splash = ({ navigation }) => {
   }, [])
 
   return (
-    <SafeAreaView style={[theme.bgblack, theme.w%100, theme.h%100,theme.faCenter, theme.fjCenter, {flex: 1}]}>
+    <SafeAreaView style={[{backgroundColor:'#090903'}, theme.wp100, theme.hp100,theme.faCenter, theme.fjCenter, {flex: 1}]}>
           <Image
             style={[theme.w135, theme.h78, {objectFit: 'contain'}]}
             source={require('../assets/images/logo-ardan.png')}

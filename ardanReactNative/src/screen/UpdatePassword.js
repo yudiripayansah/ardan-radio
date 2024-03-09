@@ -80,24 +80,24 @@ const UpdatePassword = ({route,navigation}) => {
     setUser(data)
   }
   return (
-    <KeyboardAvoidingView style={[theme.w%100,theme.h%100, theme.bgblack, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
+    <KeyboardAvoidingView style={[theme.wp100,theme.hp100, {backgroundColor:'#090903'}, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
       <View style={[theme.faCenter]}>
         <Image
           style={[theme.w135, theme.h78, {objectFit: 'contain'}]}
           source={require('../assets/images/logo-ardan.png')}
         />
       </View>
-      <View style={[theme.w%100, theme.mt50,]}>
+      <View style={[theme.wp100, theme.mt50,]}>
         <Text style={[theme.cwhite,theme['p24-500'], theme.tCenter]}>Update Password</Text>
         <Text style={[theme.cblue_grey,theme['p14-500'], theme.tCenter]}>Please enter your new password</Text>
-        <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt15, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px50, theme.wp100, theme.mt15, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Password' secureTextEntry={sPassword} onChangeText={setPassword} value={password} placeholderTextColor={'#000'}/>
           <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>
             <Icon name={(sPassword) ? "eye-slash" : "eye"} size={20} color="#555" />
           </TouchableOpacity>
         </View>
-        <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt15, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px50, theme.wp100, theme.mt15, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Reenter Password' secureTextEntry={sPassword} onChangeText={setCpassword} value={Cpassword} placeholderTextColor={'#000'}/>
           <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>

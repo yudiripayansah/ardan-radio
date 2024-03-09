@@ -80,28 +80,28 @@ const Register = ({navigation}) => {
     
   }, []);
   return (
-    <ScrollView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[theme.w%100,theme.h%100, theme.bgblack, theme.px20, theme.py20, { flexGrow: 1}]}>
+    <ScrollView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[theme.wp100,theme.hp100, {backgroundColor:'#090903'}, theme.px20, theme.py20, { flexGrow: 1}]}>
       <View style={[theme.faCenter]}>
         <Image
           style={[theme.w135, theme.h78, {objectFit: 'contain'}]}
           source={require('../assets/images/logo-ardan.png')}
         />
       </View>
-      <View style={[theme.w%100, theme.mt50,]}>
+      <View style={[theme.wp100, theme.mt50,]}>
         <Text style={[theme.cwhite,theme['p24-500'], theme.tCenter]}>SIGN UP</Text>
         <Text style={[theme.cblue_grey,theme['p14-500'], theme.tCenter]}>Buat akunmu sekarang!!!</Text>
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt20]}>Nama Lengkap</Text>
-        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt5, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.wp100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/user.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setname} placeholder='Nama lengkap kamu'placeholderTextColor={'#000'}/>
         </View>
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt15]}>Email</Text>
-        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt5, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.wp100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/envelope.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setemail} placeholder='Alamat Email' placeholderTextColor={'#000'}/>
         </View>
         <Text style={[theme['p14-500'], theme.cyellow_bold, theme.mt15]}>Password</Text>
-        <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt5, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px50, theme.wp100, theme.mt5, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} onChangeText={setpassword} placeholder='Password' secureTextEntry={sPassword} placeholderTextColor={'#000'}/>
           <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>

@@ -4,7 +4,9 @@ import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 const Login = ({navigation}) => {
+  const webClientId = '543317221813-25in70mlr40laf569025fedv79n908n8.apps.googleusercontent.com'
   const theme = useContext(ThemeContext)
   const {setUser} = useContext(AuthContext);
   const [email, setEmail] = useState()
@@ -17,7 +19,9 @@ const Login = ({navigation}) => {
     data: null
   })
   useEffect(() => {
-    
+    GoogleSignin.configure({
+      webClientId: webClientId, 
+    })
   },[])
   function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -82,22 +86,39 @@ const Login = ({navigation}) => {
     }
     setUser(data)
   }
+  const googleLogin = async () => {
+    try {
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+        const userInfo = await GoogleSignin.signIn();
+        console.log("userinfo", userInfo);
+    } catch (error) {
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            console.log(error)
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+            console.log(error)
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            console.log(error)
+        } else {
+          console.log(error)
+        }
+    }
+  };
   return (
-    <KeyboardAvoidingView style={[theme.w%100,theme.h%100, theme.bgblack, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
+    <KeyboardAvoidingView style={[theme.wp100,theme.hp100, {backgroundColor:'#090903'}, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
       <View style={[theme.faCenter]}>
         <Image
           style={[theme.w135, theme.h78, {objectFit: 'contain'}]}
           source={require('../assets/images/logo-ardan.png')}
         />
       </View>
-      <View style={[theme.w%100, theme.mt50,]}>
+      <View style={[theme.wp100, theme.mt50,]}>
         <Text style={[theme.cwhite,theme['p24-500'], theme.tCenter]}>SIGN IN</Text>
         <Text style={[theme.cblue_grey,theme['p14-500'], theme.tCenter]}>Please enter your account here</Text>
-        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt20, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.wp100, theme.mt20, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/envelope.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Email' onChangeText={setEmail} value={email} placeholderTextColor={'#000'}/>
         </View>
-        <View style={[ theme.bgwhite, theme.px50, theme.w%100, theme.mt15, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px50, theme.wp100, theme.mt15, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/lock.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Password' secureTextEntry={sPassword} onChangeText={setPassword} value={password} placeholderTextColor={'#000'}/>
           <TouchableOpacity onPress={()=> {setSpassword(!sPassword)}} style={[theme.absolute,theme.right20, theme.top15]}>
@@ -122,10 +143,10 @@ const Login = ({navigation}) => {
         }
         <View style={[theme.relative,theme.mt15, theme.faCenter]}>
           <View style={[theme.h1,theme.bgwhite,theme.absolute, theme.left0, theme.right0, theme.top10]}></View>
-          <Text style={[theme.bgblack, theme.cyellow_bold, theme['p14-500'], theme.px5]}>Or Login with</Text>
+          <Text style={[{backgroundColor:'#090903'}, theme.cyellow_bold, theme['p14-500'], theme.px5]}>Or Login with</Text>
         </View>
         <View style={[theme.fRow, theme.fjCenter, theme.mt15]}>
-          <TouchableOpacity style={[theme.w80, theme.bwhite, theme.bSolid, theme.bw1, theme.faCenter, theme.py5, theme.br10, theme.mx5]}>
+          <TouchableOpacity style={[theme.w80, theme.bwhite, theme.bSolid, theme.bw1, theme.faCenter, theme.py5, theme.br10, theme.mx5]} onPress={googleLogin}>
             <Image source={require('../assets/images/icons/google.png')}/>
           </TouchableOpacity>
           <TouchableOpacity style={[theme.w80, theme.bwhite, theme.bSolid, theme.bw1, theme.faCenter, theme.py5, theme.br10, theme.mx5]}>

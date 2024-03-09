@@ -79,17 +79,17 @@ const Forgot = ({navigation}) => {
     setUser(data)
   }
   return (
-    <KeyboardAvoidingView style={[theme.w%100,theme.h%100, theme.bgblack, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
+    <KeyboardAvoidingView style={[theme.wp100,theme.hp100, {backgroundColor:'#090903'}, theme.fjStart, theme.px20, theme.py20 ,{flexGrow: 1}]}>
       <View style={[theme.faCenter]}>
         <Image
           style={[theme.w135, theme.h78, {objectFit: 'contain'}]}
           source={require('../assets/images/logo-ardan.png')}
         />
       </View>
-      <View style={[theme.w%100, theme.mt50,]}>
+      <View style={[theme.wp100, theme.mt50,]}>
         <Text style={[theme.cwhite,theme['p24-500'], theme.tCenter]}>Forgot Password</Text>
         <Text style={[theme.cblue_grey,theme['p14-500'], theme.tCenter]}>Please enter your email</Text>
-        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.w%100, theme.mt20, theme.br12]}>
+        <View style={[ theme.bgwhite, theme.px20, theme.ps50, theme.wp100, theme.mt20, theme.br12]}>
           <Image style={[theme.w20,theme.h20, theme.absolute,theme.left20, theme.top15,{objectFit: 'contain'}]} source={require('../assets/images/icons/envelope.png')}/>
           <TextInput style={[theme.p0,theme['p13-500'],theme.cblack]} placeholder='Email' onChangeText={setEmail} value={email} placeholderTextColor={'#000'}/>
         </View>
