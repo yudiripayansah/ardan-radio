@@ -97,7 +97,7 @@ const Program = ({navigation}) => {
           />
         </View>
       </View>
-      <ScrollView style={[theme.px20]}>
+      <ScrollView style={[theme.px20]} showsVerticalScrollIndicator={false}>
         <View style={[theme.fRow, theme.fjBetween, theme.wp100]}>
           {programsItem.loading ? (
             <View style={[theme.py50, theme.wp100, theme.faCenter]}>

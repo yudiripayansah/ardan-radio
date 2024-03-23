@@ -409,7 +409,7 @@ const Search = ({route, navigation}) => {
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt150 : theme.pt80, theme.relative]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <View style={[theme.px20]}>
           <View
             style={[

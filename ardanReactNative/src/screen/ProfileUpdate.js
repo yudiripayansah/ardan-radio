@@ -151,7 +151,7 @@ const ProfileUpdate = ({route, navigation}) => {
         {flexGrow: 1},
         radioState && radioState.status == 'playing' ? theme.pt130 : theme.pt60,
       ]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <KeyboardAvoidingView style={[theme.px20, theme.pt10, theme.pb150]}>
           <TouchableOpacity
             onPress={() => {

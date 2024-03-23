@@ -264,6 +264,7 @@ const MessageDetail = ({route, navigation}) => {
           radioState && radioState.status == 'playing' ? theme.pt80 : theme.pt0,
         ]}>
         <ScrollView
+          showsVerticalScrollIndicator={false}
           style={[theme.px20]}
           ref={scrollViewRef}
           onContentSizeChange={() =>
@@ -286,8 +287,8 @@ const MessageDetail = ({route, navigation}) => {
             theme.faCenter,
             theme.fjCenter,
             theme.bgblack,
-            {flexWrap:'nowrap'},
-            theme.wp100
+            {flexWrap: 'nowrap'},
+            theme.wp100,
           ]}>
           <View
             style={[

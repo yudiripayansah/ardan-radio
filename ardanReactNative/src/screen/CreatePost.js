@@ -110,7 +110,7 @@ const CreatePost = ({navigation}) => {
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, theme.pt10, theme.relative]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <View style={[theme.pb100]}>
           {image && (
             <AutoHeightImage

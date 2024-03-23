@@ -347,7 +347,7 @@ const News = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <ScrollView style={[theme.mb150]}>
+      <ScrollView style={[theme.mb150]} showsVerticalScrollIndicator={false}>
         <Recomended />
         <Latest />
         <View style={[theme.mb150]} />

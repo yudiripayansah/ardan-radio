@@ -109,7 +109,7 @@ const Message = ({navigation}) => {
 
   return (
     <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt60]}>
-      <ScrollView style={[theme.mx15]}>
+      <ScrollView style={[theme.mx15]} showsVerticalScrollIndicator={false}>
         {/* <View style={[theme.fRow,theme.faCenter,theme.fjBetween,theme.py10]}>
           <Text style={[theme['p14-400'],theme.cyellow]}>Online</Text>
           <TouchableOpacity>

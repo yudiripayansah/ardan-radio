@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 const SocialPost = ({navigation}) => {
+  const {width} = useWindowDimensions();
   const imageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -249,7 +250,8 @@ const SocialPost = ({navigation}) => {
         <ScrollView
           style={[]}
           onScroll={handleScroll}
-          scrollEventThrottle={400}>
+          scrollEventThrottle={400}
+          showsVerticalScrollIndicator={false}>
           {feedsItem.loading ? (
             <View style={[theme.py100]}>
               <ActivityIndicator size="large" color="#F8C303" />
@@ -458,7 +460,9 @@ const SocialPost = ({navigation}) => {
               theme.px20,
               theme.br10,
             ]}>
-            <ScrollView style={[theme.h250]}>
+            <ScrollView
+              style={[theme.h250]}
+              showsVerticalScrollIndicator={false}>
               {comments.loading ? (
                 <View style={[theme.py100]}>
                   <ActivityIndicator size="large" color="#F8C303" />
@@ -507,7 +511,7 @@ const SocialPost = ({navigation}) => {
                     theme.br10,
                     theme.cwhite,
                     theme['h12-400'],
-                    theme.px10
+                    theme.px10,
                   ]}
                   placeholderTextColor={'#fff'}
                   onChangeText={setComment}
@@ -525,7 +529,7 @@ const SocialPost = ({navigation}) => {
                     theme.bgyellow,
                     theme.fjCenter,
                     theme.faCenter,
-                    theme.ms10
+                    theme.ms10,
                   ]}
                   onPress={() => {
                     sentComment();

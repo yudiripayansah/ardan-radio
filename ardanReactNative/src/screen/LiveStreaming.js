@@ -118,13 +118,16 @@ const LiveStreaming = ({navigation}) => {
             />
           </TouchableOpacity>
           <View style={[theme.wp80]}>
-            <View style={[theme.fRow, theme.faCenter]}><TouchableOpacity
-            onPress={() => {
-              navigation.navigate('Profile', {
-                id: item.id_user,
-              });
-            }}>
-              <Text style={[theme.cwhite, theme['p14-600']]}>{item.title}</Text>
+            <View style={[theme.fRow, theme.faCenter]}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Profile', {
+                    id: item.id_user,
+                  });
+                }}>
+                <Text style={[theme.cwhite, theme['p14-600']]}>
+                  {item.title}
+                </Text>
               </TouchableOpacity>
               {item.penyiar == 'Yes' ? (
                 <View
@@ -257,6 +260,7 @@ const LiveStreaming = ({navigation}) => {
         </View>
       )}
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={[
           theme.px30,
           theme.my15,
@@ -283,7 +287,7 @@ const LiveStreaming = ({navigation}) => {
           theme.wp100,
           theme.faCenter,
           theme.fjCenter,
-          {flexWrap:'nowrap'}
+          {flexWrap: 'nowrap'},
         ]}>
         <View
           style={[
@@ -291,7 +295,7 @@ const LiveStreaming = ({navigation}) => {
             theme.px15,
             theme.br16,
             theme.wp80,
-            theme.me10
+            theme.me10,
           ]}>
           <TextInput
             placeholder="Send Message"

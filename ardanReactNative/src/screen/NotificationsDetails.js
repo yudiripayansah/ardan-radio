@@ -87,7 +87,7 @@ const Notifications = ({route, navigation}) => {
   return (
     <SafeAreaView
       style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <AutoHeightImage
           contentWidth={imageWidth}
           width={imageWidth}

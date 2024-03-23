@@ -266,7 +266,7 @@ const SocialSharingDetails = ({route, navigation}) => {
             : theme.pt60,
           theme.relative,
         ]}>
-        <ScrollView style={[theme.px20]}>
+        <ScrollView style={[theme.px20]} showsVerticalScrollIndicator={false}>
           <View
             style={[
               theme.mt25,
@@ -322,7 +322,6 @@ const SocialSharingDetails = ({route, navigation}) => {
             />
             <RenderHtml
               contentWidth={imageWidth}
-              width={imageWidth}
               source={{
                 html: `<div style="color:#9DA3AF;">${feedsItem.data.text}</div>`,
               }}

@@ -25,6 +25,7 @@ import {AuthContext} from '../context/AuthContext';
 import Icons from '../components/Icons';
 import Share from 'react-native-share';
 const Profile = ({route, navigation}) => {
+  const { width } = useWindowDimensions();
   const {removeUser} = useContext(AuthContext);
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 20;
@@ -391,7 +392,6 @@ const Profile = ({route, navigation}) => {
             <View style={[theme.h15]} />
             <RenderHtml
               contentWidth={imageWidth}
-              width={imageWidth}
               source={{
                 html: `<div style="color:#fff;">${item.text}</div>`,
               }}
@@ -916,7 +916,7 @@ const Profile = ({route, navigation}) => {
               theme.px20,
               theme.br10,
             ]}>
-            <ScrollView style={[theme.h300]}>
+            <ScrollView style={[theme.h300]} showsVerticalScrollIndicator={false}>
               {comments.loading ? (
                 <View style={[theme.py100]}>
                   <ActivityIndicator size="large" color="#F8C303" />

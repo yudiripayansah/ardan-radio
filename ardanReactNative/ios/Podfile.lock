@@ -1,9 +1,9 @@
 PODS:
-  - AppAuth (1.6.2):
-    - AppAuth/Core (= 1.6.2)
-    - AppAuth/ExternalUserAgent (= 1.6.2)
-  - AppAuth/Core (1.6.2)
-  - AppAuth/ExternalUserAgent (1.6.2):
+  - AppAuth (1.7.1):
+    - AppAuth/Core (= 1.7.1)
+    - AppAuth/ExternalUserAgent (= 1.7.1)
+  - AppAuth/Core (1.7.1)
+  - AppAuth/ExternalUserAgent (1.7.1):
     - AppAuth/Core
   - boost (1.76.0)
   - CocoaAsyncSocket (7.6.5)
@@ -16,48 +16,59 @@ PODS:
     - React-Core (= 0.71.8)
     - React-jsi (= 0.71.8)
     - ReactCommon/turbomodule/core (= 0.71.8)
-  - Firebase (10.19.0):
-    - Firebase/Core (= 10.19.0)
-  - Firebase/Core (10.19.0):
+  - Firebase (10.22.0):
+    - Firebase/Core (= 10.22.0)
+  - Firebase/Auth (10.22.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (~> 10.19.0)
-  - Firebase/CoreOnly (10.19.0):
-    - FirebaseCore (= 10.19.0)
-  - Firebase/Messaging (10.19.0):
+    - FirebaseAuth (~> 10.22.0)
+  - Firebase/Core (10.22.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.19.0)
-  - FirebaseAnalytics (10.19.0):
-    - FirebaseAnalytics/AdIdSupport (= 10.19.0)
+    - FirebaseAnalytics (~> 10.22.0)
+  - Firebase/CoreOnly (10.22.0):
+    - FirebaseCore (= 10.22.0)
+  - Firebase/Messaging (10.22.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 10.22.0)
+  - FirebaseAnalytics (10.22.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.22.0)
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseAnalytics/AdIdSupport (10.19.0):
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (10.22.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleAppMeasurement (= 10.19.0)
+    - GoogleAppMeasurement (= 10.22.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseCore (10.19.0):
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - FirebaseAppCheckInterop (10.22.0)
+  - FirebaseAuth (10.22.0):
+    - FirebaseAppCheckInterop (~> 10.17)
+    - FirebaseCore (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GTMSessionFetcher/Core (< 4.0, >= 2.1)
+    - RecaptchaInterop (~> 100.0)
+  - FirebaseCore (10.22.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
-  - FirebaseCoreExtension (10.19.0):
+  - FirebaseCoreExtension (10.22.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.21.0):
+  - FirebaseCoreInternal (10.22.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseInstallations (10.21.0):
+  - FirebaseInstallations (10.22.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.19.0):
+  - FirebaseMessaging (10.22.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleDataTransport (~> 9.3)
@@ -65,7 +76,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
   - Flipper (0.125.0):
     - Flipper-Folly (~> 2.6)
     - Flipper-RSocket (~> 1.4)
@@ -129,29 +140,29 @@ PODS:
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
-  - GoogleAppMeasurement (10.19.0):
-    - GoogleAppMeasurement/AdIdSupport (= 10.19.0)
+  - GoogleAppMeasurement (10.22.0):
+    - GoogleAppMeasurement/AdIdSupport (= 10.22.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (10.19.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.19.0)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (10.22.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.22.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.19.0):
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.22.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleDataTransport (9.4.0):
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - GoogleDataTransport (9.4.1):
     - GoogleUtilities/Environment (~> 7.7)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleSignIn (7.0.0):
     - AppAuth (~> 1.5)
@@ -209,11 +220,11 @@ PODS:
     - hermes-engine/Pre-built (= 0.71.8)
   - hermes-engine/Pre-built (0.71.8)
   - libevent (2.1.12)
-  - nanopb (2.30909.1):
-    - nanopb/decode (= 2.30909.1)
-    - nanopb/encode (= 2.30909.1)
-  - nanopb/decode (2.30909.1)
-  - nanopb/encode (2.30909.1)
+  - nanopb (2.30910.0):
+    - nanopb/decode (= 2.30910.0)
+    - nanopb/encode (= 2.30910.0)
+  - nanopb/decode (2.30910.0)
+  - nanopb/encode (2.30910.0)
   - OpenSSL-Universal (1.1.1100)
   - PromisesObjC (2.4.0)
   - RCT-Folly (2021.07.22.00):
@@ -570,16 +581,21 @@ PODS:
     - React-jsi (= 0.71.8)
     - React-logger (= 0.71.8)
     - React-perflogger (= 0.71.8)
+  - RecaptchaInterop (100.0.0)
   - RNCAsyncStorage (1.21.0):
     - React-Core
   - RNCPicker (2.6.1):
     - React-Core
-  - RNFBApp (18.7.3):
-    - Firebase/CoreOnly (= 10.19.0)
+  - RNFBApp (19.0.1):
+    - Firebase/CoreOnly (= 10.22.0)
     - React-Core
-  - RNFBMessaging (18.7.3):
-    - Firebase/Messaging (= 10.19.0)
-    - FirebaseCoreExtension (= 10.19.0)
+  - RNFBAuth (19.0.1):
+    - Firebase/Auth (= 10.22.0)
+    - React-Core
+    - RNFBApp
+  - RNFBMessaging (19.0.1):
+    - Firebase/Messaging (= 10.22.0)
+    - FirebaseCoreExtension (= 10.22.0)
     - React-Core
     - RNFBApp
   - RNFS (2.20.0):
@@ -587,7 +603,7 @@ PODS:
   - RNGestureHandler (2.14.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNGoogleSignin (10.1.1):
+  - RNGoogleSignin (11.0.0):
     - GoogleSignIn (~> 7.0)
     - React-Core
   - RNScreens (3.29.0):
@@ -596,9 +612,6 @@ PODS:
   - RNShare (10.0.2):
     - React-Core
   - RNSVG (13.14.0):
-    - React-Core
-  - RNVectorIcons (10.0.3):
-    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - SocketRocket (0.6.1)
   - SwiftAudioEx (0.15.3)
@@ -680,6 +693,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -687,7 +701,6 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -696,6 +709,8 @@ SPEC REPOS:
     - CocoaAsyncSocket
     - Firebase
     - FirebaseAnalytics
+    - FirebaseAppCheckInterop
+    - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
@@ -721,6 +736,7 @@ SPEC REPOS:
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
+    - RecaptchaInterop
     - SocketRocket
     - SwiftAudioEx
     - YogaKit
@@ -814,6 +830,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-picker/picker"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
+  RNFBAuth:
+    :path: "../node_modules/@react-native-firebase/auth"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNFS:
@@ -828,25 +846,25 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  RNVectorIcons:
-    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
+  AppAuth: e93b919be5dbcbba49555011ce94f7d716368574
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   FBLazyVector: f637f31eacba90d4fdeff3fa41608b8f361c173b
   FBReactNativeSpec: 0d9a4f4de7ab614c49e98c00aedfd3bfbda33d59
-  Firebase: 63ce8ece0d43743dc28eacac0c6867a2d7fd5a9d
-  FirebaseAnalytics: 87513010b13b7c8610164d3602ea10571f76afc1
-  FirebaseCore: dc5c7badf99d47613c52b2e3a57a64cd187f8554
-  FirebaseCoreExtension: c08d14c7b22e07994e876d837e6f58642f340087
-  FirebaseCoreInternal: 43c1788eaeee9d1b97caaa751af567ce11010d00
-  FirebaseInstallations: 390ea1d10a4d02b20c965cbfd527ee9b3b412acb
-  FirebaseMessaging: d322bd030a0e97398bf134746e087b88e6ba0074
+  Firebase: 797fd7297b7e1be954432743a0b3f90038e45a71
+  FirebaseAnalytics: 8d0ff929c63b7f72260f332b86ccf569776b75d3
+  FirebaseAppCheckInterop: 58db3e9494751399cf3e7b7e3e705cff71099153
+  FirebaseAuth: bbe4c68f958504ba9e54aee181adbdf5b664fbc6
+  FirebaseCore: 0326ec9b05fbed8f8716cddbf0e36894a13837f7
+  FirebaseCoreExtension: 6394c00b887d0bebadbc7049c464aa0cbddc5d41
+  FirebaseCoreInternal: bca337352024b18424a61e478460547d46c4c753
+  FirebaseInstallations: 763814908793c0da14c18b3dcffdec71e29ed55e
+  FirebaseMessaging: 9f71037fd9db3376a4caa54e5a3949d1027b4b6e
   Flipper: 26fc4b7382499f1281eb8cb921e5c3ad6de91fe0
   Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
   Flipper-DoubleConversion: 2dc99b02f658daf147069aad9dbd29d8feb06d30
@@ -858,15 +876,15 @@ SPEC CHECKSUMS:
   FlipperKit: cbdee19bdd4e7f05472a66ce290f1b729ba3cb86
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
-  GoogleAppMeasurement: 68afe759316673c6554dac35a0c7ae8f5d6cb4ed
-  GoogleDataTransport: bed3a36c04c8552479fbb9b76326e0fc69bddcb2
+  GoogleAppMeasurement: ccefe3eac9b0aa27f96066809fb1a7fe4b462626
+  GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
   GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
   GTMSessionFetcher: 8a1b34ad97ebe6f909fb8b9b77fba99943007556
   hermes-engine: 47986d26692ae75ee7a17ab049caee8864f855de
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
+  nanopb: 438bc412db1928dac798aa6fd75726007be04262
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
@@ -904,17 +922,18 @@ SPEC CHECKSUMS:
   React-RCTVibration: 43ffd976a25f6057a7cf95ea3648ba4e00287f89
   React-runtimeexecutor: 7c51ae9d4b3e9608a2366e39ccaa606aa551b9ed
   ReactCommon: 85c98ab0a509e70bf5ee5d9715cf68dbf495b84c
+  RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCPicker: b18aaf30df596e9b1738e7c1f9ee55402a229dca
-  RNFBApp: c21258de1485419a845efbba9c09ec946c89891d
-  RNFBMessaging: e52a76a97ec5ff75e186c150e2bfab86c9e655d1
+  RNFBApp: 94f7fca150585cb1ad3802a6c6d356e9a8b95b34
+  RNFBAuth: ca2801fae5520ab8e4a137c3de402478747c3f79
+  RNFBMessaging: cad9f5dcd04671a01621135b55b892b8b2547da2
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 32a01c29ecc9bb0b5bf7bc0a33547f61b4dc2741
-  RNGoogleSignin: aac5c1ec73422109dec1da770247a1e410dcc620
+  RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
   RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
-  RNVectorIcons: 64e6a523ac30a3241efa9baf1ffbcc5e76ff747a
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   SwiftAudioEx: 83eabba2940924fc1c0d5cb0896049921365229c
   Yoga: 065f0b74dba4832d6e328238de46eb72c5de9556

@@ -57,10 +57,10 @@ const App = ({}) => {
       handleDeepLink(initialUrl)
       return;
     }
-    console.warn(initialUrl)
-    if(initialUrl.includes('post')) {
+    // console.warn(initialUrl)
+    // if(initialUrl.includes('post')) {
 
-    }
+    // }
   };
   useEffect(() => {
     const listenToNotifications = () => {

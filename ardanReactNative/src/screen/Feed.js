@@ -10,7 +10,7 @@ const Feed = ({ navigation }) => {
 
     return (
         <SafeAreaView style={[theme.bgPrimary, theme.container]}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View>
                     <Text style={[theme.px1, theme.py2, theme.textH2, theme.textLightPurple, theme.bgSecondary, theme.textUppercase]}>Feed</Text>
                 </View>

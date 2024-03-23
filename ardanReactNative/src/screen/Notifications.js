@@ -64,7 +64,7 @@ const Notifications = ({navigation}) => {
   return (
     <SafeAreaView
       style={[theme.bgblack, {flexGrow: 1}, theme.relative, {zIndex: 2}]}>
-      <ScrollView style={[theme.mb70, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60]}>
+      <ScrollView style={[theme.mb70, (radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60]} showsVerticalScrollIndicator={false}>
         {notificationsUnreadItem.data.length > 0 && (
           <View
             style={[

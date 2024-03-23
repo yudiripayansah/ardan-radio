@@ -122,7 +122,7 @@ const ListUser = ({route, navigation}) => {
         {flexGrow: 1},
         radioState && radioState.status == 'playing' ? theme.pt130 : theme.pt60,
       ]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         {userList.data.map(item => {
           return (
             <TouchableOpacity

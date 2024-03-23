@@ -144,7 +144,7 @@ const ProgramDetails = ({route, navigation}) => {
         radioState && radioState.status == 'playing' ? theme.pt130 : theme.pt60,
         theme.relative,
       ]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <AutoHeightImage
           contentWidth={imageWidth}
           width={imageWidth}

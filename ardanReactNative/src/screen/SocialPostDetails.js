@@ -252,7 +252,7 @@ const SocialPostDetails = ({route, navigation}) => {
           theme.pt60,
           theme.relative,
         ]}>
-        <ScrollView style={[theme.px20]}>
+        <ScrollView style={[theme.px20]} showsVerticalScrollIndicator={false}>
           <View style={[theme.my20]}>
             <View style={[theme.fRow]}>
               <Image
@@ -291,7 +291,6 @@ const SocialPostDetails = ({route, navigation}) => {
             </View>
             <RenderHtml
               contentWidth={imageWidth}
-              width={imageWidth}
               source={{
                 html: `<div style="color:#fff;">${feedsItem.data.text}</div>`,
               }}
@@ -373,7 +372,13 @@ const SocialPostDetails = ({route, navigation}) => {
               theme.br10,
             ]}>
             <View
-              style={[theme.br10, theme.fRow, theme.faCenter, theme.fjCenter,{flexWrap:'nowrap'}]}>
+              style={[
+                theme.br10,
+                theme.fRow,
+                theme.faCenter,
+                theme.fjCenter,
+                {flexWrap: 'nowrap'},
+              ]}>
               <TextInput
                 style={[
                   {backgroundColor: 'rgba(45, 171, 210, 0.12)'},

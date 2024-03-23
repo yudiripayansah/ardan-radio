@@ -80,7 +80,7 @@ const Register = ({navigation}) => {
     
   }, []);
   return (
-    <ScrollView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[theme.wp100,theme.hp100, {backgroundColor:'#090903'}, theme.px20, theme.py20, { flexGrow: 1}]}>
+    <ScrollView showsVerticalScrollIndicator={false} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[theme.wp100,theme.hp100, {backgroundColor:'#090903'}, theme.px20, theme.py20, { flexGrow: 1}]}>
       <View style={[theme.faCenter]}>
         <Image
           style={[theme.w135, theme.h78, {objectFit: 'contain'}]}

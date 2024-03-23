@@ -459,6 +459,7 @@ const SocialSharing = ({navigation}) => {
                 </View>
               </View>
               <RenderHtml
+                contentWidth={imageWidth}
                 source={{
                   html: `<div style="color:#fff;">${Helper.limitWords(hotSharing.data.text,200)}</div>`,
                 }}

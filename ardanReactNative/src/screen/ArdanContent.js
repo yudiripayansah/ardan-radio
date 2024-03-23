@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Linking
+  Linking,
 } from 'react-native';
 import axios from 'axios';
 import {ThemeContext} from '../context/ThemeContext';
@@ -16,10 +16,10 @@ const ArdanContent = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const radioState = useContext(RadioContext).state;
   let apiKey = 'AIzaSyBOr3JxvvNcGariUrqnvsjUktQKxYGGWiI',
-  channelId = 'UCogKRAj4-WLY1INM7vESjhw',
-  channelName = '@ardanradio1059FM',
-  tiktokUsername = '@ardanradiobdg',
-  instagramUsername = 'ardanradio'
+    channelId = 'UCogKRAj4-WLY1INM7vESjhw',
+    channelName = '@ardanradio1059FM',
+    tiktokUsername = '@ardanradiobdg',
+    instagramUsername = 'ardanradio';
   const [youtube, setYoutube] = useState([]);
   const instagramItem = [
     {
@@ -71,22 +71,22 @@ const ArdanContent = ({navigation}) => {
     url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=10`;
     try {
       let req = await axios.get(url);
-      const {status, data} = req
-      if(status === 200) {
-        setYoutube(data.items)
+      const {status, data} = req;
+      if (status === 200) {
+        setYoutube(data.items);
       }
     } catch (error) {
-      console.error('get youtube:',error);
+      console.error('get youtube:', error);
     }
   };
-  const goToUrl = async (url) => {
+  const goToUrl = async url => {
     await Linking.openURL(url);
-  }
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {
-        getYoutube()
+        getYoutube();
       }
     });
     return () => (mounted = false);
@@ -97,7 +97,9 @@ const ArdanContent = ({navigation}) => {
         <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Content</Text>
           <TouchableOpacity
-            onPress={() => {goToUrl(`https://www.youtube.com/${channelName}`)}}
+            onPress={() => {
+              goToUrl(`https://www.youtube.com/${channelName}`);
+            }}
             style={[
               theme.bgblack_chocolate,
               theme.fjCenter,
@@ -120,9 +122,14 @@ const ArdanContent = ({navigation}) => {
           showsHorizontalScrollIndicator={false}>
           {youtube.map((item, i) => {
             return (
-              <TouchableOpacity style={[theme.me15, theme.w230]} key={i} onPress={() => {goToUrl(`https://www.youtube.com/watch?v=${item.id.videoId}`)}}>
+              <TouchableOpacity
+                style={[theme.me15, theme.w230]}
+                key={i}
+                onPress={() => {
+                  goToUrl(`https://www.youtube.com/watch?v=${item.id.videoId}`);
+                }}>
                 <Image
-                  source={{uri:item.snippet.thumbnails.medium.url}}
+                  source={{uri: item.snippet.thumbnails.medium.url}}
                   style={[
                     theme.wp100,
                     theme.h130,
@@ -152,7 +159,9 @@ const ArdanContent = ({navigation}) => {
         <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Instagram</Text>
           <TouchableOpacity
-            onPress={() => {goToUrl(`https://www.instagram.com/${instagramUsername}`)}}
+            onPress={() => {
+              goToUrl(`https://www.instagram.com/${instagramUsername}`);
+            }}
             style={[
               theme.bgblack_chocolate,
               theme.fjCenter,
@@ -198,7 +207,9 @@ const ArdanContent = ({navigation}) => {
         <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Tiktok</Text>
           <TouchableOpacity
-            onPress={() => {goToUrl(`https://www.tiktok.com/${tiktokUsername}`)}}
+            onPress={() => {
+              goToUrl(`https://www.tiktok.com/${tiktokUsername}`);
+            }}
             style={[
               theme.bgblack_chocolate,
               theme.fjCenter,
@@ -238,13 +249,17 @@ const ArdanContent = ({navigation}) => {
       </View>
     );
   };
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <SafeAreaView
-      style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt100 : theme.pt60, theme.relative]}>
-      <ScrollView style={[]}>
+      style={[
+        theme.bgblack,
+        {flexGrow: 1},
+        radioState && radioState.status == 'playing' ? theme.pt100 : theme.pt60,
+        theme.relative,
+      ]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <Content />
         <Instagram />
         <Tiktok />

@@ -8,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   Linking,
+  useWindowDimensions
 } from 'react-native';
 import axios from 'axios';
 import {ThemeContext} from '../context/ThemeContext';
@@ -22,6 +23,8 @@ import Icons from '../components/Icons';
 import RenderHtml from 'react-native-render-html';
 import {RadioContext} from '../context/RadioContext';
 const Home = ({navigation}) => {
+
+  const { width } = useWindowDimensions();
   const radioState = useContext(RadioContext).state;
   let apiKey = 'AIzaSyBOr3JxvvNcGariUrqnvsjUktQKxYGGWiI',
     channelId = 'UCogKRAj4-WLY1INM7vESjhw',
@@ -996,6 +999,7 @@ const Home = ({navigation}) => {
                 </View>
               </View>
               <RenderHtml
+                contentWidth={width}
                 source={{
                   html: `<div style="color:#fff;">${Helper.limitWords(hotSharing.data.text,200)}</div>`,
                 }}
@@ -1044,7 +1048,7 @@ const Home = ({navigation}) => {
   };
   return (
     <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt80]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <MainBanner />
         <ProgramPopuler />
         <HotSharing />

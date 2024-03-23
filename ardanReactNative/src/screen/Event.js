@@ -187,7 +187,7 @@ const News = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <ScrollView style={[theme.mb150, theme.mt20]}>
+      <ScrollView style={[theme.mb150, theme.mt20]} showsVerticalScrollIndicator={false}>
         <View style={[theme.fRow, theme.px20, theme.fjBetween]}>
           {eventsItem.data.map((item, i) => {
             return (

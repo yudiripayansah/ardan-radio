@@ -141,7 +141,7 @@ const RadioDetails = ({navigation}) => {
   return (
     <SafeAreaView
       style={[theme.bgblack, {flexGrow: 1}, theme.pt60, theme.relative]}>
-      <ScrollView style={[]}>
+      <ScrollView style={[]} showsVerticalScrollIndicator={false}>
         <View style={[theme.fjCenter, theme.faCenter, theme.mt25]}>
           <Image
             source={require('../assets/images/radio-play-cover.png')}

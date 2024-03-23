@@ -88,7 +88,7 @@ const Penyiar = ({navigation}) => {
           />
         </View>
       </View>
-      <ScrollView style={[theme.px20,theme.pt20]}>
+      <ScrollView style={[theme.px20,theme.pt20]} showsVerticalScrollIndicator={false}>
         {penyiarsItem.data.map((item, i) => {
           return (
             

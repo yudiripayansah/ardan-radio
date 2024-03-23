@@ -284,7 +284,8 @@ const Radio = ({navigation}) => {
         <ScrollView
           nestedScrollEnabled={true}
           style={[theme.mb110]}
-          ref={mainScrollViewRef}>
+          ref={mainScrollViewRef}
+          showsVerticalScrollIndicator={false}>
           <View
             style={[theme.fRow, theme.fjCenter, theme.faCenter, theme.mt25]}>
             {user.id ? (
@@ -399,6 +400,7 @@ const Radio = ({navigation}) => {
               <Icon name="feed" size={14} color="#F8C303" />
             </View>
             <ScrollView
+              showsVerticalScrollIndicator={false}
               nestedScrollEnabled={true}
               style={[theme.h220, theme.mb10]}
               ref={scrollViewRef}
@@ -410,8 +412,10 @@ const Radio = ({navigation}) => {
             </ScrollView>
             <View
               style={[
-                {backgroundColor: 'rgba(45, 171, 210, 0.12)',
-                flexWrap:'nowrap'},
+                {
+                  backgroundColor: 'rgba(45, 171, 210, 0.12)',
+                  flexWrap: 'nowrap',
+                },
                 theme.br30,
                 theme.ps15,
                 theme.fRow,
