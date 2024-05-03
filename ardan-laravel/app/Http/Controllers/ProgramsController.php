@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Programs;
 use App\Models\Penyiar;
+use App\Models\Likes;
 
 class ProgramsController extends Controller
 {
   public function __construct()
   {
-    $this->middleware('auth:api', ['except' => ['read', 'get']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get', 'checkNextProgram']]);
   }
   public function read(Request $request)
   {
@@ -68,30 +69,30 @@ class ProgramsController extends Controller
   public function get(Request $request)
   {
     if ($request->id || $request->day || $request->time) {
-      if($request->id){
+      if ($request->id) {
         $getData = Programs::find($request->id);
       }
-      if($request->day || $request->time) {
-        $time = "TIME(SUBSTRING_INDEX(time,'-',1)) <= TIME('".$request->time."') AND TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('".$request->time."')";
-        if($request->next) {
-          $time = "TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('".$request->time."')";
+      if ($request->day || $request->time) {
+        $time = "TIME(SUBSTRING_INDEX(time,'-',1)) <= TIME('" . $request->time . "') AND TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('" . $request->time . "')";
+        if ($request->next) {
+          $time = "TIME(SUBSTRING_INDEX(time,'-',-1)) >= TIME('" . $request->time . "')";
         }
         $getData = Programs::
-                  selectRaw("
+          selectRaw("
                     *,
                     SUBSTRING_INDEX(time,'-',1) AS startTime,
                     SUBSTRING_INDEX(time,'-',-1) AS endTime
                   ")
-                  ->whereRaw("
+          ->whereRaw("
                     (
-                      ".$time."
+                      " . $time . "
                     )
-                    AND days LIKE '%".$request->day."%'
+                    AND days LIKE '%" . $request->day . "%'
                   ")->orderBy('time', 'ASC')->get();
       }
       if ($getData) {
-        if(is_countable($getData)) {
-          foreach($getData as $g){
+        if (is_countable($getData)) {
+          foreach ($getData as $g) {
             $g->image = Storage::disk('public')->url('programs/' . $g->image);
             $g->days_label = $this->daysLabel($g->days);
             $g->penyiar_name = $this->penyiarName($g->penyiar);
@@ -260,5 +261,40 @@ class ProgramsController extends Controller
       array_push($thePenyiar, $p->name);
     }
     return implode(",", $thePenyiar);
+  }
+
+  public function checkNextProgram()
+  {
+    $currentTimestamp = time();
+    $newTimestamp = $currentTimestamp + 600;
+    $time_now = date('H:i', $newTimestamp);
+    $day_now = date('N');
+    $time = "TIME(SUBSTRING_INDEX(time,'-',1)) = TIME('" . $time_now . "')";
+    $whereRaw = "
+                  (
+                    " . $time . "
+                  )
+                  AND days LIKE '%" . $day_now . "%'
+                ";
+    $program = Programs::
+      selectRaw("
+                *,
+                SUBSTRING_INDEX(time,'-',1) AS startTime,
+                SUBSTRING_INDEX(time,'-',-1) AS endTime
+              ")
+      ->whereRaw($whereRaw)->orderBy('time', 'ASC')->first();
+    if ($program && $program->image) {
+      $program->image = Storage::disk('public')->url('programs/' . $program->image);
+      $program->message = 'Hallo sebentar lagi ' . $program->title . ' mau mulai nih, stay tune ya di Ardan Radio';
+      $users = Likes::where('id_target', $program->id)->where('type', 'Program')->with('tokens')->get();
+      foreach ($users as $u) {
+        $program->tokens = $u->tokens;
+        // $this->notif($program);
+      }
+    }
+    $res = [
+      $program, $whereRaw, $time
+    ];
+    return response()->json($res, 200);
   }
 }

@@ -13,6 +13,10 @@ const Api = {
     let url = '/auth/login';
     return defAxios.post(url, payload);
   },
+  loginOrRegister(payload) {
+    let url = '/auth/loginOrRegister';
+    return defAxios.post(url, payload);
+  },
   sendotp(payload) {
     let url = '/auth/sendotp';
     return defAxios.post(url, payload);

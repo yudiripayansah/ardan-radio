@@ -86,11 +86,56 @@ const Login = ({navigation}) => {
     }
     setUser(data)
   }
+  const makeid = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  }
   const googleLogin = async () => {
     try {
-        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-        const userInfo = await GoogleSignin.signIn();
-        console.log("userinfo", userInfo);
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const userData = await GoogleSignin.signIn();
+      let payload = {
+        id: null,
+        username: userData.user.name+makeid(10),
+        email: userData.user.email,
+        name: userData.user.name,
+        password: null,
+        phone: null,
+        image: null,
+        address: null,
+        gender: null,
+        dob: null,
+        role: 'member',
+        status: 'active',
+      }
+      console.log(payload)
+      let req = await Api.loginOrRegister(payload);
+      if(req.status == 200){
+        let {data,status,msg} = req.data
+        console.log(data)
+        if(status) {
+          setUser(data)
+        } else {
+          setLogin({
+            status: false,
+            msg: 'Failed to login - Server Error',
+            data: null
+          })
+        }
+      } else {
+        setLogin({
+          status: false,
+          msg: 'Failed to login - Connection Error',
+          data: null
+        })
+      }
     } catch (error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
             console.log(error)

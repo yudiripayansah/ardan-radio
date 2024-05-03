@@ -47,7 +47,6 @@ const Register = ({navigation}) => {
         role: 'member',
         status: 'active',
       };
-      console.log(payload)
       if(payload.email && payload.password && payload.name) {
         if(validateEmail(payload.email)){
           let req = await Api.userCreate(payload, 'randomToken');

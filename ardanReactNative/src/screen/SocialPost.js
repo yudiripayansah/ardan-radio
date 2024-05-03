@@ -360,7 +360,7 @@ const SocialPost = ({navigation}) => {
                         {
                           width: imageWidth,
                           height: imageWidth,
-                          objectFit: 'contain',
+                          objectFit: 'cover',
                           backgroundColor: '#fafafa',
                         },
                       ]}

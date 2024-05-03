@@ -1,10 +1,7 @@
-POST https://ardanmobileapps.ardangroup.fm/api/privatechat/send
+POST https://ardanmobileapps.ardangroup.fm/api/programs/checkNextProgram
 Content-Type: application/json
 Accept: application/json
 
-{
-  "chat_room_id": 6,
-  "sender_id": 93,
-  "reciever_id": 14,
-  "message": "makan apaa"
+ {
+  
 }

@@ -699,7 +699,7 @@ const SocialSharing = ({navigation}) => {
                   </View>
                   {item.image_url ? (
                     <Image
-                      style={[{width:imageWidth,height:imageWidth,objectFit: 'contain',backgroundColor:'#fafafa'}]}
+                      style={[{width:imageWidth,height:imageWidth,objectFit: 'cover',backgroundColor:'#fafafa'}]}
                       source={{uri: item.image_url}}
                     />
                   ) : null}

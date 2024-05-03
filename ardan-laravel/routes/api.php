@@ -38,6 +38,7 @@ Route::group([
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/loginOrRegister', [AuthController::class, 'loginOrRegister']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
@@ -105,6 +106,7 @@ Route::group([
     Route::post('/create', [ProgramsController::class, 'create']); 
     Route::post('/update', [ProgramsController::class, 'update']); 
     Route::post('/delete', [ProgramsController::class, 'delete']); 
+    Route::post('/checkNextProgram', [ProgramsController::class, 'checkNextProgram']); 
 });
 Route::group([
     'middleware' => 'api',
