@@ -7,6 +7,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\ProgramsController;
@@ -76,6 +77,16 @@ Route::group([
     Route::post('/create', [NewsController::class, 'create']); 
     Route::post('/update', [NewsController::class, 'update']); 
     Route::post('/delete', [NewsController::class, 'delete']); 
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'content'
+], function ($router) {
+    Route::post('/read', [ContentController::class, 'read']); 
+    Route::post('/get', [ContentController::class, 'get']); 
+    Route::post('/create', [ContentController::class, 'create']); 
+    Route::post('/update', [ContentController::class, 'update']); 
+    Route::post('/delete', [ContentController::class, 'delete']); 
 });
 Route::group([
     'middleware' => 'api',

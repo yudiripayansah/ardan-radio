@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use App\Models\News;
+use App\Models\Content;
 
-class NewsController extends Controller
+class ContentController extends Controller
 {
   public function __construct()
   {
@@ -25,32 +25,31 @@ class NewsController extends Controller
     $totalPage = 1;
     $id_user = ($request->id_user) ? $request->id_user : null;
     $type = ($request->type) ? $request->type : null;
-    $category = ($request->category) ? $request->category : null;
-    $listData = News::select('news.*')->orderBy($sortBy, $sortDir);
+    $listData = Content::select('content.*')->orderBy($sortBy, $sortDir);
     if ($perPage != '~') {
       $listData->skip($offset)->take($perPage);
     }
     if ($search != null) {
-      $listData->whereRaw('(news.title LIKE "%' . $search . '%")');
+      $listData->whereRaw('(content.title LIKE "%' . $search . '%")');
     }
-    if ($category != null) {
-      $listData->whereRaw('(news.category LIKE "%' . $category . '%")');
+    if ($type != null) {
+      $listData->whereRaw('(content.type LIKE "%' . $type . '%")');
     }
     $listData = $listData->get();
     foreach ($listData as $ld) {
-      $ld->image_url = Storage::disk('public')->url('news/' . $ld->image);
+      $ld->image_url = Storage::disk('public')->url('content/' . $ld->image);
     }
-    if ($search || $id_user || $type || $category) {
-      $total = News::orderBy($sortBy, $sortDir);
+    if ($search || $id_user || $type) {
+      $total = Content::orderBy($sortBy, $sortDir);
       if ($search) {
-        $total->whereRaw('(news.title LIKE "%' . $search . '%")');
+        $total->whereRaw('(content.title LIKE "%' . $search . '%")');
       }
-      if ($category) {
-        $total->whereRaw('(news.category LIKE "%' . $category . '%")');
+      if ($type) {
+        $total->whereRaw('(content.type = "' . $type . '")');
       }
       $total = $total->count();
     } else {
-      $total = News::all()->count();
+      $total = Content::all()->count();
     }
     if ($perPage != '~') {
       $totalPage = ceil($total / $perPage);
@@ -74,8 +73,8 @@ class NewsController extends Controller
   public function get(Request $request)
   {
     if ($request->id) {
-      $getData = News::find($request->id);
-      $getData->image = Storage::disk('public')->url('news/' . $getData->image);
+      $getData = Content::find($request->id);
+      $getData->image = Storage::disk('public')->url('content/' . $getData->image);
       if ($getData) {
         $res = array(
           'status' => true,
@@ -100,19 +99,19 @@ class NewsController extends Controller
   {
     $dataCreate = $request->all();
     if ($request->image) {
-      $filename = uniqid() . time() . '-' . '-news.png';
-      $filePath = 'news/' . $filename;
+      $filename = uniqid() . time() . '-' . '-content.png';
+      $filePath = 'content/' . $filename;
       $dataCreate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
       unset($dataCreate['image']);
     }
     DB::beginTransaction();
-    $validate = News::validate($dataCreate);
+    $validate = Content::validate($dataCreate);
     if ($validate['status']) {
       try {
-        $dc = News::create($dataCreate);
-        $dg = News::find($dc->id);
+        $dc = Content::create($dataCreate);
+        $dg = Content::find($dc->id);
         $res = array(
           'status' => true,
           'data' => $dg,
@@ -140,11 +139,11 @@ class NewsController extends Controller
   public function update(Request $request)
   {
     $dataUpdate = $request->all();
-    $dataFind = News::find($request->id);
-    $validate = News::validate($dataUpdate);
+    $dataFind = Content::find($request->id);
+    $validate = Content::validate($dataUpdate);
     if (basename($request->image) != basename($dataFind->image)) {
-      $filename = uniqid() . time() . '-' . '-news.png';
-      $filePath = 'news/' . $filename;
+      $filename = uniqid() . time() . '-' . '-content.png';
+      $filePath = 'content/' . $filename;
       $dataUpdate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
@@ -156,8 +155,8 @@ class NewsController extends Controller
     DB::beginTransaction();
     if ($validate['status']) {
       try {
-        $du = News::where('id', $request->id)->update($dataUpdate);
-        $dg = News::find($request->id);
+        $du = Content::where('id', $request->id)->update($dataUpdate);
+        $dg = Content::find($request->id);
         $res = array(
           'status' => true,
           'data' => $dg,
@@ -185,7 +184,7 @@ class NewsController extends Controller
   {
     $id = $request->id;
     if ($id) {
-      $delData = News::find($id);
+      $delData = Content::find($id);
       try {
         $delData->delete();
         $res = array(

@@ -1046,6 +1046,9 @@ window.addEventListener("load", function(){
       var d_1C_7 = new ApexCharts(document.querySelector("#hybrid_followers3"), d_1options5);
       d_1C_7.render()
 
+      var d_1C_8 = new ApexCharts(document.querySelector("#hybrid_followers4"), d_1options5);
+      d_1C_8.render()
+
 
 
     /*

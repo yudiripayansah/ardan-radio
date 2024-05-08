@@ -21,6 +21,7 @@ Route::get('/member', [MainController::class, 'member']);
 Route::get('/program', [MainController::class, 'program']);
 Route::get('/penyiar', [MainController::class, 'penyiar']);
 Route::get('/feed', [MainController::class, 'feed']);
+Route::get('/content', [MainController::class, 'content']);
 Route::get('/music', [MainController::class, 'music']);
 Route::get('/live-streaming', [MainController::class, 'liveStreaming']);
 Route::get('/notification', [MainController::class, 'notification']);

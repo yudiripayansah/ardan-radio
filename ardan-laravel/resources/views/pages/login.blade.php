@@ -104,8 +104,8 @@
       data: {
         form: {
           data: {
-            email: 'superadmin@ardanradio.com',
-            password: 'superadmin'
+            email: null,
+            password: null
           },
           loading: false
         },

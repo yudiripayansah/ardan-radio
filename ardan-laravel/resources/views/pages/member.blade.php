@@ -93,7 +93,7 @@
                           </a>
                           <a href="javascript:void(0);" class="action-btn btn-delete bs-tooltip" data-toggle="tooltip"
                             data-placement="top" title="Delete"
-                            @click="form.delete = item.id;modal.delete.show()">
+                            @click="form.delete = item.id;modal.delete.show()" v-show="users.role == 'superadmin'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                               stroke-linejoin="round" class="feather feather-trash-2">
@@ -369,7 +369,8 @@
             perPage : 10,
             sortDir : 'DESC',
             sortBy : 'id',
-            search : null
+            search : null,
+            role : 'member'
         },
         alert: {
             show: 'hide',
@@ -526,16 +527,6 @@
             status: null,
           }
           this.form.delete = null
-        },
-        hideModal(modal) {
-          let modalForm = document.querySelector(modal)
-          let modalBackdrop = document.querySelector('.modal-backdrop')
-          let body = document.querySelector('body')
-          modalForm.classList.remove('show')
-          modalForm.removeAttribute('style')
-          body.classList.remove('modal-open')
-          body.removeAttribute('style')
-          modalBackdrop.remove()
         },
         previewImage(e) {
           let vm = this

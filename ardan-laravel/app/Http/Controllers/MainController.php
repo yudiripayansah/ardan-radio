@@ -29,6 +29,10 @@ class MainController extends Controller
     $data['menu'] = $this->menu;
     return view('pages.feed',$data);
   }
+  public function content(Request $request) {
+    $data['menu'] = $this->menu;
+    return view('pages.content',$data);
+  }
   public function music(Request $request) {
     $data['menu'] = $this->menu;
     return view('pages.music',$data);

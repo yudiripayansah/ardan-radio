@@ -21,9 +21,10 @@
               <div class="dt--top-section">
                 <div class="row">
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                    <div class="dt-buttons">
+                    <div class="dt-buttons"> 
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
-                        aria-controls="show-hide-col" @click="modal.form.show();clearForm()">
+                        aria-controls="show-hide-col"
+                        @click="clearForm();modal.form.show()">
                         <span>Add New</span>
                       </button>
                     </div>
@@ -62,7 +63,7 @@
                     <tr v-for="(item,index) in table.items" :key="index">
                       <td>
                         <div class="bg-dark" v-if="item.image">
-                          <img alt="avatar" :src="item.image" class="img-thumbnail w-100 bg-dark rounded"/>
+                          <img alt="avatar" :src="item.image" class="img-thumbnail w-100 bg-dark rounded" />
                         </div>
                         <span v-else>-</span>
                       </td>
@@ -84,7 +85,8 @@
                       <td class="text-center">
                         <div class="action-btns">
                           <a href="javascript:void(0);" class="action-btn btn-edit bs-tooltip me-2"
-                            data-toggle="tooltip" @click="doUpdate(item.id)">
+                            data-toggle="tooltip" data-placement="top" title="Edit" data-bs-toggle="modal"
+                            data-bs-target="#modalForm" @click="doUpdate(item.id)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                               stroke-linejoin="round" class="feather feather-edit-2">
@@ -276,7 +278,6 @@
 @endsection
 @section('customScript')
 <script>
-  let modalForm = new bootstrap.Modal(document.getElementById('modalForm'),{})
 const vueDashboard = new Vue( {
   el: '#notificationsPage',
   data: {

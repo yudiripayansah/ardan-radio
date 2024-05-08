@@ -159,6 +159,42 @@ const Api = {
     };
     return defAxios.post(url, payload, config);
   },
+  // content
+  contentRead(payload) {
+    let url = '/content/read'
+    return defAxios.post(url, payload);
+  },
+  contentGet(payload) {
+    let url = '/content/get'
+    return defAxios.post(url, payload);
+  },
+  contentCreate(payload, token) {
+    let url = '/content/create'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  contentUpdate(payload, token) {
+    let url = '/content/update'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  contentDelete(payload, token) {
+    let url = '/content/delete'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
   // notifications
   notificationsRead(payload) {
     let url = '/notifications/read'

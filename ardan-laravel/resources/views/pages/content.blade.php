@@ -1,13 +1,13 @@
 @extends('layout.layout')
 @section('screen')
-<div class="layout-px-spacing" id="usersPage">
+<div class="layout-px-spacing" id="contentPage">
   <div class="middle-content container-xxl p-0">
     <!-- BREADCRUMB -->
     <div class="page-meta">
       <nav class="breadcrumb-style-one" aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="#">CMS</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Users</li>
+          <li class="breadcrumb-item active" aria-current="page">Content</li>
         </ol>
       </nav>
     </div>
@@ -21,7 +21,7 @@
               <div class="dt--top-section">
                 <div class="row">
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                    <div class="dt-buttons">
+                    <div class="dt-buttons"> 
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
                         aria-controls="show-hide-col"
                         @click="clearForm();modal.form.show()">
@@ -49,35 +49,25 @@
                 <table class="table table-hover table-striped table-bordered table-no-space">
                   <thead>
                     <tr>
-                      <th scope="col">Nama</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Gender</th>
-                      <th scope="col">Penyiar</th>
-                      <th scope="col">Verified</th>
-                      <th scope="col">Role</th>
-                      <th class="text-center" scope="col"></th>
+                      <th scope="col" width="5%">Image</th>
+                      <th scope="col" width="20%">Title</th>
+                      <th scope="col" width="20%">Type</th>
+                      <th class="text-center" scope="col" width="20%"></th>
                     </tr>
                     <tr aria-hidden="true" class="mt-3 d-block table-row-hidden"></tr>
                   </thead>
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
                       <td>
-                        <span v-text="(item.name) ? item.name : '-'"></span>
+                        <div class="bg-dark">
+                          <img alt="avatar" :src="item.image_url" class="img-thumbnail w-100 bg-dark rounded" />
+                        </div>
                       </td>
                       <td>
-                        <span v-text="(item.email) ? item.email : '-'"></span>
+                        <span v-text="(item.title) ? item.title : '-'"></span>
                       </td>
                       <td>
-                        <span v-text="(item.gender) ? item.gender : '-'"></span>
-                      </td>
-                      <td>
-                        <span v-text="(item.penyiar == 'Yes') ? item.penyiar : 'No'"></span>
-                      </td>
-                      <td>
-                        <span v-text="(item.verified == 'Yes') ? item.verified : 'No'"></span>
-                      </td>
-                      <td>
-                        <span v-text="(item.role) ? item.role : '-'"></span>
+                        <span v-text="(item.type) ? item.type : '-'"></span>
                       </td>
                       <td class="text-center">
                         <div class="action-btns">
@@ -92,8 +82,7 @@
                             </svg>
                           </a>
                           <a href="javascript:void(0);" class="action-btn btn-delete bs-tooltip" data-toggle="tooltip"
-                            data-placement="top" title="Delete"
-                            @click="form.delete = item.id;modal.delete.show()" v-show="users.role == 'superadmin'">
+                            data-placement="top" title="Delete" @click="form.delete = item.id;modal.delete.show()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                               stroke-linejoin="round" class="feather feather-trash-2">
@@ -110,7 +99,7 @@
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td colspan="7" class="text-center" v-text="(form.loading) ? 'Loading...' : 'No data to show'">
+                      <td colspan="5" class="text-center" v-text="(form.loading) ? 'Loading...' : 'No data to show'">
                       </td>
                     </tr>
                   </tbody>
@@ -133,7 +122,7 @@
                   <div class="dataTables_paginate paging_simple_numbers" id="show-hide-col_paginate">
                     <ul class="pagination" v-if="table.totalPage > 0">
                       <li class="paginate_button page-item previous" id="show-hide-col_previous">
-                        <button type="button" class="page-link"
+                        <a href="#" aria-controls="show-hide-col" data-dt-idx="0" tabindex="0" class="page-link"
                           @click="paging.page = paging.page-1">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -141,14 +130,14 @@
                             <line x1="19" y1="12" x2="5" y2="12"></line>
                             <polyline points="12 19 5 12 12 5"></polyline>
                           </svg>
-                        </button>
+                        </a>
                       </li>
                       <li class="paginate_button page-item active" v-for="page in table.totalPage">
-                        <button type="button" class="page-link" v-text="page"
-                          @click="paging.page = page"></button>
+                        <a href="#" aria-controls="show-hide-col" class="page-link" v-text="page"
+                          @click="paging.page = page"></a>
                       </li>
                       <li class="paginate_button page-item next" id="show-hide-col_next">
-                        <button type="button" class="page-link"
+                        <a href="#" aria-controls="show-hide-col" data-dt-idx="8" tabindex="0" class="page-link"
                           @click="paging.page = paging.page + 1">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -156,7 +145,7 @@
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                           </svg>
-                        </button>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -188,100 +177,29 @@
           <div class="row">
             <div class="col-12">
               <div class="form-group">
-                <label for="eventsImage" class="control-label">Image</label>
+                <label for="contentImage" class="control-label">Image</label>
                 <label class="w-100 bg-dark">
-                  <img :src="(form.data.image_url) ? form.data.image_url : 'https://placehold.co/500x300'" alt=""
+                  <img :src="(form.data.image) ? form.data.image : 'https://placehold.co/500x300'" alt=""
                     class="img-fluid w-100">
                   <input type="file" id="image" class="d-none" @change="previewImage($event)">
                 </label>
-                <input type="hidden" class="form-control" v-model="form.data.image" id="eventsImage">
+                <input type="hidden" class="form-control" v-model="form.data.image" id="contentImage">
               </div>
             </div>
             <div class="col-12">
-              <div class="row">
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group">
-                    <label for="eventsUsername" class="control-label">Username</label>
-                    <input type="text" class="form-control" v-model="form.data.username" id="eventsUsername" disabled>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group">
-                    <label for="eventsPassword" class="control-label">Password</label>
-                    <input type="password" class="form-control" v-model="form.data.password" id="eventsPassword">
-                    <p>Fill to change password</p>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group">
-                    <label for="eventsEmail" class="control-label">Email</label>
-                    <input type="text" class="form-control" v-model="form.data.email" id="eventsEmail" disabled>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group">
-                    <label for="eventsName" class="control-label">Name</label>
-                    <input type="text" class="form-control" v-model="form.data.name" id="eventsName">
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group">
-                    <label for="eventsDob" class="control-label">Dob</label>
-                    <input type="date" class="form-control" v-model="form.data.dob" id="eventsDob">
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group">
-                    <label for="eventsPhone" class="control-label">Phone</label>
-                    <input type="text" class="form-control" v-model="form.data.phone" id="eventsPhone">
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group mt-3">
-                    <label for="eventsAddress" class="control-label">Address</label>
-                    <textarea class="form-control" v-model="form.data.address" id="eventsAddress" rows="10"></textarea>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group mt-3">
-                    <label for="eventsGender" class="control-label">Gender</label>
-                    <select type="text" class="form-control" v-model="form.data.gender" id="eventsGender">
-                      <option :value="opt" v-text="opt" v-for="(opt,index) in opt.gender" :key="index"></option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group mt-3">
-                    <label for="eventsPenyiar" class="control-label">Penyiar</label>
-                    <select type="text" class="form-control" v-model="form.data.penyiar" id="eventsPenyiar">
-                      <option :value="opt" v-text="opt" v-for="(opt,index) in opt.penyiar" :key="index"></option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group mt-3">
-                    <label for="eventsVerified" class="control-label">Verified</label>
-                    <select type="text" class="form-control" v-model="form.data.verified" id="eventsVerified">
-                      <option :value="opt" v-text="opt" v-for="(opt,index) in opt.verified" :key="index"></option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group mt-3">
-                    <label for="eventsRole" class="control-label">Role</label>
-                    <select type="text" class="form-control" v-model="form.data.role" id="eventsRole">
-                      <option :value="opt" v-text="opt" v-for="(opt,index) in opt.role" :key="index"></option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="form-group mt-3">
-                    <label for="eventsStatus" class="control-label">Status</label>
-                    <select type="text" class="form-control" v-model="form.data.status" id="eventsStatus">
-                      <option :value="opt" v-text="opt" v-for="(opt,index) in opt.status" :key="index"></option>
-                    </select>
-                  </div>
-                </div>
+              <div class="form-group">
+                <label for="contentTitle" class="control-label">Title</label>
+                <input type="text" class="form-control" v-model="form.data.title" id="contentTitle">
+              </div>
+              <div class="form-group mt-3">
+                <label for="contentUrl" class="control-label">Url</label>
+                <textarea class="form-control" v-model="form.data.url" id="contentUrl" rows="10"></textarea>
+              </div>
+              <div class="form-group mt-3">
+                <label class="control-label">Type</label>
+                <select type="text" class="form-control" v-model="form.data.type" id="contentType">
+                  <option :value="opt" v-text="opt" v-for="(opt,index) in opt.type" :key="index"></option>
+                </select>
               </div>
             </div>
           </div>
@@ -336,25 +254,15 @@
 @endsection
 @section('customScript')
 <script>
-  const vueDashboard = new Vue( {
-    el: '#usersPage',
+  const vueContent = new Vue( {
+    el: '#contentPage',
     data: {
         form: {
             data: {
-              id: null,
-              username: null,
-              email: null,
-              name: null,
-              phone: null,
-              address: null,
-              gender: null,
               image: null,
-              password: null,
-              penyiar: false,
-              verified: false,
-              role: null,
-              dob: null,
-              status: null,
+              title: null,
+              url: null,
+              type: null
             },
             delete: null,
             loading: false
@@ -369,8 +277,7 @@
             perPage : 10,
             sortDir : 'DESC',
             sortBy : 'id',
-            search : null,
-            role : 'admin'
+            search : null
         },
         alert: {
             show: 'hide',
@@ -379,11 +286,7 @@
             msg: null
         },
         opt: {
-          gender: ["Laki-Laki","Perempuan"],
-          penyiar: ["No","Yes"],
-          verified: ["No","Yes"],
-          status: ["active","inactive"],
-          role: ["admin","superadmin","member"],
+          type: ['Instagram','Tiktok']
         },
         modal: {
           form: null,
@@ -410,7 +313,7 @@
           this.form.loading = true
           let payload = {...this.paging}
           try {
-            let req = await Api.userRead(payload)
+            let req = await Api.contentRead(payload)
             if(req.status == 200) {
               let {data,status,msg,total,totalPage,paging} = req.data
               if(status){
@@ -436,7 +339,7 @@
             id: id
           }
           try {
-            let req = await Api.userGet(payload)
+            let req = await Api.contentGet(payload)
             if(req.status == 200) {
               let {data,status,msg} = req.data
               if(status){
@@ -460,9 +363,9 @@
           try {
             let req = false
             if(payload.id) {
-              req = await Api.userUpdate(payload,this.users.access_token)
+              req = await Api.contentUpdate(payload,this.users.access_token)
             } else {
-              req = await Api.userCreate(payload,this.users.access_token)
+              req = await Api.contentCreate(payload,this.users.access_token)
             }
             if(req.status == 200) {
               let {data,status,msg} = req.data
@@ -489,7 +392,7 @@
             id: id
           }
           try {
-            let req = await Api.userDelete(payload,this.users.access_token)
+            let req = await Api.contentDelete(payload,this.users.access_token)
             if(req.status == 200) {
               let {data,status,msg} = req.data
               if(status){
@@ -511,20 +414,10 @@
         },
         clearForm() {
           this.form.data = {
-            id: null,
-            username: null,
-            email: null,
-            name: null,
-            phone: null,
-            address: null,
-            gender: null,
             image: null,
-            password: null,
-            penyiar: false,
-            verified: false,
-            role: null,
-            dob: null,
-            status: null,
+            title: null,
+            url: null,
+            type: null
           }
           this.form.delete = null
         },
@@ -590,8 +483,8 @@
         },
     },
     mounted() {
-      this.initModal()
       this.doGet()
+      this.initModal()
     }
   });
 </script>

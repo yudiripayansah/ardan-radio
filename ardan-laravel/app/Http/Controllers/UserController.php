@@ -182,6 +182,7 @@ class UserController extends Controller
         $du = User::where('id',$request->id)->update($dataUpdate);
         $dg = User::find($request->id);
         if(isset($dataUpdate['penyiar']) && $dataUpdate['penyiar'] == 'Yes'){
+          $dg->image_url = ($dg->image) ? Storage::disk('public')->url('user/'.$dg->image) : null;
           $cp = $this->processPenyiar($dg);
         }
         $dg->image_url = ($dg->image) ? Storage::disk('public')->url('user/'.$dg->image) : null;
@@ -328,18 +329,26 @@ class UserController extends Controller
     return response()->json($res, 200);
   }
   public function processPenyiar($req) {
+    $dc = false;
     $dataCreate = [
       'name' => $req['name'],
       'id_user' => $req['id'],
     ];
-    if($req['image']) {
-      $filename = uniqid().time().'-'. '-penyiar.png';
-      $filePath = 'penyiar/' .$filename;
-      $image = $filename;
-      Storage::disk('public')->put($filePath, file_get_contents($req['image']));
-      $dataCreate['image'] = $image;
-    }
-    $dc = Penyiar::create($dataCreate);
+    $dataFind = Penyiar::where('id_user', $req['id'])->count();
+    if($dataFind < 1){
+      if($req['image']) {
+        $filename = uniqid().time().'-'. '-penyiar.png';
+        $filePath = 'penyiar/' .$filename;
+        $image = $filename;
+        if($req['image_url']){
+          Storage::disk('public')->put($filePath, file_get_contents($req['image_url']));
+        } else {
+          Storage::disk('public')->put($filePath, file_get_contents($req['image']));
+        }
+        $dataCreate['image'] = $image;
+      }
+      $dc = Penyiar::create($dataCreate);
+    } 
     return $dc;
   }
   public function userFollow(Request $request){

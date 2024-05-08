@@ -12,6 +12,7 @@ import {
 import axios from 'axios';
 import {ThemeContext} from '../context/ThemeContext';
 import {RadioContext} from '../context/RadioContext';
+import Api from '../config/Api';
 const ArdanContent = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const radioState = useContext(RadioContext).state;
@@ -21,6 +22,15 @@ const ArdanContent = ({navigation}) => {
     tiktokUsername = '@ardanradiobdg',
     instagramUsername = 'ardanradio';
   const [youtube, setYoutube] = useState([]);
+  const [ig, setIg] = useState({
+    data: [],
+    loading: false,
+  });
+  const [tiktok, setTiktok] = useState({
+    data: [],
+    loading: false,
+  });
+  const [search, setSearch] = useState(null);
   const instagramItem = [
     {
       image: require('../assets/images/ig/1.png'),
@@ -79,6 +89,78 @@ const ArdanContent = ({navigation}) => {
       console.error('get youtube:', error);
     }
   };
+  const getIg = async () => {
+    setIg({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 10,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        type: 'Instagram',
+      };
+      if (search) {
+        payload.search = search;
+      }
+      let req = await Api.contentRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setIg({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setIg({
+        data: [],
+        loading: false,
+      });
+    }
+  };
+  const getTiktok = async () => {
+    setTiktok({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 10,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        type: 'Tiktok',
+      };
+      if (search) {
+        payload.search = search;
+      }
+      let req = await Api.contentRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setTiktok({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setTiktok({
+        data: [],
+        loading: false,
+      });
+    }
+  };
   const goToUrl = async url => {
     await Linking.openURL(url);
   };
@@ -87,6 +169,8 @@ const ArdanContent = ({navigation}) => {
     navigation.addListener('focus', () => {
       if (mounted) {
         getYoutube();
+        getIg()
+        getTiktok()
       }
     });
     return () => (mounted = false);
@@ -182,11 +266,16 @@ const ArdanContent = ({navigation}) => {
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
-          {instagramItem.map((item, i) => {
+          {ig.data.map((item, i) => {
             return (
-              <TouchableOpacity style={[theme.me15]} key={i}>
+              <TouchableOpacity
+                style={[theme.me15]}
+                key={i}
+                onPress={() => {
+                  goToUrl(`${item.url}`);
+                }}>
                 <Image
-                  source={item.image}
+                  source={{uri: item.image_url}}
                   style={[
                     theme.w90,
                     theme.h95,
@@ -230,11 +319,16 @@ const ArdanContent = ({navigation}) => {
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
-          {tiktokItem.map((item, i) => {
+          {tiktok.data.map((item, i) => {
             return (
-              <TouchableOpacity style={[theme.me15]} key={i}>
+              <TouchableOpacity
+                style={[theme.me15]}
+                key={i}
+                onPress={() => {
+                  goToUrl(`${item.url}`);
+                }}>
                 <Image
-                  source={item.image}
+                  source={{uri:item.image_url}}
                   style={[
                     theme.w202,
                     theme.h264,

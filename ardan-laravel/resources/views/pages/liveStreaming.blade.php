@@ -21,10 +21,10 @@
               <div class="dt--top-section">
                 <div class="row">
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                    <div class="dt-buttons">
+                    <div class="dt-buttons"> 
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
-                        aria-controls="show-hide-col" data-bs-toggle="modal" data-bs-target="#modalForm"
-                        @click="clearForm()">
+                        aria-controls="show-hide-col"
+                        @click="clearForm();modal.form.show()">
                         <span>Add New</span>
                       </button>
                     </div>
@@ -84,8 +84,7 @@
                             </svg>
                           </a>
                           <a href="javascript:void(0);" class="action-btn btn-delete bs-tooltip" data-toggle="tooltip"
-                            data-placement="top" title="Delete" data-bs-toggle="modal" data-bs-target="#modalDelete"
-                            @click="form.delete = item.id">
+                            data-placement="top" title="Delete" @click="form.delete = item.id;modal.delete.show()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                               stroke-linejoin="round" class="feather feather-trash-2">
@@ -249,8 +248,7 @@
 @endsection
 @section('customScript')
 <script type="module">
-import Echo from 'https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js';
-let modalForm = new bootstrap.Modal(document.getElementById('modalForm'),{})
+  import Echo from 'https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js';
 const vueDashboard = new Vue( {
   el: '#livestreamingsPage',
   data: {
@@ -285,7 +283,11 @@ const vueDashboard = new Vue( {
       opt: {
         type: ['News','Events','Feeds']
       },
-      messages: []
+      messages: [],
+        modal: {
+          form: null,
+          delete: null
+        }
   },
   computed: {
     users() {
@@ -338,6 +340,7 @@ const vueDashboard = new Vue( {
             let {data,status,msg} = req.data
             if(status){
               this.form.data = data
+                this.modal.form.show()
             } else {
               this.notify('error','Error',msg)
             }
@@ -366,7 +369,7 @@ const vueDashboard = new Vue( {
               this.notify('success','Success',msg)
               this.doGet()
               this.clearForm()
-              this.hideModal('#modalForm')
+                this.modal.form.hide()
             } else {
               this.notify('error','Error',msg)
             }
@@ -392,7 +395,7 @@ const vueDashboard = new Vue( {
               this.notify('success','Success',msg)
               this.doGet()
               this.clearForm()
-              this.hideModal('#modalDelete')
+                this.modal.delete.hide()
             } else {
               this.notify('error','Error',msg)
             }
@@ -414,16 +417,12 @@ const vueDashboard = new Vue( {
         }
         this.form.delete = null
       },
-      hideModal(modal) {
-        let modalForm = document.querySelector(modal)
-        let modalBackdrop = document.querySelector('.modal-backdrop')
-        let body = document.querySelector('body')
-        modalForm.classList.remove('show')
-        modalForm.removeAttribute('style')
-        body.classList.remove('modal-open')
-        body.removeAttribute('style')
-        modalBackdrop.remove()
-      },
+        initModal() {
+          this.modal = {
+            form: new bootstrap.Modal(document.getElementById('modalForm')),
+            delete: new bootstrap.Modal(document.getElementById('modalDelete'))
+          }
+        },
       previewImage(e) {
         let vm = this
         let inp = e.target
@@ -478,6 +477,7 @@ const vueDashboard = new Vue( {
   mounted() {
     this.doGet()
     this.listenChat()
+    this.initModal()
   }
 });
 </script>
