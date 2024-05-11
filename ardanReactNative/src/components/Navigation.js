@@ -31,6 +31,7 @@ const Nav = ({navigation, ...props}) => {
   const {radioAct} = useContext(RadioContext);
   const [radio, setRadio] = useState('paused');
   const [showLive, setShowLive] = useState(true);
+  const [liveAvailable, setLiveAvailable] = useState(false);
   const {currentScreen} = props;
   const image = {
     home: require('../assets/images/icons/nav-home.png'),
@@ -379,13 +380,32 @@ const Nav = ({navigation, ...props}) => {
       console.log('error current program:',error);
     }
   };
+  const getLiveStream = async () => {
+    let date = new Date(),
+      d = date.getDate(),
+      m = date.getMonth() + 1,
+      y = date.getFullYear();
+    let payload = {
+      date: `${y}-${m}-${d}`,
+    };
+    try {
+      let req = await Api.livestreamingsGet(payload);
+      let {status, data, msg} = req.data;
+      if (status) {
+        setLiveAvailable(true)
+      }
+    } catch (error) {
+      console.log('Live stream error', error);
+    }
+  };
   useEffect(() => {
     setupTrackPlayer();
     getCurrentProgram();
+    getLiveStream()
   }, []);
   return (
     <>
-      {currentScreen == 'Home' ? <LiveButton /> : ''}
+      {currentScreen == 'Home' ? liveAvailable ? <LiveButton />: '' : ''}
       {currentScreen != 'Ardan Radio' && radio == 'playing' ? <RadioPlayer /> : ''}
       <ImageBackground
         source={image.bg}

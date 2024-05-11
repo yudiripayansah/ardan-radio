@@ -403,9 +403,9 @@ const Profile = ({route, navigation}) => {
               <Image
                 style={[
                   {
-                    width: imageWidth,
+                    width: '100%',
                     height: imageWidth,
-                    objectFit: 'contain',
+                    objectFit: 'cover',
                     backgroundColor: '#fafafa',
                   },
                 ]}
@@ -591,9 +591,9 @@ const Profile = ({route, navigation}) => {
                 <Image
                   style={[
                     {
-                      width: imageWidth,
+                      width: '100%',
                       height: imageWidth,
-                      objectFit: 'contain',
+                      objectFit: 'cover',
                       backgroundColor: '#fafafa',
                     },
                   ]}

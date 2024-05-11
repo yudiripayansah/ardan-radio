@@ -201,7 +201,7 @@
               </div>
               <div class="form-group mt-3">
                 <label for="penyiarText" class="control-label">Text</label>
-                <textarea class="form-control" v-model="form.data.text" id="penyiarText" rows="10"></textarea>
+                <ckeditor :editor="ckeditor.editor" v-model="form.data.text" :config="ckeditor.editorConfig"></ckeditor>
               </div>
               <div class="form-group mt-3">
                 <label for="penyiarInstagram" class="control-label">Instagram</label>
@@ -264,9 +264,28 @@
 @endsection
 @section('customScript')
 <script>
+  Vue.use( CKEditor );
 const vueDashboard = new Vue( {
   el: '#penyiarPage',
   data: {
+        ckeditor: {
+          editor: ClassicEditor,
+          editorConfig: {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+            heading: {
+              options: [
+                  { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                  { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                  { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                  { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                  { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                  { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                  { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' },
+                  { model: 'heading7', view: 'h7', title: 'Heading 6', class: 'ck-heading_heading6' },
+              ]
+            }
+          }
+        },
       form: {
           data: {
             image: null,
@@ -311,9 +330,7 @@ const vueDashboard = new Vue( {
   watch: {
     paging: {
       handler(val) {
-        if(val.page >= 1 && val.page <= this.table.totalPage){
           this.doGet();
-        }
       },
       deep: true,
     },

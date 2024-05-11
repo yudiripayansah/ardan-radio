@@ -30,7 +30,18 @@
                     </div>
                   </div>
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3">
-                    <div id="show-hide-col_filter" class="dataTables_filter">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+                        <label for="bannerCta" class="control-label">Filter</label>
+                      </div>
+                      <div class="col-auto">
+                        <select class="form-control" v-model="paging.cta" id="bannerCta">
+                          <option value="all">All</option>
+                          <option :value="cta" v-text="cta" v-for="(cta,index) in opt.cta" :key="index"></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="show-hide-col_filter" class="dataTables_filter ms-2">
                       <label>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -198,7 +209,7 @@
             <div class="col-12 mt-3">
               <div class="form-group">
                 <label for="bannerText" class="control-label">Text</label>
-                <textarea rows="5" class="form-control" v-model="form.data.text" id="bannerText"></textarea>
+                <ckeditor :editor="ckeditor.editor" v-model="form.data.text" :config="ckeditor.editorConfig"></ckeditor>
               </div>
             </div>
             <div class="col-12 mt-3">
@@ -261,9 +272,28 @@
 @endsection
 @section('customScript')
 <script>
+  Vue.use( CKEditor );
   const vueDashboard = new Vue( {
     el: '#bannerPage',
     data: {
+        ckeditor: {
+          editor: ClassicEditor,
+          editorConfig: {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+            heading: {
+              options: [
+                  { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                  { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                  { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                  { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                  { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                  { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                  { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' },
+                  { model: 'heading7', view: 'h7', title: 'Heading 6', class: 'ck-heading_heading6' },
+              ]
+            }
+          }
+        },
         form: {
             data: {
               image: null,
@@ -284,10 +314,11 @@
             perPage : 10,
             sortDir : 'DESC',
             sortBy : 'id',
-            search : null
+            search : null,
+            cta: null
         },
         opt: {
-          cta: ["MAIN BANNER","HOMEPAGE","ARDAN CONTENT","NEWS","EVENTS","RADIO"]
+          cta: ["MAIN BANNER","HOMEPAGE","ARDAN CONTENT","NEWS","EVENTS","RADIO","SOCIALSHARING","SOCIALPOST"]
         },
         alert: {
             show: 'hide',
@@ -308,9 +339,7 @@
     watch: {
       paging: {
         handler(val) {
-          if(val.page >= 1 && val.page <= this.table.totalPage){
-            this.doGet();
-          }
+          this.doGet();
         },
         deep: true,
       },
@@ -320,6 +349,9 @@
           this.form.loading = true
           let payload = {...this.paging}
           try {
+            if(payload.cta == 'all'){
+              payload.cta = null
+            }
             let req = await Api.bannerRead(payload)
             if(req.status == 200) {
               let {data,status,msg,total,totalPage,paging} = req.data

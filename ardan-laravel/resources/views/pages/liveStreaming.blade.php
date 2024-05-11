@@ -21,10 +21,9 @@
               <div class="dt--top-section">
                 <div class="row">
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                    <div class="dt-buttons"> 
+                    <div class="dt-buttons">
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
-                        aria-controls="show-hide-col"
-                        @click="clearForm();modal.form.show()">
+                        aria-controls="show-hide-col" @click="clearForm();modal.form.show()">
                         <span>Add New</span>
                       </button>
                     </div>
@@ -248,7 +247,7 @@
 @endsection
 @section('customScript')
 <script type="module">
-  import Echo from 'https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js';
+  // import Echo from 'https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.15.3/echo.min.js';
 const vueDashboard = new Vue( {
   el: '#livestreamingsPage',
   data: {
@@ -297,9 +296,7 @@ const vueDashboard = new Vue( {
   watch: {
     paging: {
       handler(val) {
-        if(val.page >= 1 && val.page <= this.table.totalPage){
           this.doGet();
-        }
       },
       deep: true,
     },
@@ -369,7 +366,7 @@ const vueDashboard = new Vue( {
               this.notify('success','Success',msg)
               this.doGet()
               this.clearForm()
-                this.modal.form.hide()
+              this.modal.form.hide()
             } else {
               this.notify('error','Error',msg)
             }
@@ -468,15 +465,15 @@ const vueDashboard = new Vue( {
         }, 2000);
       },
       listenChat() {
-        window.Echo = new Echo({
-          broadcaster: 'socket.io',
-          host: window.location.hostname + ':6001'
-        });
+        // window.Echo = new Echo({
+        //   broadcaster: 'socket.io',
+        //   host: window.location.hostname + ':6001'
+        // });
       }
   },
   mounted() {
     this.doGet()
-    this.listenChat()
+    // this.listenChat()
     this.initModal()
   }
 });

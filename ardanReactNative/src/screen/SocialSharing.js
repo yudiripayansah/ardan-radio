@@ -136,7 +136,7 @@ const SocialSharing = ({navigation}) => {
           if(data.length > 0){
             setPage(page)
           }
-          theData = [...theData,...data];
+          theData = data;
         }
       }
       setFeedsItem({
@@ -164,7 +164,7 @@ const SocialSharing = ({navigation}) => {
         sortDir: 'DESC',
         sortBy: 'id',
         search: null,
-        cta: 'HOMEPAGE',
+        cta: 'SOCIALSHARING',
       };
       let req = await Api.bannerRead(payload);
       if (req.status == 200) {

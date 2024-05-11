@@ -142,7 +142,7 @@ const News = ({navigation}) => {
                     theme.me15,
                     theme.w230,
                     theme.br24,
-                    {backgroundColor: '#504B4B'},
+                    {backgroundColor: '#F8C303'},
                   ]}
                   key={i}
                   onPress={() => {
@@ -154,14 +154,17 @@ const News = ({navigation}) => {
                     source={{uri: item.image_url}}
                     style={[
                       theme.wp100,
-                      theme.h150,
+                      theme.h170,
                       theme.brtl24,
                       theme.brtr24,
                       {objectFit: 'cover'},
                     ]}
                   />
                   <View style={[theme.p10]}>
-                    <Text style={[theme['h12-500'], theme.cwhite]}>
+                    <Text style={[theme['h10-400'], {color: '#000'}]}>
+                      {Helper.dateIndo(item.created_at)}
+                    </Text>
+                    <Text style={[theme['h16-500'], {color: '#000'}]}>
                       {item.title}
                     </Text>
                   </View>
@@ -205,7 +208,7 @@ const News = ({navigation}) => {
                     theme.me15,
                     theme.wp100,
                     theme.br24,
-                    {backgroundColor: '#504B4B'},
+                    {backgroundColor: '#F8C303'},
                     theme.fRow,
                     theme.p15,
                     theme.mb10,
@@ -226,12 +229,12 @@ const News = ({navigation}) => {
                     ]}
                   />
                   <View style={[theme.ps15, theme.wp68]}>
-                    <Text style={[theme['h16-500'], theme.cwhite]}>
+                    <Text style={[theme['h16-500'], theme.cblack]}>
                       {item.title}
                     </Text>
                     <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                       {/* <Text style={[theme['h10-400'], theme.cwhite, theme.bgyellow,theme.px10,theme.py3,theme.br100,theme.fjCenter]}>{item.category}</Text> */}
-                      <Text style={[theme['h10-400'], theme.cyellow]}>
+                      <Text style={[theme['h10-400'], theme.cblack]}>
                         {Helper.dateIndo(item.created_at)}
                       </Text>
                     </View>

@@ -278,29 +278,220 @@
 @section('customScript')
 <script>
   Vue.use( CKEditor );
-const vueDashboard = new Vue( {
-  el: '#feedsPage',
-  data: {
-      ckeditor: {
-        editor: ClassicEditor,
-        editorConfig: {
-          toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
-          heading: {
-            options: [
-                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-                { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
-                { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
-                { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' },
-                { model: 'heading7', view: 'h7', title: 'Heading 6', class: 'ck-heading_heading6' },
-            ]
+  const vueDashboard = new Vue( {
+    el: '#feedsPage',
+    data: {
+        ckeditor: {
+          editor: ClassicEditor,
+          editorConfig: {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+            heading: {
+              options: [
+                  { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                  { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                  { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                  { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                  { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                  { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                  { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' },
+                  { model: 'heading7', view: 'h7', title: 'Heading 6', class: 'ck-heading_heading6' },
+              ]
+            }
           }
-        }
+        },
+        form: {
+            data: {
+              id_user: null,
+              image: null,
+              title: null,
+              text: '',
+              category: [],
+              type: null,
+              status: 'PUBLISHED'
+            },
+            delete: null,
+            loading: false
+        },
+        table: {
+            items: [],
+            total: 0,
+            totalPage: 0
+        },
+        paging: {
+            page : 1,
+            perPage : 10,
+            sortDir : 'DESC',
+            sortBy : 'id',
+            search : null
+        },
+        alert: {
+            show: 'hide',
+            bg: 'bg-primary',
+            title: null,
+            msg: null
+        },
+        opt: {
+          category: [],
+          type: ["POST","SHARING"]
+        },
+          modal: {
+            form: null,
+            delete: null
+          }
+    },
+    computed: {
+      users() {
+        return store.getters.users
+      }
+    },
+    watch: {
+      paging: {
+        handler(val) {
+          this.doGet();
+        },
+        deep: true,
       },
-      form: {
-          data: {
+    },
+    methods: {
+        async doGetCategory() {
+          this.opt.category = []
+          this.form.loading = true
+          let payload = {
+            page : 1,
+            perPage: '~',
+            sortDir : 'DESC',
+            sortBy : 'id',
+            search : null,
+            type: 'Feeds'
+          }
+          try {
+            let req = await Api.categoryRead(payload)
+            if(req.status == 200) {
+              let {data,status,msg,total,totalPage,paging} = req.data
+              if(status){
+                data.map((item) => {
+                  this.opt.category.push(item.title)
+                })
+              } else {
+                this.notify('error','Error',msg)
+              }
+            } else {
+              this.notify('error','Error',req.message)
+            }
+            this.form.loading = false
+          } catch (error) {
+            this.notify('error','Error',error.message)
+            this.form.loading = false
+          }
+        },
+        async doGet() {
+          this.form.loading = true
+          let payload = {...this.paging}
+          try {
+            let req = await Api.feedsRead(payload)
+            if(req.status == 200) {
+              let {data,status,msg,total,totalPage,paging} = req.data
+              if(status){
+                this.table.items = data
+                this.table.total = total
+                this.table.totalPage = totalPage
+              } else {
+                this.notify('error','Error',msg)
+              }
+            } else {
+              this.notify('error','Error',req.message)
+            }
+            this.form.loading = false
+          } catch (error) {
+            this.notify('error','Error',error.message)
+            this.form.loading = false
+          }
+        },
+        async doUpdate(id) {
+          this.clearForm()
+          this.form.loading = true
+          let payload = {
+            id: id
+          }
+          try {
+            let req = await Api.feedsGet(payload)
+            if(req.status == 200) {
+              let {data,status,msg} = req.data
+              if(status){
+                data.category = (data.category) ? data.category.split(',') : []
+                this.form.data = data
+                  this.modal.form.show()
+              } else {
+                this.notify('error','Error',msg)
+              }
+            } else {
+              this.notify('error','Error',req.message)
+            }
+            this.form.loading = false
+          } catch (error) {
+            this.notify('error','Error',error.message)
+            this.form.loading = false
+          }
+        },
+        async doSave() {
+          this.form.loading = true
+          let payload = {...this.form.data}
+          payload.category = payload.category.join(',')
+          payload.id_user = (payload.id_user) ? payload.id_user : this.users.id
+          try {
+            let req = false
+            if(payload.id) {
+              req = await Api.feedsUpdate(payload,this.users.access_token)
+            } else {
+              req = await Api.feedsCreate(payload,this.users.access_token)
+            }
+            if(req.status == 200) {
+              let {data,status,msg} = req.data
+              if(status){
+                this.notify('success','Success',msg)
+                this.doGet()
+                this.clearForm()
+                  this.modal.form.hide()
+              } else {
+                this.notify('error','Error',msg)
+              }
+            } else {
+              this.notify('error','Error',req.message)
+            }
+            this.form.loading = false
+          } catch (error) {
+            this.notify('error','Error',error.message)
+            this.form.loading = false
+          }
+        },
+        async doDelete(id) {
+          this.form.loading = true
+          let payload = {
+            id: id
+          }
+          try {
+            let req = await Api.feedsDelete(payload,this.users.access_token)
+            if(req.status == 200) {
+              let {data,status,msg} = req.data
+              if(status){
+                this.notify('success','Success',msg)
+                this.doGet()
+                this.clearForm()
+                  this.modal.delete.hide()
+              } else {
+                this.notify('error','Error',msg)
+              }
+            } else {
+              this.notify('error','Error',req.message)
+            }
+            this.form.loading = false
+          } catch (error) {
+            this.notify('error','Error',error.message)
+            this.form.loading = false
+          }
+        },
+        clearForm() {
+          this.form.data = {
             id_user: null,
             image: null,
             title: null,
@@ -308,258 +499,65 @@ const vueDashboard = new Vue( {
             category: [],
             type: null,
             status: 'PUBLISHED'
+          }
+          this.form.delete = null
+        },
+          initModal() {
+            this.modal = {
+              form: new bootstrap.Modal(document.getElementById('modalForm')),
+              delete: new bootstrap.Modal(document.getElementById('modalDelete'))
+            }
           },
-          delete: null,
-          loading: false
-      },
-      table: {
-          items: [],
-          total: 0,
-          totalPage: 0
-      },
-      paging: {
-          page : 1,
-          perPage : 10,
-          sortDir : 'DESC',
-          sortBy : 'id',
-          search : null
-      },
-      alert: {
-          show: 'hide',
-          bg: 'bg-primary',
-          title: null,
-          msg: null
-      },
-      opt: {
-        category: [],
-        type: ["POST","SHARING"]
-      },
-        modal: {
-          form: null,
-          delete: null
-        }
-  },
-  computed: {
-    users() {
-      return store.getters.users
-    }
-  },
-  watch: {
-    paging: {
-      handler(val) {
-        if(val.page >= 1 && val.page <= this.table.totalPage){
-          this.doGet();
-        }
-      },
-      deep: true,
-    },
-  },
-  methods: {
-      async doGetCategory() {
-        this.opt.category = []
-        this.form.loading = true
-        let payload = {
-          page : 1,
-          perPage: '~',
-          sortDir : 'DESC',
-          sortBy : 'id',
-          search : null,
-          type: 'Feeds'
-        }
-        try {
-          let req = await Api.categoryRead(payload)
-          if(req.status == 200) {
-            let {data,status,msg,total,totalPage,paging} = req.data
-            if(status){
-              data.map((item) => {
-                this.opt.category.push(item.title)
-              })
-            } else {
-              this.notify('error','Error',msg)
-            }
-          } else {
-            this.notify('error','Error',req.message)
-          }
-          this.form.loading = false
-        } catch (error) {
-          this.notify('error','Error',error.message)
-          this.form.loading = false
-        }
-      },
-      async doGet() {
-        this.form.loading = true
-        let payload = {...this.paging}
-        try {
-          let req = await Api.feedsRead(payload)
-          if(req.status == 200) {
-            let {data,status,msg,total,totalPage,paging} = req.data
-            if(status){
-              this.table.items = data
-              this.table.total = total
-              this.table.totalPage = totalPage
-            } else {
-              this.notify('error','Error',msg)
-            }
-          } else {
-            this.notify('error','Error',req.message)
-          }
-          this.form.loading = false
-        } catch (error) {
-          this.notify('error','Error',error.message)
-          this.form.loading = false
-        }
-      },
-      async doUpdate(id) {
-        this.clearForm()
-        this.form.loading = true
-        let payload = {
-          id: id
-        }
-        try {
-          let req = await Api.feedsGet(payload)
-          if(req.status == 200) {
-            let {data,status,msg} = req.data
-            if(status){
-              data.category = (data.category) ? data.category.split(',') : []
-              this.form.data = data
-                this.modal.form.show()
-            } else {
-              this.notify('error','Error',msg)
-            }
-          } else {
-            this.notify('error','Error',req.message)
-          }
-          this.form.loading = false
-        } catch (error) {
-          this.notify('error','Error',error.message)
-          this.form.loading = false
-        }
-      },
-      async doSave() {
-        this.form.loading = true
-        let payload = {...this.form.data}
-        payload.category = payload.category.join(',')
-        payload.id_user = (payload.id_user) ? payload.id_user : this.users.id
-        try {
-          let req = false
-          if(payload.id) {
-            req = await Api.feedsUpdate(payload,this.users.access_token)
-          } else {
-            req = await Api.feedsCreate(payload,this.users.access_token)
-          }
-          if(req.status == 200) {
-            let {data,status,msg} = req.data
-            if(status){
-              this.notify('success','Success',msg)
-              this.doGet()
-              this.clearForm()
-                this.modal.form.hide()
-            } else {
-              this.notify('error','Error',msg)
-            }
-          } else {
-            this.notify('error','Error',req.message)
-          }
-          this.form.loading = false
-        } catch (error) {
-          this.notify('error','Error',error.message)
-          this.form.loading = false
-        }
-      },
-      async doDelete(id) {
-        this.form.loading = true
-        let payload = {
-          id: id
-        }
-        try {
-          let req = await Api.feedsDelete(payload,this.users.access_token)
-          if(req.status == 200) {
-            let {data,status,msg} = req.data
-            if(status){
-              this.notify('success','Success',msg)
-              this.doGet()
-              this.clearForm()
-                this.modal.delete.hide()
-            } else {
-              this.notify('error','Error',msg)
-            }
-          } else {
-            this.notify('error','Error',req.message)
-          }
-          this.form.loading = false
-        } catch (error) {
-          this.notify('error','Error',error.message)
-          this.form.loading = false
-        }
-      },
-      clearForm() {
-        this.form.data = {
-          id_user: null,
-          image: null,
-          title: null,
-          text: '',
-          category: [],
-          type: null,
-          status: 'PUBLISHED'
-        }
-        this.form.delete = null
-      },
-        initModal() {
-          this.modal = {
-            form: new bootstrap.Modal(document.getElementById('modalForm')),
-            delete: new bootstrap.Modal(document.getElementById('modalDelete'))
+        previewImage(e) {
+          let vm = this
+          let inp = e.target
+          let files = e.target.files
+          for(let i = 0; i < files.length; i++) {
+            let reader = new FileReader();
+            reader.readAsDataURL(files[i]);
+            reader.onload = function () {
+              vm.form.data.image = reader.result
+              inp.type = 'text';
+              inp.type = 'file';
+            };
+            reader.onerror = function () {
+              inp.type = 'text';
+              inp.type = 'file';
+            };
           }
         },
-      previewImage(e) {
-        let vm = this
-        let inp = e.target
-        let files = e.target.files
-        for(let i = 0; i < files.length; i++) {
-          let reader = new FileReader();
-          reader.readAsDataURL(files[i]);
-          reader.onload = function () {
-            vm.form.data.image = reader.result
-            inp.type = 'text';
-            inp.type = 'file';
-          };
-          reader.onerror = function () {
-            inp.type = 'text';
-            inp.type = 'file';
-          };
+        notify(type,title,msg){
+          let bg = 'bg-primary'
+          switch (type) {
+          case 'error':
+            bg = 'bg-danger'
+            break;
+          case 'success':
+            bg = 'bg-success'
+            break;
+          case 'warning':
+            bg = 'bg-warning'
+            break;
+          case 'info':
+            bg = 'bg-info'
+            break;
+          }
+          this.alert = {
+            show: 'show',
+            bg: bg,
+            title: title,
+            msg: msg
+          }
+          setTimeout(() => {
+            this.alert.show = 'hide'
+          }, 2000);
         }
-      },
-      notify(type,title,msg){
-        let bg = 'bg-primary'
-        switch (type) {
-        case 'error':
-          bg = 'bg-danger'
-          break;
-        case 'success':
-          bg = 'bg-success'
-          break;
-        case 'warning':
-          bg = 'bg-warning'
-          break;
-        case 'info':
-          bg = 'bg-info'
-          break;
-        }
-        this.alert = {
-          show: 'show',
-          bg: bg,
-          title: title,
-          msg: msg
-        }
-        setTimeout(() => {
-          this.alert.show = 'hide'
-        }, 2000);
-      }
-  },
-  mounted() {
-    this.doGet()
-    this.doGetCategory()
-    this.initModal()
-  }
-});
+    },
+    mounted() {
+      this.doGet()
+      this.doGetCategory()
+      this.initModal()
+    }
+  });
 </script>
 @endsection
