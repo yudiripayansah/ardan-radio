@@ -14,7 +14,7 @@ const Social = ({ route,navigation }) => {
   }, [])
 
   return (
-    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},(radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative, theme.px20]}>
+    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},(radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative]}>
       <SocialTab.Navigator 
         screenOptions={{
           tabBarActiveTintColor: '#fff',

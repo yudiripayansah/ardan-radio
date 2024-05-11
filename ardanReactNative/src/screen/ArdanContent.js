@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
+  ActivityIndicator,
   Linking,
 } from 'react-native';
 import axios from 'axios';
@@ -30,53 +30,45 @@ const ArdanContent = ({navigation}) => {
     data: [],
     loading: false,
   });
+  const [bannerAdsItem, setBannerAdsItem] = useState({
+    data: [],
+    loading: false,
+  });
   const [search, setSearch] = useState(null);
-  const instagramItem = [
-    {
-      image: require('../assets/images/ig/1.png'),
-    },
-    {
-      image: require('../assets/images/ig/2.png'),
-    },
-    {
-      image: require('../assets/images/ig/3.png'),
-    },
-    {
-      image: require('../assets/images/ig/4.png'),
-    },
-    {
-      image: require('../assets/images/ig/1.png'),
-    },
-    {
-      image: require('../assets/images/ig/2.png'),
-    },
-    {
-      image: require('../assets/images/ig/3.png'),
-    },
-    {
-      image: require('../assets/images/ig/4.png'),
-    },
-  ];
-  const tiktokItem = [
-    {
-      image: require('../assets/images/tiktok/1.png'),
-    },
-    {
-      image: require('../assets/images/tiktok/2.png'),
-    },
-    {
-      image: require('../assets/images/tiktok/3.png'),
-    },
-    {
-      image: require('../assets/images/tiktok/1.png'),
-    },
-    {
-      image: require('../assets/images/tiktok/2.png'),
-    },
-    {
-      image: require('../assets/images/tiktok/3.png'),
-    },
-  ];
+  const getBannerAds = async () => {
+    setBannerAdsItem({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 5,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+        cta: 'ARDAN CONTENT',
+      };
+      let req = await Api.bannerRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setBannerAdsItem({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error('Home Banner Ads', error);
+      setBannerAdsItem({
+        data: [],
+        loading: false,
+      });
+    }
+  };
   const getYoutube = async () => {
     url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=10`;
     try {
@@ -164,6 +156,11 @@ const ArdanContent = ({navigation}) => {
   const goToUrl = async url => {
     await Linking.openURL(url);
   };
+  const goToBanner = id => {
+    navigation.navigate('BannerDetails', {
+      id: id,
+    });
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
@@ -171,10 +168,53 @@ const ArdanContent = ({navigation}) => {
         getYoutube();
         getIg()
         getTiktok()
+        getBannerAds()
       }
     });
     return () => (mounted = false);
   }, []);
+  const SlideBanner = (theAds) => {
+    if (theAds.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
+        </View>
+      );
+    } else {
+      return (
+        <View style={[theme.mt0, theme.wp100, {flexGrow: 1}]}>
+          <ScrollView
+            horizontal
+            style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.mt10]}
+            showsHorizontalScrollIndicator={false}>
+            {theAds.data.map((item, i) => {
+              return (
+                <TouchableOpacity
+                  style={[
+                    i == 0 ? theme.ms20 : theme.ms0,
+                    i == theAds.length - 1 ? theme.me20 : theme.me10,
+                  ]}
+                  key={i}
+                  onPress={() => {
+                    goToBanner(item.id);
+                  }}>
+                  <Image
+                    source={{uri: item.image_url}}
+                    style={[
+                      theme.w300,
+                      theme.h140,
+                      theme.br15,
+                      {objectFit: 'cover'},
+                    ]}
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      );
+    }
+  };
   const Content = () => {
     return (
       <View style={[theme.mt35]}>
@@ -354,6 +394,7 @@ const ArdanContent = ({navigation}) => {
         theme.relative,
       ]}>
       <ScrollView style={[]} showsVerticalScrollIndicator={false}>
+        {SlideBanner(bannerAdsItem)}
         <Content />
         <Instagram />
         <Tiktok />

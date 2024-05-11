@@ -16,6 +16,7 @@ import Helper from '../config/Helper';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
+import RenderHtml from 'react-native-render-html';
 const NewsDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 40;
@@ -102,9 +103,14 @@ const NewsDetails = ({route, navigation}) => {
               }}>
               <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
             </TouchableOpacity>
-            <Text style={[theme['h12-400'], theme.cwhite, theme.mt20]}>
-              {newsItem.data.text}
-            </Text>
+            <View style={[theme.mt20]}>
+              <RenderHtml
+                contentWidth={imageWidth}
+                source={{
+                  html: `<div style="color:#fff;">${newsItem.data.text}</div>`,
+                }}
+              />
+            </View>
           </View>
         </View>
         <View style={[theme.mb150]} />

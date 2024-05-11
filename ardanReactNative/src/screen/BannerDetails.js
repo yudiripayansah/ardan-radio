@@ -13,6 +13,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
 import {RadioContext} from '../context/RadioContext';
 import Api from '../config/Api';
+import RenderHtml from 'react-native-render-html';
 const BannerDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 40;
@@ -86,9 +87,12 @@ const BannerDetails = ({route, navigation}) => {
             <Text style={[theme['h24-700'], theme.cwhite]}>
               {bannerItem.data.title}
             </Text>
-            <Text style={[theme['h12-400'], theme.cwhite]}>
-              {bannerItem.data.text}
-            </Text>
+            <RenderHtml
+              contentWidth={imageWidth}
+              source={{
+                html: `<div style="color:#fff;">${bannerItem.data.text}</div>`,
+              }}
+            />
           </View>
         </View>
         <View style={[theme.mb150]} />

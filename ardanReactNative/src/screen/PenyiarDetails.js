@@ -15,6 +15,7 @@ import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {RadioContext} from '../context/RadioContext';
+import RenderHtml from 'react-native-render-html';
 const PenyiarDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 40;
@@ -107,9 +108,12 @@ const PenyiarDetails = ({route, navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={[theme['p14-00'], theme.cwhite]}>
-              {penyiarItem.data.text}
-            </Text>
+            <RenderHtml
+              contentWidth={imageWidth}
+              source={{
+                html: `<div style="color:#fff;">${penyiarItem.data.text}</div>`,
+              }}
+            />
           </View>
         </View>
         <View style={[theme.mb150]} />

@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
+import RenderHtml from 'react-native-render-html';
 const ProgramDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width;
@@ -214,9 +215,12 @@ const ProgramDetails = ({route, navigation}) => {
             <Text style={[theme['h18-700'], theme.cwhite, theme.mt15]}>
               Description
             </Text>
-            <Text style={[theme['h12-400'], theme.cwhite]}>
-              {programsItem.data.text}
-            </Text>
+            <RenderHtml
+              contentWidth={imageWidth}
+              source={{
+                html: `<div style="color:#fff;">${programsItem.data.text}</div>`,
+              }}
+            />
             <Text style={[theme['h18-700'], theme.cwhite, theme.mt15]}>
               Penyiar
             </Text>

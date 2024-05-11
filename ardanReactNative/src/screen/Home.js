@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -23,7 +23,8 @@ import Icons from '../components/Icons';
 import RenderHtml from 'react-native-render-html';
 import {RadioContext} from '../context/RadioContext';
 const Home = ({navigation}) => {
-
+  const data = [...new Array(6).keys()];
+  const ref = React.useRef(null);
   const { width } = useWindowDimensions();
   const radioState = useContext(RadioContext).state;
   let apiKey = 'AIzaSyBOr3JxvvNcGariUrqnvsjUktQKxYGGWiI',
@@ -491,8 +492,8 @@ const Home = ({navigation}) => {
     getYoutube();
     getHotSharing();
   }, []);
-  const MainBanner = () => {
-    if (bannerItem.loading) {
+  const SlideBanner = (theAds) => {
+    if (theAds.loading) {
       return (
         <View style={[theme.py50]}>
           <ActivityIndicator size="large" color="#F8C303" />
@@ -500,17 +501,17 @@ const Home = ({navigation}) => {
       );
     } else {
       return (
-        <View style={[theme.mt70, theme.wp100, {flexGrow: 1}]}>
+        <View style={[theme.mt35, theme.wp100, {flexGrow: 1}]}>
           <ScrollView
             horizontal
             style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.mt10]}
             showsHorizontalScrollIndicator={false}>
-            {bannerItem.data.map((item, i) => {
+            {theAds.data.map((item, i) => {
               return (
                 <TouchableOpacity
                   style={[
                     i == 0 ? theme.ms20 : theme.ms0,
-                    i == bannerItem.length - 1 ? theme.me20 : theme.me10,
+                    i == theAds.length - 1 ? theme.me20 : theme.me10,
                   ]}
                   key={i}
                   onPress={() => {
@@ -858,31 +859,6 @@ const Home = ({navigation}) => {
       );
     }
   };
-  const Ads = () => {
-    if (bannerAdsItem.loading) {
-      return (
-        <View style={[theme.py50]}>
-          <ActivityIndicator size="large" color="#F8C303" />
-        </View>
-      );
-    } else {
-      return bannerAdsItem.data.map((item, i) => {
-        return (
-          <View style={[theme.mt35, theme.px20, theme.wp100]} key={i}>
-            <TouchableOpacity
-              onPress={() => {
-                goToBanner(item.id);
-              }}>
-              <Image
-                source={{uri: item.image_url}}
-                style={[theme.wp100, theme.h150, {objectFit: 'contain'}]}
-              />
-            </TouchableOpacity>
-          </View>
-        );
-      });
-    }
-  };
   const HotSharing = () => {
     if (hotSharing.loading) {
       return (
@@ -1047,13 +1023,13 @@ const Home = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt140 : theme.pt80]}>
+    <SafeAreaView style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt175 : theme.pt115]}>
       <ScrollView style={[]} showsVerticalScrollIndicator={false}>
-        <MainBanner />
+        {SlideBanner(bannerItem)}
         <ProgramPopuler />
         <HotSharing />
         <News />
-        <Ads />
+        {SlideBanner(bannerAdsItem)}
         <Content />
         <Event />
         <View style={[theme.h180]}></View>

@@ -26,7 +26,49 @@ const News = ({navigation}) => {
     data: [],
     loading: false,
   });
-  const [activeCat, setActiveCat] = useState('All');
+  const [bannerAdsItem, setBannerAdsItem] = useState({
+    data: [],
+    loading: false,
+  });
+  const [activeCat, setActiveCat] = useState('All');const getBannerAds = async () => {
+    setBannerAdsItem({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 5,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+        cta: 'NEWS',
+      };
+      let req = await Api.bannerRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setBannerAdsItem({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error('Home Banner Ads', error);
+      setBannerAdsItem({
+        data: [],
+        loading: false,
+      });
+    }
+  };
+  const goToBanner = id => {
+    navigation.navigate('BannerDetails', {
+      id: id,
+    });
+  };
   const getCategory = async () => {
     setCategory({
       data: [],
@@ -105,7 +147,50 @@ const News = ({navigation}) => {
   useEffect(() => {
     getEvents();
     getCategory();
+    getBannerAds()
   }, []);
+  const SlideBanner = (theAds) => {
+    if (theAds.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
+        </View>
+      );
+    } else {
+      return (
+        <View style={[theme.mt0, theme.wp100, {flexGrow: 1}]}>
+          <ScrollView
+            horizontal
+            style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.mt10]}
+            showsHorizontalScrollIndicator={false}>
+            {theAds.data.map((item, i) => {
+              return (
+                <TouchableOpacity
+                  style={[
+                    i == 0 ? theme.ms20 : theme.ms0,
+                    i == theAds.length - 1 ? theme.me20 : theme.me10,
+                  ]}
+                  key={i}
+                  onPress={() => {
+                    goToBanner(item.id);
+                  }}>
+                  <Image
+                    source={{uri: item.image_url}}
+                    style={[
+                      theme.w300,
+                      theme.h140,
+                      theme.br15,
+                      {objectFit: 'cover'},
+                    ]}
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      );
+    }
+  };
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, (radioState && radioState.status == 'playing') ? theme.pt120 : theme.pt60, theme.relative]}>
@@ -188,7 +273,8 @@ const News = ({navigation}) => {
         })}
       </ScrollView>
       <ScrollView style={[theme.mb150, theme.mt20]} showsVerticalScrollIndicator={false}>
-        <View style={[theme.fRow, theme.px20, theme.fjBetween]}>
+        {SlideBanner(bannerAdsItem)}
+        <View style={[theme.fRow, theme.px20, theme.fjBetween, theme.mt25]}>
           {eventsItem.data.map((item, i) => {
             return (
               <TouchableOpacity

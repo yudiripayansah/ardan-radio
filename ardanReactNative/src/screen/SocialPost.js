@@ -43,6 +43,44 @@ const SocialPost = ({navigation}) => {
     data: [],
     loading: false,
   });
+  const [bannerAdsItem, setBannerAdsItem] = useState({
+    data: [],
+    loading: false,
+  });
+  const getBannerAds = async () => {
+    setBannerAdsItem({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 5,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        search: null,
+        cta: 'SOCIALPOST',
+      };
+      let req = await Api.bannerRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setBannerAdsItem({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error('Home Banner Ads', error);
+      setBannerAdsItem({
+        data: [],
+        loading: false,
+      });
+    }
+  };
   const getFeeds = async (page = 1) => {
     try {
       let theData = feedsItem.data;
@@ -234,21 +272,70 @@ const SocialPost = ({navigation}) => {
     } else {
     }
   };
+  const goToBanner = id => {
+    navigation.navigate('BannerDetails', {
+      id: id,
+    });
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {
         getFeeds();
+        getBannerAds()
       }
     });
     return () => (mounted = false);
   }, []);
+  const SlideBanner = (theAds) => {
+    if (theAds.loading) {
+      return (
+        <View style={[theme.py50]}>
+          <ActivityIndicator size="large" color="#F8C303" />
+        </View>
+      );
+    } else {
+      return (
+        <View style={[theme.mt0, theme.wp100, {flexGrow: 1}]}>
+          <ScrollView
+            horizontal
+            style={[theme.wp100, {flexGrow: 1}, theme.fRow, theme.mt10]}
+            showsHorizontalScrollIndicator={false}>
+            {theAds.data.map((item, i) => {
+              return (
+                <TouchableOpacity
+                  style={[
+                    i == 0 ? theme.ms20 : theme.ms0,
+                    i == theAds.length - 1 ? theme.me20 : theme.me10,
+                  ]}
+                  key={i}
+                  onPress={() => {
+                    goToBanner(item.id);
+                  }}>
+                  <Image
+                    source={{uri: item.image_url}}
+                    style={[
+                      theme.w300,
+                      theme.h140,
+                      theme.br15,
+                      {objectFit: 'cover'},
+                    ]}
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      );
+    }
+  };
   return (
     <>
       <KeyboardAvoidingView
         style={[theme.bgblack, {flexGrow: 1, zIndex: 2}, theme.relative]}>
+        {SlideBanner(bannerAdsItem)}
         <ScrollView
-          style={[]}
+          style={[theme.px20]}
           onScroll={handleScroll}
           scrollEventThrottle={400}
           showsVerticalScrollIndicator={false}>
