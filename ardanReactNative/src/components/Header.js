@@ -71,7 +71,7 @@ const Header = ({navigation, ...props}) => {
       target: () => {
         navigation.navigate('Event');
       },
-    },
+    }
   ];
   const doSearch = keyword => {
     toggleSearch();
@@ -145,7 +145,7 @@ const Header = ({navigation, ...props}) => {
   };
   const HeaderHome = () => {
     return (
-      <>
+      <View style={[theme.wp100]}>
         <View
           style={[
             // {backgroundColor: '#28353b'},
@@ -249,7 +249,7 @@ const Header = ({navigation, ...props}) => {
             );
           })}
         </View>
-      </>
+      </View>
     );
   };
   const HeaderTitle = () => {

@@ -478,7 +478,7 @@ const Home = ({navigation}) => {
     let opt = {
       title: 'Check my Sharing on Ardan Radio',
       message: 'Check my sharing on Ardan Radio',
-      url: 'ardanmobileapps://SocialSharingDetails/' + id,
+      url: 'https://ardanmobileapps.ardangroup.fm/sharing/' + id,
     };
     let share = Share.open(opt);
   };

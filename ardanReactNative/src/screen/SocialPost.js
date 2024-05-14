@@ -281,7 +281,7 @@ const SocialPost = ({navigation}) => {
     let opt = {
       title: 'Check my Post on Ardan Radio',
       message: 'Check my Post on Ardan Radio',
-      url: 'ardanmobileapps://SocialPostDetails/' + id,
+      url: 'https://ardanmobileapps.ardangroup.fm/post/' + id,
     };
     let share = Share.open(opt);
   };

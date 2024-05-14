@@ -200,7 +200,7 @@ const Radio = ({navigation}) => {
     let opt = {
       title: 'Check cooL Program that i listen to on Ardan Radio',
       message: 'Check cool Program that i listen to on Ardan Radio',
-      url: 'ardanmobileapps://ProgramDetails/' + id,
+      url: 'https://ardanmobileapps.ardangroup.fm/program/' + id,
     };
     let share = Share.open(opt);
   };

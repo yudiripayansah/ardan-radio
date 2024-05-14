@@ -13,7 +13,6 @@ import {useAuth} from './hook/useAuth';
 import {useRadio} from './hook/useRadio';
 import usePushNotification from './hook/usePushNotification';
 import Api from './config/Api';
-import DeepLinking from 'react-native-deep-linking';
 const App = ({}) => {
   const [appState, setAppState] = useState(AppState.currentState);
   const {requestUserPermission} = usePushNotification();
@@ -40,27 +39,34 @@ const App = ({}) => {
     }
   };
   const linking = {
-    prefixes: ['https://ardanmobileapps.ardangroup.fm','ardanmobileapps://']
-  }
-  const handleDeepLink = ({ url }) => {
-    const route = url.replace(/.*?:\/\//g, '');
-    const routeName = route.split('/')[1];
-    if (routeName === 'profile') {
-      // Navigate to ProfileScreen
-      // Example: navigation.navigate('Profile')
-    }
+    prefixes: [
+      'https://ardanmobileapps.ardangroup.fm',
+      'http://ardanmobileapps.ardangroup.fm',
+      'ardanmobileapps://',
+    ],
+    config: {
+      screens: {
+        Home: 'home',
+        SocialSharingDetails: 'sharing/:id',
+        SocialPostDetails: 'post/:id',
+        EventsDetails: 'events/:id',
+        NewsDetails: 'news/:id',
+        ProgramDetails: 'program/:id',
+        NotificationsDetails: 'notif/:id',
+      },
+    },
   };
-  const getUrlAsync = async () => {
-    // Get the deep link used to open the app
-    const initialUrl = await Linking.getInitialURL();
-    if (initialUrl !== null) {
-      handleDeepLink(initialUrl)
-      return;
+  const handleDeepLink = ({url}) => {};
+  const handleAppStateChange = nextAppState => {
+    if (appState.match(/inactive|background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground!');
+    } else if (
+      appState === 'active' &&
+      nextAppState.match(/inactive|background/)
+    ) {
+      console.log('App has gone to the background or minimized!');
     }
-    // console.warn(initialUrl)
-    // if(initialUrl.includes('post')) {
-
-    // }
+    setAppState(nextAppState);
   };
   useEffect(() => {
     const listenToNotifications = () => {
@@ -75,27 +81,13 @@ const App = ({}) => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
-    getUrlAsync();
     Linking.addEventListener('url', handleDeepLink);
   }, []);
 
   useEffect(() => {
-    const handleAppStateChange = (nextAppState) => {
-      if (appState.match(/inactive|background/) && nextAppState === 'active') {
-        console.log('App has come to the foreground!');
-        // Logic for when the application is opened or maximized
-      } else if (appState === 'active' && nextAppState.match(/inactive|background/)) {
-        console.log('App has gone to the background or minimized!');
-        // Logic for when the application is backgrounded or minimized
-      }
-      setAppState(nextAppState);
-    };
-
+    handleAppStateChange;
     AppState.addEventListener('change', handleAppStateChange);
-
-    return () => {
-      
-    };
+    return () => {};
   }, [appState]);
 
   return (

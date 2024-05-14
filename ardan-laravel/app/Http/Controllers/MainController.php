@@ -41,6 +41,10 @@ class MainController extends Controller
     $data['menu'] = $this->menu;
     return view('pages.liveStreaming',$data);
   }
+  public function liveChat(Request $request) {
+    $data['menu'] = $this->menu;
+    return view('pages.liveChat',$data);
+  }
   public function notification(Request $request) {
     $data['menu'] = $this->menu;
     return view('pages.notification',$data);

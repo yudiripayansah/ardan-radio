@@ -72,7 +72,7 @@ const EventsDetails = ({route, navigation}) => {
     let opt = {
       title: 'Check this Events on Ardan Radio',
       message: 'Check this Events on Ardan Radio',
-      url: 'ardanmobileapps://EventsDetails/' + id,
+      url: 'https://ardanmobileapps.ardangroup.fm/events/' + id,
     };
     let share = Share.open(opt);
   };

@@ -71,7 +71,7 @@ const Notifications = ({route, navigation}) => {
     let opt = {
       title: 'Check this Notifications on Ardan Radio',
       message: 'Check this Notifications on Ardan Radio',
-      url: 'ardanmobileapps://NotificationsDetails/' + id,
+      url: 'https://ardanmobileapps.ardangroup.fm/notif/' + id,
     };
     let share = Share.open(opt);
   };

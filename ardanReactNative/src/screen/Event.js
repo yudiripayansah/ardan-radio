@@ -274,7 +274,7 @@ const News = ({navigation}) => {
       </ScrollView>
       <ScrollView style={[theme.mb150, theme.mt20]} showsVerticalScrollIndicator={false}>
         {SlideBanner(bannerAdsItem)}
-        <View style={[theme.fRow, theme.px20, theme.fjBetween, theme.mt25]}>
+        <View style={[theme.fRow, theme.px20, theme.fjBetween, theme.mb25, {flexWrap: 'wrap'}]}>
           {eventsItem.data.map((item, i) => {
             return (
               <TouchableOpacity

@@ -411,4 +411,40 @@ const Api = {
     };
     return defAxios.post(url, payload, config);
   },
+  // chat
+  chatRead(payload) {
+    let url = '/chat/read'
+    return defAxios.post(url, payload);
+  },
+  chatGet(payload) {
+    let url = '/chat/get'
+    return defAxios.post(url, payload);
+  },
+  chatCreate(payload, token) {
+    let url = '/chat/create'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  chatUpdate(payload, token) {
+    let url = '/chat/update'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
+  chatDelete(payload, token) {
+    let url = '/chat/delete'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
 }

@@ -24,12 +24,15 @@ import {AuthContext} from '../context/AuthContext';
 import Icons from '../components/Icons';
 import Share from 'react-native-share';
 import ActionSheet from 'react-native-actions-sheet';
+import AutoHeightImage from 'react-native-auto-height-image';
 const Profile = ({route, navigation}) => {
   const acOpt = useRef(null);
   const acReport = useRef(null);
+  const acProfile = useRef(null);
   const {removeUser} = useContext(AuthContext);
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 20;
+  const profileImageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const theme = useContext(ThemeContext);
@@ -201,7 +204,7 @@ const Profile = ({route, navigation}) => {
     let opt = {
       title: 'Check my Post on Ardan Radio',
       message: 'Check my Post on Ardan Radio',
-      url: 'ardanmobileapps://SocialPostDetails/' + id,
+      url: 'https://ardanmobileapps.ardangroup.fm/post/' + id,
     };
     let share = Share.open(opt);
   };
@@ -374,6 +377,12 @@ const Profile = ({route, navigation}) => {
   const showAcr = item => {
     hideAcs();
     acReport.current?.show();
+  };
+  const hideAcp = () => {
+    acProfile.current?.hide();
+  };
+  const showAcp = item => {
+    acProfile.current?.show();
   };
   const doBookmark = async (target, type) => {
     if (user.role != 'guest') {
@@ -721,6 +730,25 @@ const Profile = ({route, navigation}) => {
       </ActionSheet>
     );
   };
+  const AcsProfile = () => {
+    return (
+      <ActionSheet ref={acProfile} isModal={true}>
+        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+          <AutoHeightImage
+            contentWidth={profileImageWidth}
+            width={profileImageWidth}
+            source={
+              dUser.image
+                ? {uri: dUser.image_url}
+                : {
+                    uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                  }
+            }
+          />
+        </View>
+      </ActionSheet>
+    );
+  };
 
   return (
     <>
@@ -736,18 +764,29 @@ const Profile = ({route, navigation}) => {
         <ScrollView style={[]}>
           <AcsOpt />
           <AcsReport />
+          <AcsProfile />
           <View style={[theme.px20, theme.pt10, theme.mb100]}>
             <View style={[theme.fRow]}>
-              <Image
-                source={
-                  dUser.image
-                    ? {uri: dUser.image_url}
-                    : {
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-                      }
-                }
-                style={[theme.w80, theme.h80, theme.br10, {objectFit: 'cover'}]}
-              />
+              <TouchableOpacity
+                onPress={() => {
+                  showAcp();
+                }}>
+                <Image
+                  source={
+                    dUser.image
+                      ? {uri: dUser.image_url}
+                      : {
+                          uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                        }
+                  }
+                  style={[
+                    theme.w80,
+                    theme.h80,
+                    theme.br10,
+                    {objectFit: 'cover'},
+                  ]}
+                />
+              </TouchableOpacity>
               <View style={[theme.ms10]}>
                 <Text style={[theme.cwhite, theme['h16-700']]}>
                   {dUser.name}

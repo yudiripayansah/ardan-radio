@@ -108,7 +108,7 @@ const base = {
     ...border,
     fRow: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
+        flexWrap: 'nowrap',
     },
     fColumn: {
         flexDirection: 'column'

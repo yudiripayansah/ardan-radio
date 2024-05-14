@@ -55,6 +55,7 @@ class PublicChatControllers extends Controller
         $ld->reciever->image = ($ld->reciever->image) ? Storage::disk('public')->url('user/'.$ld->reciever->image) : null;
       }
       $ld->date = $ld->created_at;
+      $ld->created_on = date('d-M-Y H:i:s',strtotime($ld->created_at));
     }
     if ($search || $id_user || $id_target || $target_type) {
       $total = LiveChat::orderBy($sortBy, $sortDir);

@@ -1,13 +1,13 @@
 @extends('layout.layout')
 @section('screen')
-<div class="layout-px-spacing" id="livestreamingsPage">
+<div class="layout-px-spacing" id="livechatsPage">
   <div class="middle-content container-xxl p-0">
     <!-- BREADCRUMB -->
     <div class="page-meta">
       <nav class="breadcrumb-style-one" aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="#">CMS</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Live Streaming</li>
+          <li class="breadcrumb-item active" aria-current="page">Live Chat</li>
         </ol>
       </nav>
     </div>
@@ -21,14 +21,25 @@
               <div class="dt--top-section">
                 <div class="row">
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                    <div class="dt-buttons">
+                    {{-- <div class="dt-buttons">
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
                         aria-controls="show-hide-col" @click="clearForm();modal.form.show()">
                         <span>Add New</span>
                       </button>
-                    </div>
+                    </div> --}}
                   </div>
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+                        <label for="bannerCta" class="control-label">Filter</label>
+                      </div>
+                      <div class="col-auto">
+                        <select class="form-control" v-model="paging.target_type" id="bannerTarget_type">
+                          <option value="all">All</option>
+                          <option :value="target_type" v-text="target_type" v-for="(target_type,index) in opt.target_type" :key="index"></option>
+                        </select>
+                      </div>
+                    </div>
                     <div id="show-hide-col_filter" class="dataTables_filter">
                       <label>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -48,10 +59,10 @@
                 <table class="table table-hover table-striped table-bordered table-no-space">
                   <thead>
                     <tr>
-                      <th scope="col" width="20%">Title</th>
-                      <th scope="col" width="20%">Url</th>
+                      <th scope="col" width="20%">Chat</th>
+                      <th scope="col" width="20%">Chat By</th>
+                      <th scope="col" width="20%">Chat On</th>
                       <th scope="col" width="20%">Date</th>
-                      <th scope="col" width="20%">Status</th>
                       <th class="text-center" scope="col" width="20%"></th>
                     </tr>
                     <tr aria-hidden="true" class="mt-3 d-block table-row-hidden"></tr>
@@ -59,20 +70,20 @@
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
                       <td>
+                        <span v-text="(item.chat) ? item.chat : '-'"></span>
+                      </td>
+                      <td>
                         <span v-text="(item.title) ? item.title : '-'"></span>
                       </td>
                       <td>
-                        <span v-text="(item.url) ? item.url : '-'"></span>
+                        <span v-text="(item.target_type) ? item.target_type : '-'"></span>
                       </td>
                       <td>
-                        <span v-text="(item.date) ? item.date : '-'"></span>
-                      </td>
-                      <td>
-                        <span v-text="(item.status) ? item.status : '-'"></span>
+                        <span v-text="(item.created_on) ? item.created_on : '-'"></span>
                       </td>
                       <td class="text-center">
                         <div class="action-btns">
-                          <a href="javascript:void(0);" class="action-btn btn-edit bs-tooltip me-2"
+                          {{-- <a href="javascript:void(0);" class="action-btn btn-edit bs-tooltip me-2"
                             data-toggle="tooltip" data-placement="top" title="Edit" data-bs-toggle="modal"
                             data-bs-target="#modalForm" @click="doUpdate(item.id)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -81,7 +92,7 @@
                               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
                               </path>
                             </svg>
-                          </a>
+                          </a> --}}
                           <a href="javascript:void(0);" class="action-btn btn-delete bs-tooltip" data-toggle="tooltip"
                             data-placement="top" title="Delete" @click="form.delete = item.id;modal.delete.show()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -181,16 +192,16 @@
           <div class="row">
             <div class="col-12">
               <div class="form-group">
-                <label for="livestreamingsTitle" class="control-label">Title</label>
-                <input type="text" class="form-control" v-model="form.data.title" id="livestreamingsTitle">
+                <label for="livechatsTitle" class="control-label">Title</label>
+                <input type="text" class="form-control" v-model="form.data.title" id="livechatsTitle">
               </div>
               <div class="form-group mt-3">
-                <label for="livestreamingsUrl" class="control-label">Url</label>
-                <input type="text" class="form-control" v-model="form.data.url" id="livestreamingsUrl">
+                <label for="livechatsUrl" class="control-label">Url</label>
+                <input type="text" class="form-control" v-model="form.data.url" id="livechatsUrl">
               </div>
               <div class="form-group mt-3">
-                <label for="livestreamingsDate" class="control-label">Date</label>
-                <input type="date" class="form-control" v-model="form.data.date" id="livestreamingsDate">
+                <label for="livechatsDate" class="control-label">Date</label>
+                <input type="date" class="form-control" v-model="form.data.date" id="livechatsDate">
               </div>
             </div>
           </div>
@@ -248,7 +259,7 @@
 @section('customScript')
 <script type="module">
 const vueDashboard = new Vue( {
-  el: '#livestreamingsPage',
+  el: '#livechatsPage',
   data: {
       form: {
           data: {
@@ -270,7 +281,8 @@ const vueDashboard = new Vue( {
           perPage : 10,
           sortDir : 'DESC',
           sortBy : 'id',
-          search : null
+          search : null,
+          target_type: 'all'
       },
       alert: {
           show: 'hide',
@@ -279,7 +291,8 @@ const vueDashboard = new Vue( {
           msg: null
       },
       opt: {
-        type: ['News','Events','Feeds']
+        type: ['News','Events','Feeds'],
+        target_type: ["livestream","radio"]
       },
       messages: [],
         modal: {
@@ -304,8 +317,11 @@ const vueDashboard = new Vue( {
       async doGet() {
         this.form.loading = true
         let payload = {...this.paging}
+        if(payload.target_type == 'all'){
+          payload.target_type = null
+        }
         try {
-          let req = await Api.livestreamingsRead(payload)
+          let req = await Api.chatRead(payload)
           if(req.status == 200) {
             let {data,status,msg,total,totalPage,paging} = req.data
             if(status){
@@ -324,67 +340,13 @@ const vueDashboard = new Vue( {
           this.form.loading = false
         }
       },
-      async doUpdate(id) {
-        this.clearForm()
-        this.form.loading = true
-        let payload = {
-          id: id
-        }
-        try {
-          let req = await Api.livestreamingsGet(payload)
-          if(req.status == 200) {
-            let {data,status,msg} = req.data
-            if(status){
-              this.form.data = data
-                this.modal.form.show()
-            } else {
-              this.notify('error','Error',msg)
-            }
-          } else {
-            this.notify('error','Error',req.message)
-          }
-          this.form.loading = false
-        } catch (error) {
-          this.notify('error','Error',error.message)
-          this.form.loading = false
-        }
-      },
-      async doSave() {
-        this.form.loading = true
-        let payload = {...this.form.data}
-        try {
-          let req = false
-          if(payload.id) {
-            req = await Api.livestreamingsUpdate(payload,this.users.access_token)
-          } else {
-            req = await Api.livestreamingsCreate(payload,this.users.access_token)
-          }
-          if(req.status == 200) {
-            let {data,status,msg} = req.data
-            if(status){
-              this.notify('success','Success',msg)
-              this.doGet()
-              this.clearForm()
-              this.modal.form.hide()
-            } else {
-              this.notify('error','Error',msg)
-            }
-          } else {
-            this.notify('error','Error',req.message)
-          }
-          this.form.loading = false
-        } catch (error) {
-          this.notify('error','Error',error.message)
-          this.form.loading = false
-        }
-      },
       async doDelete(id) {
         this.form.loading = true
         let payload = {
           id: id
         }
         try {
-          let req = await Api.livestreamingsDelete(payload,this.users.access_token)
+          let req = await Api.chatDelete(payload,this.users.access_token)
           if(req.status == 200) {
             let {data,status,msg} = req.data
             if(status){
@@ -413,12 +375,12 @@ const vueDashboard = new Vue( {
         }
         this.form.delete = null
       },
-        initModal() {
-          this.modal = {
-            form: new bootstrap.Modal(document.getElementById('modalForm')),
-            delete: new bootstrap.Modal(document.getElementById('modalDelete'))
-          }
-        },
+      initModal() {
+        this.modal = {
+          form: new bootstrap.Modal(document.getElementById('modalForm')),
+          delete: new bootstrap.Modal(document.getElementById('modalDelete'))
+        }
+      },
       previewImage(e) {
         let vm = this
         let inp = e.target
@@ -463,16 +425,9 @@ const vueDashboard = new Vue( {
           this.alert.show = 'hide'
         }, 2000);
       },
-      listenChat() {
-        // window.Echo = new Echo({
-        //   broadcaster: 'socket.io',
-        //   host: window.location.hostname + ':6001'
-        // });
-      }
   },
   mounted() {
     this.doGet()
-    // this.listenChat()
     this.initModal()
   }
 });

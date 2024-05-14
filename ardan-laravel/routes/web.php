@@ -24,6 +24,7 @@ Route::get('/feed', [MainController::class, 'feed']);
 Route::get('/content', [MainController::class, 'content']);
 Route::get('/music', [MainController::class, 'music']);
 Route::get('/live-streaming', [MainController::class, 'liveStreaming']);
+Route::get('/live-chat', [MainController::class, 'liveChat']);
 Route::get('/notification', [MainController::class, 'notification']);
 Route::get('/banner', [MainController::class, 'banner']);
 Route::get('/category', [MainController::class, 'category']);
