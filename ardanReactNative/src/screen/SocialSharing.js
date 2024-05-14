@@ -1,29 +1,29 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
   useWindowDimensions,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
+import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SvgUri from 'react-native-svg-uri';
 import Share from 'react-native-share';
-// import SvgUri from '../components/Svg';
 import Icons from '../components/Icons';
+import ActionSheet from 'react-native-actions-sheet';
 const SocialSharing = ({navigation}) => {
+  const acOpt = useRef(null);
+  const acReport = useRef(null);
   const imageWidth = useWindowDimensions().width - 40;
   const theme = useContext(ThemeContext);
+  const user = useContext(UserContext);
   const [search, setSearch] = useState(null);
   const [page, setPage] = useState(1);
   const [feedsItem, setFeedsItem] = useState({
@@ -75,6 +75,25 @@ const SocialSharing = ({navigation}) => {
     },
     loading: false,
   });
+  const [selectedFeed, setSelectedFeed] = useState({
+    user: {
+      id: null,
+    },
+  });
+  const reportReason = [
+    'Tidak menyukai ini',
+    'Postingan ini spam',
+    'Konten pornografi',
+    'Ujaran kebencian',
+    'Miss informasi',
+    'Perundungan dan kekerasan',
+    'Scam dan Fraud',
+    'Organisasi berbahaya',
+    'Jual beli barang ilegal',
+    'Membunuh dan melukai diri sendiri',
+    'Obat obatan terlarang',
+    'Lainnya',
+  ];
   const getBannerAds = async () => {
     setBannerAdsItem({
       data: [],
@@ -143,7 +162,7 @@ const SocialSharing = ({navigation}) => {
       });
     }
   };
-  const getFeeds = async (cat = null,page=1) => {
+  const getFeeds = async (cat = null, page = 1) => {
     try {
       let theData = feedsItem.data;
       let payload = {
@@ -167,10 +186,14 @@ const SocialSharing = ({navigation}) => {
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
-          if(data.length > 0){
-            setPage(page)
+          if (data.length > 0) {
+            setPage(page);
           }
-          theData = data;
+          if (page == 1) {
+            theData = data;
+          } else {
+            theData = [...theData, ...data];
+          }
         }
       }
       setFeedsItem({
@@ -356,7 +379,13 @@ const SocialSharing = ({navigation}) => {
         <View style={[theme.mb35]}>
           <View style={[theme.fRow, theme.fjBetween, theme.faCenter]}>
             <View style={[theme.fRow, theme.faCenter]}>
-              <Image source={Icons.flame} style={[{height:25,width:25,objectFit:'contain'},theme.me10]} />
+              <Image
+                source={Icons.flame}
+                style={[
+                  {height: 25, width: 25, objectFit: 'contain'},
+                  theme.me10,
+                ]}
+              />
               <Text style={[theme['h16-600'], theme.cwhite]}>
                 Hot
                 <Text style={[theme['h16-400'], theme.cwhite]}> Sharing</Text>
@@ -372,7 +401,10 @@ const SocialSharing = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Social');
               }}>
-              <Image source={Icons.chevronRight} style={[{height:20,width:20,objectFit:'contain'}]}/>
+              <Image
+                source={Icons.chevronRight}
+                style={[{height: 20, width: 20, objectFit: 'contain'}]}
+              />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -414,7 +446,7 @@ const SocialSharing = ({navigation}) => {
                   theme.faCenter,
                   theme.fjBetween,
                 ]}>
-                <View style={[theme.fRow,theme.wp60]}>
+                <View style={[theme.fRow, theme.wp60]}>
                   <View
                     style={[
                       theme.faCenter,
@@ -451,7 +483,7 @@ const SocialSharing = ({navigation}) => {
                     theme.faCenter,
                     theme.fjCenter,
                     theme.px15,
-                    theme.wp40
+                    theme.wp40,
                   ]}>
                   <Text style={[theme['h12-500'], {color: '#000'}]}>
                     {hotSharing.data.category}
@@ -461,7 +493,10 @@ const SocialSharing = ({navigation}) => {
               <RenderHtml
                 contentWidth={imageWidth}
                 source={{
-                  html: `<div style="color:#fff;">${Helper.limitWords(hotSharing.data.text,200)}</div>`,
+                  html: `<div style="color:#fff;">${Helper.limitWords(
+                    hotSharing.data.text,
+                    200,
+                  )}</div>`,
                 }}
               />
               <View
@@ -477,19 +512,28 @@ const SocialSharing = ({navigation}) => {
                     onPress={() => {
                       doShare(hotSharing.data.id);
                     }}>
-                    <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
+                    <Image
+                      source={Icons.share}
+                      style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                    />
                   </TouchableOpacity>
                 </View>
                 <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                   <View style={[theme.fRow, theme.faCenter]}>
-                    <Image source={Icons.love} style={[{height:16,width:16,objectFit:'contain'}]} />
+                    <Image
+                      source={Icons.love}
+                      style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                    />
                     <Text
                       style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                       {hotSharing.data.like_count}
                     </Text>
                   </View>
                   <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                    <Image source={Icons.comment} style={[{height:16,width:16,objectFit:'contain'}]} />
+                    <Image
+                      source={Icons.comment}
+                      style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                    />
                     <Text
                       style={[theme.ms5, theme['h12-500'], {color: '#AEB5C0'}]}>
                       {hotSharing.data.comment_count}
@@ -528,19 +572,83 @@ const SocialSharing = ({navigation}) => {
       }
     }
   };
-  const handleScroll = (event) => {
-    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+  const handleScroll = event => {
+    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
     const paddingToBottom = 20;
     const isCloseToBottom =
       layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom;
     if (isCloseToBottom) {
-      let nextPage = page + 1
-      getFeeds(activeCat,nextPage)
+      let nextPage = page + 1;
+      getFeeds(activeCat, nextPage);
     } else {
     }
   };
-  const SlideBanner = (theAds) => {
+  const deletePost = async (id = -1, idx) => {
+    try {
+      let payload = {
+        id: id,
+      };
+      let req = await Api.feedsDelete(payload, user.access_token);
+      if (req.status == 200) {
+        let {status} = req.data;
+        if (status) {
+          hideAcs();
+          getFeeds();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const reportPost = async reason => {
+    let id = selectedFeed.id;
+    try {
+      let payload = {
+        id_feed: id,
+        id_user: user.id,
+        text: reason,
+      };
+      let req = await Api.feedsReport(payload, user.access_token);
+      if (req.status == 200) {
+        let {status} = req.data;
+        if (status) {
+          getFeeds();
+        }
+        hideAcr();
+      }
+    } catch (error) {
+      hideAcr();
+      console.error(error);
+    }
+  };
+  const hideAcs = () => {
+    acOpt.current?.hide();
+  };
+  const showAcs = item => {
+    setSelectedFeed(item);
+    acOpt.current?.show();
+  };
+  const hideAcr = () => {
+    acReport.current?.hide();
+  };
+  const showAcr = item => {
+    hideAcs();
+    acReport.current?.show();
+  };
+  useEffect(() => {
+    let mounted = true;
+    navigation.addListener('focus', () => {
+      if (mounted) {
+        getFeeds();
+        getCategory();
+        getBannerAds();
+        getHotSharing();
+      }
+    });
+    return () => (mounted = false);
+  }, []);
+  const SlideBanner = theAds => {
     if (theAds.loading) {
       return (
         <View style={[theme.py50]}>
@@ -582,26 +690,74 @@ const SocialSharing = ({navigation}) => {
       );
     }
   };
-  useEffect(() => {
-    let mounted = true;
-    navigation.addListener('focus', () => {
-      if (mounted) {
-        getFeeds();
-        getCategory();
-        getBannerAds();
-        getHotSharing();
-      }
-    });
-    return () => (mounted = false);
-  }, []);
+  const AcsOpt = () => {
+    return (
+      <ActionSheet ref={acOpt}>
+        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+          <TouchableOpacity
+            onPress={() => {
+              showAcr();
+            }}>
+            <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+              <Icon name="warning" size={11} color="#ff9999" />
+              <Text style={[theme['p14-600'], {color: '#ff9999'}, theme.ms5]}>
+                Report
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {selectedFeed.user.id == user.id ? (
+            <TouchableOpacity
+              onPress={() => {
+                deletePost(selectedFeed.id);
+              }}>
+              <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+                <Icon name="trash" size={14} color="#ff9999" />
+                <Text style={[theme['p14-600'], {color: '#ff9999'}, theme.ms5]}>
+                  Delete
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      </ActionSheet>
+    );
+  };
+  const AcsReport = () => {
+    return (
+      <ActionSheet ref={acReport}>
+        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+          <Text style={[theme.tCenter, {color: '#fff'}, theme['p16-600']]}>
+            Report Reason
+          </Text>
+          {reportReason.map((reason, idx) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  reportPost(reason);
+                }}
+                key={idx}>
+                <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+                  <Text style={[theme['p14-400'], {color: '#fff'}, theme.ms5]}>
+                    {reason}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ActionSheet>
+    );
+  };
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, theme.relative, theme.pb120]}>
-      {SlideBanner(bannerAdsItem)}
+      {bannerAdsItem.length > 0 ? SlideBanner(bannerAdsItem) : null}
+      <AcsOpt />
+      <AcsReport />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={[theme.h120,theme.px20]}>
+        style={[theme.px20, theme.h100, theme.pt20]}>
         <TouchableOpacity
           style={[theme.mb25]}
           onPress={() => {
@@ -654,7 +810,9 @@ const SocialSharing = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <ScrollView style={[theme.mb230,theme.px20]} showsVerticalScrollIndicator={false} 
+      <ScrollView
+        style={[theme.mb50, theme.px20]}
+        showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={400}>
         <HotSharing />
@@ -678,9 +836,17 @@ const SocialSharing = ({navigation}) => {
                   onPress={() => {
                     navigation.navigate('SocialSharingDetails', {id: item.id});
                   }}>
-                  <Text style={[theme['h16-500'], {color: '#fff'}]}>
-                    {item.title}
-                  </Text>
+                  <View style={[theme.fRow, theme.fjBetween]}>
+                    <Text style={[theme['h16-500'], {color: '#fff'}]}>
+                      {item.title}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        showAcs(item);
+                      }}>
+                      <Icon name="ellipsis-h" size={20} color="#bbb" />
+                    </TouchableOpacity>
+                  </View>
                   <View
                     style={[
                       theme.fRow,
@@ -741,7 +907,14 @@ const SocialSharing = ({navigation}) => {
                   </View>
                   {item.image_url ? (
                     <Image
-                      style={[{width:imageWidth,height:imageWidth,objectFit: 'cover',backgroundColor:'#fafafa'}]}
+                      style={[
+                        {
+                          width: imageWidth,
+                          height: imageWidth,
+                          objectFit: 'cover',
+                          backgroundColor: '#fafafa',
+                        },
+                      ]}
                       source={{uri: item.image_url}}
                     />
                   ) : null}
@@ -759,19 +932,28 @@ const SocialSharing = ({navigation}) => {
                       onPress={() => {
                         doShare(item.id);
                       }}>
-                      <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
+                      <Image
+                        source={Icons.share}
+                        style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                      />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
                         doBookmark(item.id, 'Bookmark');
                       }}
                       style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                      <Image source={Icons.bookmark} style={[{height:16,width:16,objectFit:'contain'}]} />
+                      <Image
+                        source={Icons.bookmark}
+                        style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                      />
                     </TouchableOpacity>
                   </View>
                   <View style={[theme.fRow, theme.faCenter, theme.fjBetween]}>
                     <View style={[theme.fRow, theme.faCenter]}>
-                      <Image source={Icons.love} style={[{height:16,width:16,objectFit:'contain'}]} />
+                      <Image
+                        source={Icons.love}
+                        style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                      />
                       <Text
                         style={[
                           theme.ms5,
@@ -782,7 +964,10 @@ const SocialSharing = ({navigation}) => {
                       </Text>
                     </View>
                     <View style={[theme.fRow, theme.faCenter, theme.ms25]}>
-                      <Image source={Icons.comment} style={[{height:16,width:16,objectFit:'contain'}]} />
+                      <Image
+                        source={Icons.comment}
+                        style={[{height: 16, width: 16, objectFit: 'contain'}]}
+                      />
                       <Text
                         style={[
                           theme.ms5,

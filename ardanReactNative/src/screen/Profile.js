@@ -13,7 +13,6 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import RenderHtml from 'react-native-render-html';
-import AutoHeightImage from 'react-native-auto-height-image';
 import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
@@ -24,8 +23,10 @@ import {RadioContext} from '../context/RadioContext';
 import {AuthContext} from '../context/AuthContext';
 import Icons from '../components/Icons';
 import Share from 'react-native-share';
+import ActionSheet from 'react-native-actions-sheet';
 const Profile = ({route, navigation}) => {
-  const { width } = useWindowDimensions();
+  const acOpt = useRef(null);
+  const acReport = useRef(null);
   const {removeUser} = useContext(AuthContext);
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 20;
@@ -50,6 +51,25 @@ const Profile = ({route, navigation}) => {
     loading: false,
   });
   const [follow, setFollow] = useState(false);
+  const [selectedFeed, setSelectedFeed] = useState({
+    user: {
+      id: null,
+    },
+  });
+  const reportReason = [
+    'Tidak menyukai ini',
+    'Postingan ini spam',
+    'Konten pornografi',
+    'Ujaran kebencian',
+    'Miss informasi',
+    'Perundungan dan kekerasan',
+    'Scam dan Fraud',
+    'Organisasi berbahaya',
+    'Jual beli barang ilegal',
+    'Membunuh dan melukai diri sendiri',
+    'Obat obatan terlarang',
+    'Lainnya',
+  ];
   const getFeeds = async (type = 'POST') => {
     setFeedsItem({
       data: [],
@@ -70,7 +90,7 @@ const Profile = ({route, navigation}) => {
         id_user: id,
         type: type,
       };
-      let req = await Api.feedsRead(payload,user.token);
+      let req = await Api.feedsRead(payload, user.token);
       if (req.status == 200) {
         let {data, status, msg} = req.data;
         if (status) {
@@ -89,28 +109,10 @@ const Profile = ({route, navigation}) => {
       });
     }
   };
-  const deletePost = async (id = -1,idx) => {
-    try {
-      let payload = {
-        id: id
-      };
-      let req = await Api.feedsDelete(payload);
-      if (req.status == 200) {
-        let {status} = req.data;
-        if (status) {
-          getFeeds(active)
-          setShowDelete(-1)
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
   const getUser = async () => {
     let id = user.id;
     if (route.params) {
       id = route.params.id;
-      console.log('profile user id:', route.params.id);
     }
     try {
       let theData = {};
@@ -321,6 +323,79 @@ const Profile = ({route, navigation}) => {
   const doLogout = () => {
     removeUser();
   };
+  const deletePost = async (id = -1, idx) => {
+    try {
+      let payload = {
+        id: id,
+      };
+      let req = await Api.feedsDelete(payload, user.access_token);
+      if (req.status == 200) {
+        let {status} = req.data;
+        if (status) {
+          hideAcs();
+          getFeeds();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const reportPost = async reason => {
+    let id = selectedFeed.id;
+    try {
+      let payload = {
+        id_feed: id,
+        id_user: user.id,
+        text: reason,
+      };
+      let req = await Api.feedsReport(payload, user.access_token);
+      if (req.status == 200) {
+        let {status} = req.data;
+        if (status) {
+          getFeeds();
+        }
+        hideAcr();
+      }
+    } catch (error) {
+      hideAcr();
+      console.error(error);
+    }
+  };
+  const hideAcs = () => {
+    acOpt.current?.hide();
+  };
+  const showAcs = item => {
+    setSelectedFeed(item);
+    acOpt.current?.show();
+  };
+  const hideAcr = () => {
+    acReport.current?.hide();
+  };
+  const showAcr = item => {
+    hideAcs();
+    acReport.current?.show();
+  };
+  const doBookmark = async (target, type) => {
+    if (user.role != 'guest') {
+      let payload = {
+        id_user: user.id,
+        id_target: target,
+        type: type,
+      };
+      try {
+        let req = await Api.likeCreate(payload, user.access_token);
+        if (req.status == 200) {
+          let {data, status, msg} = req.data;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+  useEffect(() => {
+    getFeeds();
+    getUser();
+  }, []);
   const SocialPost = () => {
     return feedsItem.loading ? (
       <View style={[theme.py100]}>
@@ -347,8 +422,6 @@ const Profile = ({route, navigation}) => {
                     {item.user.name}
                   </Text>
                   <View style={[theme.fRow, theme.faCenter]}>
-                    {/* <Image source={require('../assets/images/icons/map-pin.png')} style={[theme.h15,theme.w15,theme.me5]}/>
-                      <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{item.location}</Text> */}
                     <Image
                       source={require('../assets/images/icons/discovery.png')}
                       style={[theme.h15, theme.w15, theme.me5]}
@@ -359,46 +432,21 @@ const Profile = ({route, navigation}) => {
                   </View>
                 </View>
               </View>
-
               <TouchableOpacity
                 onPress={() => {
-                  showDelete == 'POST_' + i
-                    ? setShowDelete(-1)
-                    : setShowDelete('POST_' + i);
+                  showAcs(item);
                 }}>
                 <Icon name="ellipsis-h" size={20} color="#bbb" />
               </TouchableOpacity>
-              <View
-                style={[
-                  theme.bgwhite,
-                  theme.absolute,
-                  theme.top20,
-                  theme.right0,
-                  theme.p5,
-                  theme.br5,
-                  {display: showDelete == 'POST_' + i ? 'flex' : 'none'},
-                ]}>
-                <TouchableOpacity onPress={()=>{deletePost(item.id,i)}}>
-                  <View style={[theme.fRow, theme.faCenter]}>
-                    <Icon name="trash" size={10} color="#ff9999" />
-                    <Text
-                      style={[theme['p10-600'], {color: '#ff9999'}, theme.ms5]}>
-                      Delete
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
             </View>
-            <View style={[theme.h15]} />
-            <RenderHtml
-              contentWidth={imageWidth}
-              source={{
-                html: `<div style="color:#fff;">${item.text}</div>`,
-              }}
-              style={[theme.mt10, theme.mb10]}
-            />
-            <View style={[theme.h10]} />
-            {/* <Text style={[theme['p14-400'],theme.cwhite,theme.mb20]}>{item.text}</Text> */}
+            <View style={[theme.mt10, theme.mb10]}>
+              <RenderHtml
+                contentWidth={imageWidth}
+                source={{
+                  html: `<div style="color:#fff;">${item.text}</div>`,
+                }}
+              />
+            </View>
             {item.image_url && (
               <Image
                 style={[
@@ -412,7 +460,6 @@ const Profile = ({route, navigation}) => {
                 source={{uri: item.image_url}}
               />
             )}
-
             <View
               style={[theme.fRow, theme.faCenter, theme.fjBetween, theme.mt10]}>
               <View style={[theme.fRow, theme.faCenter]}>
@@ -453,23 +500,6 @@ const Profile = ({route, navigation}) => {
       })
     );
   };
-  const doBookmark = async (target, type) => {
-    if (user.role != 'guest') {
-      let payload = {
-        id_user: user.id,
-        id_target: target,
-        type: type,
-      };
-      try {
-        let req = await Api.likeCreate(payload, user.access_token);
-        if (req.status == 200) {
-          let {data, status, msg} = req.data;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
   const SocialSharing = () => {
     return feedsItem.loading ? (
       <View style={[theme.py100]}>
@@ -491,42 +521,22 @@ const Profile = ({route, navigation}) => {
               onPress={() => {
                 navigation.navigate('SocialSharingDetails', {id: item.id});
               }}>
-              <View style={[theme.fRow, theme.fjBetween, theme.relative,{flexWrap:'nowrap'}]}>
-                <Text style={[theme['h16-500'], {color: '#fff'},theme.wp80]}>
+              <View
+                style={[
+                  theme.fRow,
+                  theme.fjBetween,
+                  theme.relative,
+                  {flexWrap: 'nowrap'},
+                ]}>
+                <Text style={[theme['h16-500'], {color: '#fff'}, theme.wp80]}>
                   {item.title}
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    showDelete == 'SHARING_' + i
-                      ? setShowDelete(-1)
-                      : setShowDelete('SHARING_' + i);
+                    showAcs(item);
                   }}>
                   <Icon name="ellipsis-h" size={20} color="#bbb" />
                 </TouchableOpacity>
-                <View
-                  style={[
-                    theme.bgwhite,
-                    theme.absolute,
-                    theme.top20,
-                    theme.right0,
-                    theme.p5,
-                    theme.br5,
-                    {display: showDelete == 'SHARING_' + i ? 'flex' : 'none',zIndex:99},
-                  ]}>
-                  <TouchableOpacity onPress={()=>{deletePost(item.id,i)}}>
-                    <View style={[theme.fRow, theme.faCenter]}>
-                      <Icon name="trash" size={10} color="#ff9999" />
-                      <Text
-                        style={[
-                          theme['p10-600'],
-                          {color: '#ff9999'},
-                          theme.ms5,
-                        ]}>
-                        Delete
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
               </View>
               <View
                 style={[
@@ -653,10 +663,64 @@ const Profile = ({route, navigation}) => {
       })
     );
   };
-  useEffect(() => {
-    getFeeds();
-    getUser();
-  }, []);
+  const AcsOpt = () => {
+    return (
+      <ActionSheet ref={acOpt}>
+        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+          <TouchableOpacity
+            onPress={() => {
+              showAcr();
+            }}>
+            <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+              <Icon name="warning" size={11} color="#ff9999" />
+              <Text style={[theme['p14-600'], {color: '#ff9999'}, theme.ms5]}>
+                Report
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {selectedFeed.user.id == user.id ? (
+            <TouchableOpacity
+              onPress={() => {
+                deletePost(selectedFeed.id);
+              }}>
+              <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+                <Icon name="trash" size={14} color="#ff9999" />
+                <Text style={[theme['p14-600'], {color: '#ff9999'}, theme.ms5]}>
+                  Delete
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      </ActionSheet>
+    );
+  };
+  const AcsReport = () => {
+    return (
+      <ActionSheet ref={acReport}>
+        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+          <Text style={[theme.tCenter, {color: '#fff'}, theme['p16-600']]}>
+            Report Reason
+          </Text>
+          {reportReason.map((reason, idx) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  reportPost(reason);
+                }}
+                key={idx}>
+                <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+                  <Text style={[theme['p14-400'], {color: '#fff'}, theme.ms5]}>
+                    {reason}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ActionSheet>
+    );
+  };
 
   return (
     <>
@@ -670,6 +734,8 @@ const Profile = ({route, navigation}) => {
             : theme.pt60,
         ]}>
         <ScrollView style={[]}>
+          <AcsOpt />
+          <AcsReport />
           <View style={[theme.px20, theme.pt10, theme.mb100]}>
             <View style={[theme.fRow]}>
               <Image
@@ -868,7 +934,7 @@ const Profile = ({route, navigation}) => {
                 </TouchableOpacity>
               </View>
             </View>
-            {active == 'Post' ? <SocialPost /> : <SocialSharing />}
+            {active == 'POST' ? <SocialPost /> : <SocialSharing />}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -916,7 +982,9 @@ const Profile = ({route, navigation}) => {
               theme.px20,
               theme.br10,
             ]}>
-            <ScrollView style={[theme.h300]} showsVerticalScrollIndicator={false}>
+            <ScrollView
+              style={[theme.h300]}
+              showsVerticalScrollIndicator={false}>
               {comments.loading ? (
                 <View style={[theme.py100]}>
                   <ActivityIndicator size="large" color="#F8C303" />

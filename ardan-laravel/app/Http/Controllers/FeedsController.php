@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Feeds;
+use App\Models\Report;
 use App\Models\Comments;
 use App\Models\Likes;
 
@@ -27,7 +28,7 @@ class FeedsController extends Controller
     $id_user = ($request->id_user) ? $request->id_user : null;
     $type = ($request->type) ? $request->type : null;
     $status = ($request->status) ? $request->status : null;
-    $listData = Feeds::select('feeds.*')->orderBy($sortBy, $sortDir)->with('user');
+    $listData = Feeds::select('feeds.*')->orderBy($sortBy, $sortDir)->with('user','reports');
     if ($perPage != '~') {
         $listData->skip($offset)->take($perPage);
     }
@@ -228,6 +229,38 @@ class FeedsController extends Controller
       $res = array(
               'status' => false,
               'msg' => 'No data selected'
+            );
+    }
+    return response()->json($res, 200);
+  }
+  public function report(Request $request) {
+    $dataCreate = $request->all();
+    DB::beginTransaction();
+    $validate = Report::validate($dataCreate);
+    if ($validate['status']) {
+      try {
+        $dc = Report::create($dataCreate);
+        $dg = Report::find($dc->id);
+        $res = array(
+                'status' => true,
+                'data' => $dg,
+                'msg' => 'Data successfully created'
+              );
+        DB::commit();
+      } catch (Exception $e) {
+        DB::rollback();
+        $res = array(
+                'status' => false,
+                'data' => $dataCreate,
+                'msg' => 'Failed to create data'
+              );
+      }
+    } else {
+      $res = array(
+              'status' => false,
+              'data' => $dataCreate,
+              'msg' => 'Validation failed',
+              'errors' => $validate['error']
             );
     }
     return response()->json($res, 200);

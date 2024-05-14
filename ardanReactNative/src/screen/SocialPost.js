@@ -21,8 +21,10 @@ import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
+import ActionSheet from 'react-native-actions-sheet';
 const SocialPost = ({navigation}) => {
-  const {width} = useWindowDimensions();
+  const acOpt = useRef(null);
+  const acReport = useRef(null);
   const imageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -47,6 +49,25 @@ const SocialPost = ({navigation}) => {
     data: [],
     loading: false,
   });
+  const [selectedFeed, setSelectedFeed] = useState({
+    user: {
+      id: null
+    }
+  })
+  const reportReason = [
+    'Tidak menyukai ini',
+    'Postingan ini spam',
+    'Konten pornografi',
+    'Ujaran kebencian',
+    'Miss informasi',
+    'Perundungan dan kekerasan',
+    'Scam dan Fraud',
+    'Organisasi berbahaya',
+    'Jual beli barang ilegal',
+    'Membunuh dan melukai diri sendiri',
+    'Obat obatan terlarang',
+    'Lainnya'
+  ]
   const getBannerAds = async () => {
     setBannerAdsItem({
       data: [],
@@ -100,7 +121,11 @@ const SocialPost = ({navigation}) => {
           if (data.length > 0) {
             setPage(page);
           }
-          theData = [...theData, ...data];
+          if(page == 1){
+            theData = data;
+          } else {
+            theData = [...theData, ...data];
+          }
         }
       }
       setFeedsItem({
@@ -277,17 +302,69 @@ const SocialPost = ({navigation}) => {
       id: id,
     });
   };
+  const deletePost = async (id = -1, idx) => {
+    try {
+      let payload = {
+        id: id,
+      };
+      let req = await Api.feedsDelete(payload,user.access_token);
+      if (req.status == 200) {
+        let {status} = req.data;
+        if (status) {
+          hideAcs()
+          getFeeds();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const reportPost = async (reason) => {
+    let id = selectedFeed.id
+    try {
+      let payload = {
+        id_feed: id,
+        id_user: user.id,
+        text: reason
+      };
+      let req = await Api.feedsReport(payload,user.access_token);
+      if (req.status == 200) {
+        let {status} = req.data;
+        if (status) {
+          getFeeds();
+        }
+        hideAcr()
+      }
+    } catch (error) {
+      hideAcr()
+      console.error(error);
+    }
+  };
+  const hideAcs = () => {
+    acOpt.current?.hide();
+  };
+  const showAcs = (item) => {
+    setSelectedFeed(item)
+    acOpt.current?.show();
+  };
+  const hideAcr = () => {
+    acReport.current?.hide();
+  };
+  const showAcr = (item) => {
+    hideAcs()
+    acReport.current?.show();
+  };
   useEffect(() => {
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {
         getFeeds();
-        getBannerAds()
+        getBannerAds();
       }
     });
     return () => (mounted = false);
   }, []);
-  const SlideBanner = (theAds) => {
+  const SlideBanner = theAds => {
     if (theAds.loading) {
       return (
         <View style={[theme.py50]}>
@@ -329,11 +406,59 @@ const SocialPost = ({navigation}) => {
       );
     }
   };
+  const AcsOpt = () => {
+    return (
+      <ActionSheet ref={acOpt}>
+        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+          <TouchableOpacity onPress={()=>{showAcr()}}>
+            <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+              <Icon name="warning" size={11} color="#ff9999" />
+              <Text style={[theme['p14-600'], {color: '#ff9999'}, theme.ms5]}>
+                Report
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {selectedFeed.user.id == user.id ? (
+            <TouchableOpacity onPress={()=>{deletePost(selectedFeed.id)}}>
+              <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+                <Icon name="trash" size={14} color="#ff9999" />
+                <Text style={[theme['p14-600'], {color: '#ff9999'}, theme.ms5]}>
+                  Delete
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      </ActionSheet>
+    );
+  };
+  const AcsReport = () => {
+    return (
+      <ActionSheet ref={acReport}>
+        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+          <Text style={[theme.tCenter,{color:'#fff'},theme['p16-600']]}>Report Reason</Text>
+          {reportReason.map((reason, idx)=> {
+            return (
+              <TouchableOpacity onPress={() => {reportPost(reason)}} key={idx}>
+                <View style={[theme.fRow, theme.faCenter, theme.py10]}>
+                  <Text style={[theme['p14-400'], {color: '#fff'}, theme.ms5]}>
+                    {reason}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )
+          })}
+        </View>
+      </ActionSheet>
+    );
+  };
   return (
     <>
       <KeyboardAvoidingView
         style={[theme.bgblack, {flexGrow: 1, zIndex: 2}, theme.relative]}>
         {SlideBanner(bannerAdsItem)}
+        <AcsOpt/>
+        <AcsReport/>
         <ScrollView
           style={[theme.px20]}
           onScroll={handleScroll}
@@ -384,8 +509,6 @@ const SocialPost = ({navigation}) => {
                           </Text>
                         </TouchableOpacity>
                         <View style={[theme.fRow, theme.faCenter]}>
-                          {/* <Image source={require('../assets/images/icons/map-pin.png')} style={[theme.h15,theme.w15,theme.me5]}/>
-                        <Text style={[theme['p12-400'],{color:'grey'},theme.me10]}>{item.location}</Text> */}
                           <Image
                             source={require('../assets/images/icons/discovery.png')}
                             style={[theme.h15, theme.w15, theme.me5]}
@@ -396,42 +519,12 @@ const SocialPost = ({navigation}) => {
                         </View>
                       </View>
                     </View>
-                    {item.id_user == user.id && (
-                      <>
-                        <TouchableOpacity
-                          onPress={() => {
-                            showDelete == i
-                              ? setShowDelete('x')
-                              : setShowDelete(i);
-                          }}>
-                          <Icon name="ellipsis-h" size={20} color="#bbb" />
-                        </TouchableOpacity>
-                        <View
-                          style={[
-                            theme.bgwhite,
-                            theme.absolute,
-                            theme.top20,
-                            theme.right0,
-                            theme.p5,
-                            theme.br5,
-                            {display: showDelete == i ? 'flex' : 'none'},
-                          ]}>
-                          <TouchableOpacity>
-                            <View style={[theme.fRow, theme.faCenter]}>
-                              <Icon name="trash" size={10} color="#ff9999" />
-                              <Text
-                                style={[
-                                  theme['p10-600'],
-                                  {color: '#ff9999'},
-                                  theme.ms5,
-                                ]}>
-                                Delete
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                      </>
-                    )}
+                    <TouchableOpacity
+                      onPress={() => {
+                        showAcs(item);
+                      }}>
+                      <Icon name="ellipsis-h" size={20} color="#bbb" />
+                    </TouchableOpacity>
                   </View>
                   <RenderHtml
                     contentWidth={imageWidth}

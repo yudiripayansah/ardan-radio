@@ -6,19 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Validator;
 
-class Feeds extends Model
+class Report extends Model
 {
     use SoftDeletes;
-    protected $table = 'feeds';
+    protected $table = 'report';
     protected $fillable = [
-      'id_user','image','title','text','category','type','status',
+      'id_user','id_feed','text'
     ];
     public static function validate($validate)
     {
         $rule = [
           'id_user' => 'required',
-          'title' => 'required',
-          'text' => 'required',
+          'id_feed' => 'required'
         ];
         $validator = Validator::make($validate, $rule);
         if ($validator->fails()) {
@@ -39,9 +38,5 @@ class Feeds extends Model
     public function user()
     {
       return $this->belongsTo(User::class, 'id_user', 'id');
-    }
-    public function reports()
-    {
-      return $this->hasMany(Report::class, 'id_feed', 'id');
     }
 }

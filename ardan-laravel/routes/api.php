@@ -138,6 +138,7 @@ Route::group([
     Route::post('/create', [FeedsController::class, 'create']); 
     Route::post('/update', [FeedsController::class, 'update']); 
     Route::post('/delete', [FeedsController::class, 'delete']); 
+    Route::post('/report', [FeedsController::class, 'report']); 
 });
 Route::group([
     'middleware' => 'api',

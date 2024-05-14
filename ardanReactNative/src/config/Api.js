@@ -366,6 +366,15 @@ const Api = {
     };
     return defAxios.post(url, payload, config);
   },
+  feedsReport(payload, token) {
+    let url = '/feeds/report';
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
   // livestreamings
   livestreamingsRead(payload) {
     let url = '/livestreamings/read';
