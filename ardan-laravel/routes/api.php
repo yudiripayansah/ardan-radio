@@ -18,6 +18,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PublicChatControllers;
 use App\Http\Controllers\PrivateChatController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,16 @@ Route::group([
     Route::post('/create', [NewsController::class, 'create']); 
     Route::post('/update', [NewsController::class, 'update']); 
     Route::post('/delete', [NewsController::class, 'delete']); 
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'report'
+], function ($router) {
+    Route::post('/read', [ReportController::class, 'read']); 
+    Route::post('/get', [ReportController::class, 'get']); 
+    Route::post('/create', [ReportController::class, 'create']); 
+    Route::post('/update', [ReportController::class, 'update']); 
+    Route::post('/delete', [ReportController::class, 'delete']); 
 });
 Route::group([
     'middleware' => 'api',

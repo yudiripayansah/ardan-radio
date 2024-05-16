@@ -54,6 +54,7 @@
                       <th scope="col" width="20%">Title</th>
                       <th scope="col" width="20%">Category</th>
                       <th scope="col" width="20%">Type</th>
+                      <th scope="col" width="20%">Reports</th>
                       <th scope="col" width="20%">Status</th>
                       <th class="text-center" scope="col" width="20%"></th>
                     </tr>
@@ -78,6 +79,10 @@
                       </td>
                       <td>
                         <span v-text="(item.type) ? item.type : '-'"></span>
+                      </td>
+                      <td>
+                        <span class="badge badge-danger" v-text="(item.reports) ? item.reports.length : '-'" v-if="item.reports.length > 0" @click="modal.report.show();pagingReport.id_feed = item.id"></span>
+                        <span v-text="(item.reports) ? item.reports.length : '-'" v-else></span>
                       </td>
                       <td>
                         <span v-text="(item.status) ? item.status : '-'"></span>
@@ -235,6 +240,94 @@
       </div>
     </div>
   </div>
+  <!-- Modal report -->
+  <div class="modal fade" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="modalreportLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalreportLabel">Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+              <path
+                d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z">
+              </path>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped table-bordered table-no-space">
+              <thead>
+                <tr>
+                  <th scope="col" width="5%">Report By</th>
+                  <th scope="col" width="20%">Reason</th>
+                  <th scope="col" width="20%">Date</th>
+                </tr>
+                <tr aria-hidden="true" class="mt-3 d-block table-row-hidden"></tr>
+              </thead>
+              <tbody v-if="tableReport.items.length > 0">
+                <tr v-for="(item,index) in tableReport.items" :key="index">
+                  <td>
+                    <span v-text="(item.user) ? item.user.name : '-'"></span>
+                  </td>
+                  <td>
+                    <span v-text="(item.text) ? item.text : '-'"></span>
+                  </td>
+                  <td>
+                    <span v-text="(item.created_on) ? item.created_on : '-'"></span>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody v-else>
+                <tr>
+                  <td colspan="8" class="text-center" v-text="(tableReport.loading) ? 'Loading...' : 'No data to show'">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dt--bottom-section d-sm-flex justify-content-sm-end text-center">
+            <div class="dt--pagination">
+              <div class="dataTables_paginate paging_simple_numbers" id="show-hide-col_paginate">
+                <ul class="pagination" v-if="tableReport.totalPage > 0">
+                  <li class="paginate_button page-item previous" id="show-hide-col_previous">
+                    <a href="#" aria-controls="show-hide-col" data-dt-idx="0" tabindex="0" class="page-link"
+                      @click="pagingReport.page = pagingReport.page-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-arrow-left">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                      </svg>
+                    </a>
+                  </li>
+                  <li class="paginate_button page-item active" v-for="page in tableReport.totalPage">
+                    <a href="#" aria-controls="show-hide-col" class="page-link btn" v-text="page"
+                      @click="pagingReport.page = page"></a>
+                  </li>
+                  <li class="paginate_button page-item next" id="show-hide-col_next">
+                    <a href="#" aria-controls="show-hide-col" data-dt-idx="8" tabindex="0" class="page-link"
+                      @click="pagingReport.page = pagingReport.page + 1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-arrow-right">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Modal Delete -->
   <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel"
     aria-hidden="true">
@@ -324,6 +417,20 @@
             sortBy : 'id',
             search : null
         },
+        tableReport: {
+            items: [],
+            total: 0,
+            totalPage: 0,
+            loading: false
+        },
+        pagingReport: {
+            page : 1,
+            perPage : 10,
+            sortDir : 'DESC',
+            sortBy : 'id',
+            search : null,
+            id_feed: null
+        },
         alert: {
             show: 'hide',
             bg: 'bg-primary',
@@ -336,7 +443,8 @@
         },
           modal: {
             form: null,
-            delete: null
+            delete: null,
+            report: null
           }
     },
     computed: {
@@ -348,6 +456,12 @@
       paging: {
         handler(val) {
           this.doGet();
+        },
+        deep: true,
+      },
+      pagingReport: {
+        handler(val) {
+          this.doGetReport();
         },
         deep: true,
       },
@@ -382,6 +496,29 @@
           } catch (error) {
             this.notify('error','Error',error.message)
             this.form.loading = false
+          }
+        },
+        async doGetReport() {
+          this.tableReport.loading = true
+          let payload = {...this.pagingReport}
+          try {
+            let req = await Api.reportRead(payload)
+            if(req.status == 200) {
+              let {data,status,msg,total,totalPage,paging} = req.data
+              if(status){
+                this.tableReport.items = data
+                this.tableReport.total = total
+                this.tableReport.totalPage = totalPage
+              } else {
+                this.notify('error','Error',msg)
+              }
+            } else {
+              this.notify('error','Error',req.message)
+            }
+            this.tableReport.loading = false
+          } catch (error) {
+            this.notify('error','Error',error.message)
+            this.tableReport.loading = false
           }
         },
         async doGet() {
@@ -505,7 +642,8 @@
           initModal() {
             this.modal = {
               form: new bootstrap.Modal(document.getElementById('modalForm')),
-              delete: new bootstrap.Modal(document.getElementById('modalDelete'))
+              delete: new bootstrap.Modal(document.getElementById('modalDelete')),
+              report: new bootstrap.Modal(document.getElementById('modalReport')),
             }
           },
         previewImage(e) {
