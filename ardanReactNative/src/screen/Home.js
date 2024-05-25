@@ -97,6 +97,10 @@ const Home = ({navigation}) => {
     data: [],
     loading: false,
   });
+  const [ig, setIg] = useState({
+    data: [],
+    loading: false,
+  });
   const getBanner = async () => {
     setBannerItem({
       data: [],
@@ -448,6 +452,39 @@ const Home = ({navigation}) => {
       console.error('get youtube',error);
     }
   };
+  const getIg = async () => {
+    setIg({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 10,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        type: 'Instagram',
+      };
+      let req = await Api.contentRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setIg({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setIg({
+        data: [],
+        loading: false,
+      });
+    }
+  };
   const doLogout = () => {
     removeUser();
   };
@@ -489,7 +526,8 @@ const Home = ({navigation}) => {
     getEvents();
     getPrograms();
     getBannerAds();
-    getYoutube();
+    // getYoutube();
+    getIg()
     getHotSharing();
   }, []);
   const SlideBanner = (theAds) => {
@@ -694,7 +732,7 @@ const Home = ({navigation}) => {
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
-          {youtube.map((item, i) => {
+          {ig.data.map((item, i) => {
             return (
               <TouchableOpacity
                 style={[
@@ -705,10 +743,10 @@ const Home = ({navigation}) => {
                 ]}
                 key={i}
                 onPress={() => {
-                  goToUrl(`https://www.youtube.com/watch?v=${item.id.videoId}`);
+                  goToUrl(`${item.url}`);
                 }}>
                 <Image
-                  source={{uri: item.snippet.thumbnails.medium.url}}
+                  source={{uri: item.image_url}}
                   style={[
                     theme.wp100,
                     theme.h170,
@@ -719,10 +757,10 @@ const Home = ({navigation}) => {
                 />
                 <View style={[theme.p10]}>
                   <Text style={[theme['h10-400'], {color: '#fff'}]}>
-                    {Helper.dateIndo(item.snippet.publishedAt)}
+                    {Helper.dateIndo(item.created_at)}
                   </Text>
                   <Text style={[theme['h16-500'], {color: '#fff'}, theme.h45]}>
-                    {item.snippet.title}
+                    {item.title}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -1032,7 +1070,7 @@ const Home = ({navigation}) => {
         {SlideBanner(bannerAdsItem)}
         <Content />
         <Event />
-        <View style={[theme.h180]}></View>
+        <View style={[theme.h110]}></View>
       </ScrollView>
     </SafeAreaView>
   );

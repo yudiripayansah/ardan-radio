@@ -286,7 +286,7 @@
             msg: null
         },
         opt: {
-          type: ['Instagram','Tiktok']
+          type: ['Instagram','Tiktok','Youtube']
         },
         modal: {
           form: null,

@@ -98,7 +98,7 @@ const Program = ({navigation}) => {
         </View>
       </View>
       <ScrollView style={[theme.px20]} showsVerticalScrollIndicator={false}>
-        <View style={[theme.fRow, theme.fjBetween, theme.wp100]}>
+        <View style={[theme.fRow, theme.fjBetween, theme.wp100,{flexWrap:'wrap'}]}>
           {programsItem.loading ? (
             <View style={[theme.py50, theme.wp100, theme.faCenter]}>
               <ActivityIndicator size="large" color="#F8C303" />
@@ -153,7 +153,7 @@ const Program = ({navigation}) => {
             })
           )}
         </View>
-        <View style={[theme.mb150]} />
+        <View style={[theme.mb200]} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

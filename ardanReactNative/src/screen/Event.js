@@ -272,7 +272,7 @@ const News = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <ScrollView style={[theme.mb150, theme.mt20]} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[theme.mt20,theme.mb200]} showsVerticalScrollIndicator={false}>
         {SlideBanner(bannerAdsItem)}
         <View style={[theme.fRow, theme.px20, theme.fjBetween, theme.mb25, {flexWrap: 'wrap'}]}>
           {eventsItem.data.map((item, i) => {
@@ -312,7 +312,6 @@ const News = ({navigation}) => {
             );
           })}
         </View>
-        <View style={[theme.mb150]} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

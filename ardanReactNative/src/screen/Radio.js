@@ -281,9 +281,54 @@ const Radio = ({navigation}) => {
           theme.relative,
           {zIndex: 2},
         ]}>
+        <View
+          style={[
+            {
+              backgroundColor: 'rgba(45, 171, 210, 0.12)',
+              flexWrap: 'nowrap',
+              zIndex: 99999
+            },
+            theme.br30,
+            theme.ps15,
+            theme.fRow,
+            theme.faCenter,
+            theme.fjBetween,
+            theme.absolute,
+            theme.left0,
+            theme.right0,
+            theme.bottom115
+          ]}>
+          <TextInput
+            style={[theme.wp75, theme.cwhite, theme['h12-400']]}
+            placeholderTextColor={'#fff'}
+            onFocus={() =>
+              mainScrollViewRef.current.scrollToEnd({animated: true})
+            }
+            onChangeText={setMsg}
+            value={msg}
+            onSubmitEditing={() => {
+              sendChat();
+            }}
+            clearButtonMode="while-editing"
+          />
+          <TouchableOpacity
+            style={[
+              theme.br30,
+              theme.w50,
+              theme.h50,
+              theme.bgyellow,
+              theme.fjCenter,
+              theme.faCenter,
+            ]}
+            onPress={() => {
+              sendChat();
+            }}>
+            <Image source={require('../assets/images/icons/send.png')} />
+          </TouchableOpacity>
+        </View>
         <ScrollView
           nestedScrollEnabled={true}
-          style={[theme.mb110]}
+          style={[theme.mb170]}
           ref={mainScrollViewRef}
           showsVerticalScrollIndicator={false}>
           <View
@@ -392,7 +437,7 @@ const Radio = ({navigation}) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={[theme.px20, theme.mt20, theme.mb50]}>
+          <View style={[theme.px20, theme.mt20,]}>
             <View style={[theme.fRow, theme.faCenter]}>
               <Text style={[theme.cwhite, theme['h18-700'], theme.me5]}>
                 Live Chat
@@ -410,46 +455,6 @@ const Radio = ({navigation}) => {
               {chatList(radiochatold)}
               {chatList(radiochat)}
             </ScrollView>
-            <View
-              style={[
-                {
-                  backgroundColor: 'rgba(45, 171, 210, 0.12)',
-                  flexWrap: 'nowrap',
-                },
-                theme.br30,
-                theme.ps15,
-                theme.fRow,
-                theme.faCenter,
-                theme.fjBetween,
-              ]}>
-              <TextInput
-                style={[theme.wp75, theme.cwhite, theme['h12-400']]}
-                placeholderTextColor={'#fff'}
-                onFocus={() =>
-                  mainScrollViewRef.current.scrollToEnd({animated: true})
-                }
-                onChangeText={setMsg}
-                value={msg}
-                onSubmitEditing={() => {
-                  sendChat();
-                }}
-                clearButtonMode="while-editing"
-              />
-              <TouchableOpacity
-                style={[
-                  theme.br30,
-                  theme.w50,
-                  theme.h50,
-                  theme.bgyellow,
-                  theme.fjCenter,
-                  theme.faCenter,
-                ]}
-                onPress={() => {
-                  sendChat();
-                }}>
-                <Image source={require('../assets/images/icons/send.png')} />
-              </TouchableOpacity>
-            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

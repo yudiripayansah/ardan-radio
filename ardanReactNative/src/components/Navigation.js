@@ -131,6 +131,27 @@ const Nav = ({navigation, ...props}) => {
       }
     }
   };
+  const checkRadioState = async () => {
+      try {
+        const playerState = await TrackPlayer.getState();
+        console.log('playerState', playerState);
+        if (
+          playerState === 'paused' ||
+          playerState === 'ready' ||
+          playerState === 'idle' ||
+          playerState === 'connecting' ||
+          playerState === 'stopped' ||
+          playerState === 'idle'
+        ) {
+          radioAct.setRadio('paused')
+        } else {
+          radioAct.setRadio('playing')
+        }
+      } catch (error) {
+        console.log('error toggled', error);
+        radioAct.setRadio('paused')
+      }
+  };
   const DefaultButton = () => {
     return (
       <TouchableWithoutFeedback
@@ -157,7 +178,7 @@ const Nav = ({navigation, ...props}) => {
               theme.mb13,
               theme.relative,
             ]}>
-            <Image source={image.radio} />
+            <Image source={image.radio} style={[{width:49,height:49,objectFit:'contain'}]}/>
             {currentScreen == 'Ardan Radio' ? (
               <View
                 style={[
@@ -402,6 +423,7 @@ const Nav = ({navigation, ...props}) => {
     setupTrackPlayer();
     getCurrentProgram();
     getLiveStream()
+    checkRadioState()
   }, []);
   return (
     <>

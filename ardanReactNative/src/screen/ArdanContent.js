@@ -30,6 +30,10 @@ const ArdanContent = ({navigation}) => {
     data: [],
     loading: false,
   });
+  const [yt, setYt] = useState({
+    data: [],
+    loading: false,
+  });
   const [bannerAdsItem, setBannerAdsItem] = useState({
     data: [],
     loading: false,
@@ -117,6 +121,42 @@ const ArdanContent = ({navigation}) => {
       });
     }
   };
+  const getYt = async () => {
+    setYt({
+      data: [],
+      loading: true,
+    });
+    try {
+      let theData = [];
+      let payload = {
+        page: 1,
+        perPage: 10,
+        sortDir: 'DESC',
+        sortBy: 'id',
+        type: 'Youtube',
+      };
+      if (search) {
+        payload.search = search;
+      }
+      let req = await Api.contentRead(payload);
+      if (req.status == 200) {
+        let {data, status, msg} = req.data;
+        if (status) {
+          theData = [...data];
+        }
+      }
+      setYt({
+        data: theData,
+        loading: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setYt({
+        data: [],
+        loading: false,
+      });
+    }
+  };
   const getTiktok = async () => {
     setTiktok({
       data: [],
@@ -168,6 +208,7 @@ const ArdanContent = ({navigation}) => {
         getYoutube();
         getIg()
         getTiktok()
+        getYt()
         getBannerAds()
       }
     });
@@ -219,7 +260,7 @@ const ArdanContent = ({navigation}) => {
     return (
       <View style={[theme.mt35]}>
         <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
-          <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Content</Text>
+          <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Youtube</Text>
           <TouchableOpacity
             onPress={() => {
               goToUrl(`https://www.youtube.com/${channelName}`);
@@ -244,30 +285,31 @@ const ArdanContent = ({navigation}) => {
             theme.mt10,
           ]}
           showsHorizontalScrollIndicator={false}>
-          {youtube.map((item, i) => {
+          {yt.data.map((item, i) => {
             return (
               <TouchableOpacity
-                style={[theme.me15, theme.w230]}
+                style={[theme.me15, theme.w230,theme.bgyellow,
+                  theme.brtl10,
+                  theme.brtr10,
+                  theme.brbl10,
+                  theme.brbr10]}
                 key={i}
                 onPress={() => {
-                  goToUrl(`https://www.youtube.com/watch?v=${item.id.videoId}`);
+                  goToUrl(`${item.url}`);
                 }}>
                 <Image
-                  source={{uri: item.snippet.thumbnails.medium.url}}
+                  source={{uri: item.image_url}}
                   style={[
                     theme.wp100,
                     theme.h130,
-                    theme.brtl24,
-                    theme.brtr24,
+                    theme.brtl10,
+                    theme.brtr10,
                     {objectFit: 'cover'},
                   ]}
                 />
-                <View style={[theme.py10]}>
-                  <Text style={[theme['h12-500'], theme.cwhite]}>
-                    {item.snippet.title}
-                  </Text>
-                  <Text style={[theme['h10-400'], theme.cblue_grey]}>
-                    {item.snippet.description}
+                <View style={[theme.py10,theme.px15]}>
+                  <Text style={[theme['h12-500'], theme.cblack]}>
+                    {item.title}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -332,7 +374,7 @@ const ArdanContent = ({navigation}) => {
   };
   const Tiktok = () => {
     return (
-      <View style={[theme.mt35]}>
+      <View style={[theme.mt35,theme.mb110]}>
         <View style={[theme.fRow, theme.fjBetween, theme.px20, theme.faCenter]}>
           <Text style={[theme['h14-600'], theme.cwhite]}>Ardan Tiktok</Text>
           <TouchableOpacity
@@ -398,7 +440,6 @@ const ArdanContent = ({navigation}) => {
         <Content />
         <Instagram />
         <Tiktok />
-        <View style={[theme.mb180]} />
       </ScrollView>
     </SafeAreaView>
   );
