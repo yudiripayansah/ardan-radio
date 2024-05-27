@@ -99,7 +99,7 @@ const NewsDetails = ({route, navigation}) => {
             <TouchableOpacity
               style={[theme.fRow, theme.faCenter, theme.mt10]}
               onPress={() => {
-                doShare(newsItem.id);
+                doShare(newsItem.data.id);
               }}>
               <Image source={Icons.share} style={[{height:16,width:16,objectFit:'contain'}]} />
             </TouchableOpacity>

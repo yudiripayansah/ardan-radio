@@ -1,6 +1,7 @@
 import React from 'react';
 import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid, Platform} from 'react-native';
+import PushNotification from 'react-native-push-notification';
 
 const usePushNotification = () => {
   const requestUserPermission = async () => {
@@ -35,6 +36,7 @@ const usePushNotification = () => {
 
   const listenToForegroundNotifications = async () => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      showNotification(remoteMessage.notification.title, remoteMessage.notification.body);
       console.log(
         'A new message arrived! (FOREGROUND)',
         JSON.stringify(remoteMessage),
@@ -46,6 +48,7 @@ const usePushNotification = () => {
   const listenToBackgroundNotifications = async () => {
     const unsubscribe = messaging().setBackgroundMessageHandler(
       async remoteMessage => {
+        showNotification(remoteMessage.notification.title, remoteMessage.notification.body);
         console.log(
           'A new message arrived! (BACKGROUND)',
           JSON.stringify(remoteMessage),
@@ -73,6 +76,13 @@ const usePushNotification = () => {
     if(message) {
       console.log('App opened from QUIT by tapping notification:', JSON.stringify(message));
     }
+  };
+
+  const showNotification = (title, message) => {
+    PushNotification.localNotification({
+      title: title,
+      message: message,
+    });
   };
 
   return {

@@ -91,6 +91,7 @@ const MessageDetail = ({route, navigation}) => {
       echo
         .channel('laravel_database_privateChat-' + data.chatRoom.id)
         .listen('PrivateMessageEvent', event => {
+          console.log('test:',event.message)
           theChat.push(event.message);
           setPrivatechat(theChat);
         });

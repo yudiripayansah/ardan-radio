@@ -110,7 +110,7 @@ const EventsDetails = ({route, navigation}) => {
             <TouchableOpacity
               style={[theme.fRow, theme.faCenter, theme.mt10]}
               onPress={() => {
-                doShare(eventsItem.id);
+                doShare(eventsItem.data.id);
               }}>
               <Image
                 source={Icons.share}

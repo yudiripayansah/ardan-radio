@@ -581,7 +581,7 @@ const SocialPost = ({navigation}) => {
                     <TouchableOpacity
                       style={[theme.fRow, theme.faCenter]}
                       onPress={() => {
-                        doShare(feedsItem.data.id);
+                        doShare(item.id);
                       }}>
                       <Image
                         source={Icons.share}

@@ -104,8 +104,9 @@ export const RouteMain = ({navigation}) => {
             }
             setActiveHeader(routeName);
           },
-        })}>
-        <MainStack.Screen name={'Home'} component={Home} options={options} />
+        })}
+        initialRouteName='Home'>
+        <MainStack.Screen name='Home' component={Home} options={options} />
         <MainStack.Screen
           name={'ArdanContent'}
           component={ArdanContent}
@@ -123,7 +124,7 @@ export const RouteMain = ({navigation}) => {
         />
         <MainStack.Screen name={'Event'} component={Event} options={options} />
         <MainStack.Screen
-          name={'EventsDetails'}
+          name='EventsDetails'
           component={EventsDetails}
           options={options}
         />

@@ -46,7 +46,7 @@ const App = ({}) => {
     ],
     config: {
       screens: {
-        Home: 'home',
+        Home: '',
         SocialSharingDetails: 'sharing/:id',
         SocialPostDetails: 'post/:id',
         EventsDetails: 'events/:id',
@@ -56,7 +56,9 @@ const App = ({}) => {
       },
     },
   };
-  const handleDeepLink = ({url}) => {};
+  const handleDeepLink = ({url}) => {
+    console.log(url);
+  };
   const handleAppStateChange = nextAppState => {
     if (appState.match(/inactive|background/) && nextAppState === 'active') {
       console.log('App has come to the foreground!');
