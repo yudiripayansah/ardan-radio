@@ -42,6 +42,35 @@
                       </label>
                     </div>
                   </div>
+                  <div class="col-6 mt-3">
+                    <div class="row">
+                      <div class="col-12 control-label">Sort By</div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortBy" id="pagingSortBy">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortBy" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortDir" id="pagingSortDir">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortDir" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 mt-3">
+                    <div class="row">
+                      <div class="col-12 control-label">Type</div>
+                      <div class="col-12">
+                        <select class="form-control" v-model="paging.type" id="pagingType">
+                          <option value="all">All</option>
+                          <option :value="opt" v-text="opt" v-for="(opt,index) in opt.type" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="table-responsive">
@@ -280,7 +309,8 @@
           perPage : 10,
           sortDir : 'DESC',
           sortBy : 'id',
-          search : null
+          search : null,
+          type: 'all'
       },
       alert: {
           show: 'hide',
@@ -289,7 +319,16 @@
           msg: null
       },
       opt: {
-        type: ['News','Events','Feeds']
+        type: ['News','Events','Feeds'],
+          sortBy: [
+            {label: "Title",value: "title"},
+            {label: "Category",value: "category"},
+            {label: "Creation",value: "id"},
+          ],
+          sortDir: [
+            {label: "A-Z", value:"ASC"},
+            {label: "Z-A", value:"DESC"},
+          ]
       },
       modal: {
         form: null,
@@ -313,6 +352,9 @@
       async doGet() {
         this.form.loading = true
         let payload = {...this.paging}
+            if(payload.type == 'all'){
+              payload.type = null
+            }
         try {
           let req = await Api.categoryRead(payload)
           if(req.status == 200) {

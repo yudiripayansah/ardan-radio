@@ -43,6 +43,35 @@
                       </label>
                     </div>
                   </div>
+                  <div class="col-6 mt-3">
+                    <div class="row">
+                      <div class="col-12 control-label">Sort By</div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortBy" id="pagingSortBy">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortBy" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortDir" id="pagingSortDir">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortDir" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 mt-3">
+                    <div class="row">
+                      <div class="col-12 control-label">Social Type</div>
+                      <div class="col-12">
+                        <select class="form-control" v-model="paging.type" id="pagingType">
+                          <option value="all">All</option>
+                          <option :value="opt" v-text="opt" v-for="(opt,index) in opt.type" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="table-responsive">
@@ -415,7 +444,8 @@
             perPage : 10,
             sortDir : 'DESC',
             sortBy : 'id',
-            search : null
+            search : null,
+            type: 'all'
         },
         tableReport: {
             items: [],
@@ -439,7 +469,16 @@
         },
         opt: {
           category: [],
-          type: ["POST","SHARING"]
+          type: ["POST","SHARING"],
+          sortBy: [
+            {label: "Title",value: "title"},
+            {label: "Category",value: "category"},
+            {label: "Creation",value: "id"},
+          ],
+          sortDir: [
+            {label: "A-Z", value:"ASC"},
+            {label: "Z-A", value:"DESC"},
+          ]
         },
           modal: {
             form: null,
@@ -525,6 +564,9 @@
           this.form.loading = true
           let payload = {...this.paging}
           try {
+            if(payload.type == 'all'){
+              payload.type = null
+            }
             let req = await Api.feedsRead(payload)
             if(req.status == 200) {
               let {data,status,msg,total,totalPage,paging} = req.data

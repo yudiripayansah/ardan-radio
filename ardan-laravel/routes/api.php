@@ -173,6 +173,8 @@ Route::group([
     Route::post('/registerToken', [UserController::class, 'createToken']);
     Route::post('/readToken', [UserController::class, 'readToken']);
     Route::post('/userFollow', [UserController::class, 'userFollow']);
+    Route::post('/dashboard', [UserController::class, 'dashboard']);
+    Route::post('/saveStats', [UserController::class, 'saveStats']);
 });
 Route::group([
     'middleware' => 'api',

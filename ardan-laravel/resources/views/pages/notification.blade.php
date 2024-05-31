@@ -21,10 +21,9 @@
               <div class="dt--top-section">
                 <div class="row">
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                    <div class="dt-buttons"> 
+                    <div class="dt-buttons">
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
-                        aria-controls="show-hide-col"
-                        @click="clearForm();modal.form.show()">
+                        aria-controls="show-hide-col" @click="clearForm();modal.form.show()">
                         <span>Add New</span>
                       </button>
                     </div>
@@ -41,6 +40,23 @@
                         <input type="search" class="form-control" placeholder="Search..." aria-controls="show-hide-col"
                           v-model="paging.search">
                       </label>
+                    </div>
+                  </div>
+                  <div class="col-6 mt-3">
+                    <div class="row">
+                      <div class="col-12 control-label">Sort By</div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortBy" id="pagingSortBy">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortBy" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortDir" id="pagingSortDir">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortDir" :key="index">
+                          </option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -278,7 +294,7 @@
 @endsection
 @section('customScript')
 <script>
-const vueDashboard = new Vue( {
+  const vueDashboard = new Vue( {
   el: '#notificationsPage',
   data: {
       form: {
@@ -316,7 +332,18 @@ const vueDashboard = new Vue( {
       },
       opt: {
         userTarget: [],
-        type: ['Default','Popup']
+        type: ['Default','Popup'],
+        sortBy: [
+          {label: "Title",value: "title"},
+          {label: "Type",value: "type"},
+          {label: "Text",value: "text"},
+          {label: "User",value: "id_user_target"},
+          {label: "Creation",value: "id"},
+        ],
+        sortDir: [
+          {label: "A-Z", value:"ASC"},
+          {label: "Z-A", value:"DESC"},
+        ]
       },
       modal: {
         form: null,

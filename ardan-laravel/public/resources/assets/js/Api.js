@@ -51,6 +51,15 @@ const Api = {
     };
     return defAxios.post(url, payload, config);
   },
+  userDashboard(payload, token) {
+    let url = '/user/dashboard'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
   // banner
   bannerRead(payload) {
     let url = '/banner/read'

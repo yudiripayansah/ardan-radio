@@ -11,11 +11,12 @@ use App\Models\Penyiar;
 use App\Models\UserToken;
 use App\Models\Feeds;
 use App\Models\Likes;
+use App\Models\PageViews;
 
 class UserController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['read', 'get','create','update','createToken','readToken','userFollow']]);
+    $this->middleware('auth:api', ['except' => ['read', 'get','create','update','createToken','readToken','userFollow','dashboard','saveStats']]);
   }
   public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;
@@ -416,6 +417,66 @@ class UserController extends Controller
           'search' => $search
         )
     );
+    return response()->json($res, 200);
+  }
+  public function dashboard() {
+    $all = User::where('role','member')->get()->count();
+    $male = User::where('role','member')->where('gender','Laki-Laki')->get()->count();
+    $female = User::where('role','member')->where('gender','Perempuan')->get()->count();
+    $radio_stream = PageViews::where('type','radio_stream')->get()->count();
+    $home = PageViews::where('type','home')->get()->count();
+    $social = PageViews::where('type','social')->get()->count();
+    $news = PageViews::where('type','news')->get()->count();
+    $content = PageViews::where('type','content')->get()->count();
+    $events = PageViews::where('type','events')->get()->count();
+    $res = [
+        'data'=> [
+          'all' => $all,
+          'male' => $male,
+          'female' => $female,
+          'radio_stream' => $radio_stream,
+          'home' => $home,
+          'social' => $social,
+          'news' => $news,
+          'content' => $content,
+          'events' => $events,
+        ],
+        'status' => true
+      ];
+    return response()->json($res, 200);
+  }
+  public function saveStats(Request $request) {
+    $dataRequest = $request->all();
+    $dataFind = PageViews::where('type',$dataRequest->type)->first();
+    $validate = PageViews::validate($dataRequest);
+    if ($validate['status']) {
+      try {
+        if($dataFind){
+          $dataRequest['views'] = $dataFind->views + 1;
+          $dt = PageViews::where('id',$dataFind->id)->update($dataRequest);
+        } else {
+          $dataRequest['views'] = 1;
+          $dt = PageViews::create($dataRequest);
+        }
+        $res = array(
+                'status' => true,
+                'data_request' => $dataRequest,
+                'msg' => 'Data Successfully Saved'
+              );
+      } catch (Exception $e) {
+        $res = array(
+                'status' => false,
+                'msg' => 'Failed to Save Data'
+              );
+      }
+    } else {
+      $res = array(
+        'status' => false,
+        'data' => $request->all(),
+        'msg' => 'Validation failed',
+        'errors' => $validate['error']
+      );
+    }
     return response()->json($res, 200);
   }
 }

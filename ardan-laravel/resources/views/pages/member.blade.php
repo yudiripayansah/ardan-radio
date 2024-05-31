@@ -23,8 +23,7 @@
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
                     <div class="dt-buttons">
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
-                        aria-controls="show-hide-col"
-                        @click="clearForm();modal.form.show()">
+                        aria-controls="show-hide-col" @click="clearForm();modal.form.show()">
                         <span>Add New</span>
                       </button>
                     </div>
@@ -41,6 +40,23 @@
                         <input type="search" class="form-control" placeholder="Search..." aria-controls="show-hide-col"
                           v-model="paging.search">
                       </label>
+                    </div>
+                  </div>
+                  <div class="col-6 mt-3">
+                    <div class="row">
+                      <div class="col-12 control-label">Sort By</div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortBy" id="pagingSortBy">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortBy" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortDir" id="pagingSortDir">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortDir" :key="index">
+                          </option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -92,8 +108,8 @@
                             </svg>
                           </a>
                           <a href="javascript:void(0);" class="action-btn btn-delete bs-tooltip" data-toggle="tooltip"
-                            data-placement="top" title="Delete"
-                            @click="form.delete = item.id;modal.delete.show()" v-show="users.role == 'superadmin'">
+                            data-placement="top" title="Delete" @click="form.delete = item.id;modal.delete.show()"
+                            v-show="users.role == 'superadmin'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                               stroke-linejoin="round" class="feather feather-trash-2">
@@ -133,8 +149,7 @@
                   <div class="dataTables_paginate paging_simple_numbers" id="show-hide-col_paginate">
                     <ul class="pagination" v-if="table.totalPage > 0">
                       <li class="paginate_button page-item previous" id="show-hide-col_previous">
-                        <button type="button" class="page-link"
-                          @click="paging.page = paging.page-1">
+                        <button type="button" class="page-link" @click="paging.page = paging.page-1">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-arrow-left">
@@ -144,12 +159,10 @@
                         </button>
                       </li>
                       <li class="paginate_button page-item active" v-for="page in table.totalPage">
-                        <button type="button" class="page-link" v-text="page"
-                          @click="paging.page = page"></button>
+                        <button type="button" class="page-link" v-text="page" @click="paging.page = page"></button>
                       </li>
                       <li class="paginate_button page-item next" id="show-hide-col_next">
-                        <button type="button" class="page-link"
-                          @click="paging.page = paging.page + 1">
+                        <button type="button" class="page-link" @click="paging.page = paging.page + 1">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-arrow-right">
@@ -384,6 +397,15 @@
           verified: ["No","Yes"],
           status: ["active","inactive"],
           role: ["admin","superadmin","member"],
+          sortBy: [
+            {label: "Nama",value: "name"},
+            {label: "Email",value: "email"},
+            {label: "Creation",value: "id"},
+          ],
+          sortDir: [
+            {label: "A-Z", value:"ASC"},
+            {label: "Z-A", value:"DESC"},
+          ]
         },
         modal: {
           form: null,

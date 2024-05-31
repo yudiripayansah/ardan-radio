@@ -57,7 +57,6 @@ const App = ({}) => {
     },
   };
   const handleDeepLink = ({url}) => {
-    console.log(url);
   };
   const handleAppStateChange = nextAppState => {
     if (appState.match(/inactive|background/) && nextAppState === 'active') {

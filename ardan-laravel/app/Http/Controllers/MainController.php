@@ -73,4 +73,34 @@ class MainController extends Controller
     $data['menu'] = $this->menu;
     return view('pages.login',$data);
   }
+  public function msharing($id) {
+    $data['type'] = 'sharing';
+    $data['id'] = $id;
+    return view('pages.sharing',$data);
+  }
+  public function mpost($id) {
+    $data['type'] = 'post';
+    $data['id'] = $id;
+    return view('pages.sharing',$data);
+  }
+  public function mnews($id) {
+    $data['type'] = 'news';
+    $data['id'] = $id;
+    return view('pages.sharing',$data);
+  }
+  public function mevents($id) {
+    $data['type'] = 'events';
+    $data['id'] = $id;
+    return view('pages.sharing',$data);
+  }
+  public function mprogram($id) {
+    $data['type'] = 'program';
+    $data['id'] = $id;
+    return view('pages.sharing',$data);
+  }
+  public function mnotif($id) {
+    $data['type'] = 'notif';
+    $data['id'] = $id;
+    return view('pages.sharing',$data);
+  }
 }

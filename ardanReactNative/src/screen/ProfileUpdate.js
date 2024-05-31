@@ -37,6 +37,7 @@ const ProfileUpdate = ({route, navigation}) => {
   const [open, setOpen] = useState(false);
   const [loading, setloading] = useState(false);
   const [saveButton, setsaveButton] = useState('Save');
+  const [msg, setMsg] = useState('')
   const openImagePicker = () => {
     const options = {
       mediaType: 'photo',
@@ -118,21 +119,26 @@ const ProfileUpdate = ({route, navigation}) => {
       if(password) {
         payload.password = password;
       }
-      let req = await Api.userUpdate(payload, user.access_token);
-      if (req.status == 200) {
-        let {data, status, msg} = req.data;
-        if (status) {
-          let newData = {...data}
-          newData.access_token = user.access_token
-          setUser(data)
-          setsaveButton('Success!!!');
-          setTimeout(() => {
-            setsaveButton('Save');
-            navigation.navigate('Profile');
-          }, 1000);
-        } else {
-          console.log(req.data);
+      if(name, phone, address, gender, dob){
+        setMsg(null)
+        let req = await Api.userUpdate(payload, user.access_token);
+        if (req.status == 200) {
+          let {data, status, msg} = req.data;
+          if (status) {
+            let newData = {...data}
+            newData.access_token = user.access_token
+            setUser(data)
+            setsaveButton('Success!!!');
+            setTimeout(() => {
+              setsaveButton('Save');
+              navigation.navigate('Profile');
+            }, 1000);
+          } else {
+            console.log(req.data);
+          }
         }
+      } else {
+        setMsg('Please enter name, phone, address, gender and date of birth.')
       }
       setloading(false);
     } catch (error) {
@@ -287,6 +293,7 @@ const ProfileUpdate = ({route, navigation}) => {
               <Picker.Item label="Perempuan" value="Perempuan" />
             </Picker>
           </View>
+          <Text style={[theme.cwhite,theme.mt10,theme['p10-400'],theme.tCenter]}>{msg}</Text>
           <TouchableOpacity
             style={[
               theme.faCenter,

@@ -20,7 +20,7 @@
                     </svg>
                   </div>
                   <div class="">
-                    <p class="w-value">1000</p>
+                    <p class="w-value" v-text="userStats.data.all">0</p>
                     <h5 class="">Total Users</h5>
                   </div>
                 </div>
@@ -42,7 +42,7 @@
                     </svg>
                   </div>
                   <div class="">
-                    <p class="w-value">345</p>
+                    <p class="w-value" v-text="userStats.data.male">0</p>
                     <h5 class="">Male User</h5>
                   </div>
                 </div>
@@ -64,7 +64,7 @@
                     </svg>
                   </div>
                   <div class="">
-                    <p class="w-value">241</p>
+                    <p class="w-value" v-text="userStats.data.female">0</p>
                     <h5 class="">Female User</h5>
                   </div>
                 </div>
@@ -86,7 +86,7 @@
                     </svg>
                   </div>
                   <div class="">
-                    <p class="w-value">1000</p>
+                    <p class="w-value" v-text="userStats.data.radio_stream">0</p>
                     <h5 class="">On Radio Stream</h5>
                   </div>
                 </div>
@@ -104,7 +104,7 @@
             <div class="col-6 col-sm-6 col-md-2">
               <div class="w-detail">
                 <p class="w-title">Home</p>
-                <p class="w-stats">423,964</p>
+                <p class="w-stats" v-text="userStats.data.home">0</p>
               </div>
               {{-- <div class="w-chart-render-one">
                 <div id="total-users"></div>
@@ -113,7 +113,7 @@
             <div class="col-6 col-sm-6 col-md-2">
               <div class="w-detail">
                 <p class="w-title">Social</p>
-                <p class="w-stats">7,929</p>
+                <p class="w-stats" v-text="userStats.data.social">0</p>
               </div>
               {{-- <div class="w-chart-render-one">
                 <div id="paid-visits"></div>
@@ -122,7 +122,7 @@
             <div class="col-6 col-sm-6 col-md-2">
               <div class="w-detail">
                 <p class="w-title">News</p>
-                <p class="w-stats">423,964</p>
+                <p class="w-stats" v-text="userStats.data.news">0</p>
               </div>
               {{-- <div class="w-chart-render-one">
                 <div id="total-users"></div>
@@ -131,7 +131,7 @@
             <div class="col-6 col-sm-6 col-md-2">
               <div class="w-detail">
                 <p class="w-title">Content</p>
-                <p class="w-stats">7,929</p>
+                <p class="w-stats" v-text="userStats.data.content">0</p>
               </div>
               {{-- <div class="w-chart-render-one">
                 <div id="paid-visits"></div>
@@ -140,7 +140,7 @@
             <div class="col-6 col-sm-6 col-md-2">
               <div class="w-detail">
                 <p class="w-title">Events</p>
-                <p class="w-stats">423,964</p>
+                <p class="w-stats" v-text="userStats.data.events">0</p>
               </div>
               {{-- <div class="w-chart-render-one">
                 <div id="total-users"></div>
@@ -149,7 +149,7 @@
             <div class="col-6 col-sm-6 col-md-2">
               <div class="w-detail">
                 <p class="w-title">Radio</p>
-                <p class="w-stats">7,929</p>
+                <p class="w-stats" v-text="userStats.data.radio_stream">0</p>
               </div>
               {{-- <div class="w-chart-render-one">
                 <div id="paid-visits"></div>
@@ -189,11 +189,67 @@
   const vueDashboard = new Vue( {
     el: '#dashboardPage',
     data: {
-      
+      userStats: {
+        data: {
+          all: 0,
+          male: 0,
+          female: 0,
+          radio_stream: 0,
+        },
+        loading: false
+      }
     },
     methods: {
+      async doGet() {
+        this.userStats.loading = true
+        let payload = {}
+        try {
+          let req = await Api.userDashboard(payload)
+          if(req.status == 200) {
+            let {data,status,msg} = req.data
+            if(status){
+              this.userStats.data = data
+            } else {
+              this.notify('error','Error',msg)
+            }
+          } else {
+            this.notify('error','Error',req.message)
+          }
+          this.userStats.loading = false
+        } catch (error) {
+          this.notify('error','Error',error.message)
+          this.userStats.loading = false
+        }
+      },
+      notify(type,title,msg){
+        let bg = 'bg-primary'
+        switch (type) {
+        case 'error':
+          bg = 'bg-danger'
+          break;
+        case 'success':
+          bg = 'bg-success'
+          break;
+        case 'warning':
+          bg = 'bg-warning'
+          break;
+        case 'info':
+          bg = 'bg-info'
+          break;
+        }
+        this.alert = {
+          show: 'show',
+          bg: bg,
+          title: title,
+          msg: msg
+        }
+        setTimeout(() => {
+          this.alert.show = 'hide'
+        }, 2000);
+      },
     },
     mounted() {
+      this.doGet()
     }
 });
 </script>

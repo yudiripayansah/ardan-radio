@@ -42,6 +42,23 @@
                       </label>
                     </div>
                   </div>
+                  <div class="col-6 mt-3">
+                    <div class="row">
+                      <div class="col-12 control-label">Sort By</div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortBy" id="pagingSortBy">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortBy" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <select class="form-control" v-model="paging.sortDir" id="pagingSortDir">
+                          <option :value="opt.value" v-text="opt.label" v-for="(opt,index) in opt.sortDir" :key="index">
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="table-responsive">
@@ -279,7 +296,17 @@ const vueDashboard = new Vue( {
           msg: null
       },
       opt: {
-        type: ['News','Events','Feeds']
+        type: ['News','Events','Feeds'],
+        sortBy: [
+            {label: "Title",value: "title"},
+            {label: "Url",value: "url"},
+            {label: "Date",value: "date"},
+            {label: "Creation",value: "id"},
+          ],
+          sortDir: [
+            {label: "A-Z", value:"ASC"},
+            {label: "Z-A", value:"DESC"},
+          ]
       },
       messages: [],
         modal: {
