@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import ActionSheet from 'react-native-actions-sheet';
+import analytics from '@react-native-firebase/analytics';
 const SocialSharing = ({navigation}) => {
   const acOpt = useRef(null);
   const acReport = useRef(null);
@@ -636,7 +637,14 @@ const SocialSharing = ({navigation}) => {
     hideAcs();
     acReport.current?.show();
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Social Sharing',
+      screen_class: 'SocialSharing',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {

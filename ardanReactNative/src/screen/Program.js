@@ -14,6 +14,7 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const Program = ({navigation}) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
@@ -57,7 +58,14 @@ const Program = ({navigation}) => {
       });
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Program',
+      screen_class: 'Program',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getProgram();
   }, []);
 

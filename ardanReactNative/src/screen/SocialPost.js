@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import ActionSheet from 'react-native-actions-sheet';
+import analytics from '@react-native-firebase/analytics';
 const SocialPost = ({navigation}) => {
   const acOpt = useRef(null);
   const acReport = useRef(null);
@@ -354,7 +355,14 @@ const SocialPost = ({navigation}) => {
     hideAcs()
     acReport.current?.show();
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Social Post',
+      screen_class: 'SocialPost',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {

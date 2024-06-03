@@ -25,6 +25,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import Api from '../config/Api';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import analytics from '@react-native-firebase/analytics';
 const LiveStreaming = ({navigation}) => {
   const scrollViewRef = useRef();
   const theme = useContext(ThemeContext);
@@ -184,8 +185,15 @@ const LiveStreaming = ({navigation}) => {
     //   setMask(!mask);
     // }, 3000);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Live Streaming',
+      screen_class: 'LiveStreaming',
+    });
+  }
 
   useEffect(() => {
+    gAnalytics()
     getChat();
     listenChat();
     getLiveStream();

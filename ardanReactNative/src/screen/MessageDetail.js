@@ -23,6 +23,7 @@ import Helper from '../config/Helper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const MessageDetail = ({route, navigation}) => {
   const screenWidth = useWindowDimensions().width;
   const widthAnim = useRef(new Animated.Value(screenWidth)).current;
@@ -251,7 +252,14 @@ const MessageDetail = ({route, navigation}) => {
       </>
     );
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Message Details',
+      screen_class: 'MessageDetails',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     listenChat();
   }, []);
 

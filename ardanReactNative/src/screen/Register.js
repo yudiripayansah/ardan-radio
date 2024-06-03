@@ -4,6 +4,7 @@ import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import analytics from '@react-native-firebase/analytics';
 const Register = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const {setUser} = useContext(AuthContext);
@@ -75,8 +76,14 @@ const Register = ({navigation}) => {
       setLoading(false);
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Register',
+      screen_class: 'Register',
+    });
+  }
   useEffect(() => {
-    
+    gAnalytics()
   }, []);
   return (
     <ScrollView showsVerticalScrollIndicator={false} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[theme.wp100,theme.hp100, {backgroundColor:'#090903'}, theme.px20, theme.py20, { flexGrow: 1}]}>

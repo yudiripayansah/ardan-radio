@@ -16,6 +16,7 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {RadioContext} from '../context/RadioContext';
 import RenderHtml from 'react-native-render-html';
+import analytics from '@react-native-firebase/analytics';
 const PenyiarDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 40;
@@ -69,7 +70,14 @@ const PenyiarDetails = ({route, navigation}) => {
   const goToUrl = async url => {
     await Linking.openURL(url);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Penyiar Details',
+      screen_class: 'PenyiarDetails',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getPenyiar();
   }, []);
 

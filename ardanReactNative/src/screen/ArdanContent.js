@@ -13,6 +13,7 @@ import axios from 'axios';
 import {ThemeContext} from '../context/ThemeContext';
 import {RadioContext} from '../context/RadioContext';
 import Api from '../config/Api';
+import analytics from '@react-native-firebase/analytics';
 const ArdanContent = ({navigation}) => {
   const theme = useContext(ThemeContext);
   const radioState = useContext(RadioContext).state;
@@ -201,7 +202,14 @@ const ArdanContent = ({navigation}) => {
       id: id,
     });
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Ardan Content',
+      screen_class: 'ArdanContent',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {

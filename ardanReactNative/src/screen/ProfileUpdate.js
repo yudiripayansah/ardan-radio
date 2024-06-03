@@ -21,6 +21,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const ProfileUpdate = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 40;
@@ -146,7 +147,14 @@ const ProfileUpdate = ({route, navigation}) => {
       setloading(false);
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Profile Update',
+      screen_class: 'ProfileUpdate',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getUser();
   }, []);
 

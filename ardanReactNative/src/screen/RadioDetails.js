@@ -12,6 +12,7 @@ import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Api from '../config/Api';
+import analytics from '@react-native-firebase/analytics';
 const RadioDetails = ({navigation}) => {
   const user = useContext(UserContext);
   const theme = useContext(ThemeContext);
@@ -133,7 +134,14 @@ const RadioDetails = ({navigation}) => {
       setNextProgram(nProgram);
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Radio Details',
+      screen_class: 'RadioDetails',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getCurrentProgram();
     getLike(1, 'Radio');
     getNextProgram();

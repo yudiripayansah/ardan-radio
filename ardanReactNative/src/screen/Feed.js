@@ -2,10 +2,18 @@ import React, { useEffect, useContext } from 'react'
 import { View, Text, SafeAreaView, ScrollView } from 'react-native';
 import { ThemeContext } from '../context/ThemeContext';
 import Navigation from '../components/Navigation'
+import analytics from '@react-native-firebase/analytics';
 const Feed = ({ navigation }) => {
     const theme = useContext(ThemeContext)
+    
+    const gAnalytics = () => {
+        analytics().logScreenView({
+        screen_name: 'Feed',
+        screen_class: 'Feed',
+        });
+    }
     useEffect(() => {
-        
+        gAnalytics()
     }, [])
 
     return (

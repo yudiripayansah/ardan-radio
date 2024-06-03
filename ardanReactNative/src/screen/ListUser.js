@@ -15,6 +15,7 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const ListUser = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
@@ -105,7 +106,14 @@ const ListUser = ({route, navigation}) => {
       });
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'List User',
+      screen_class: 'ListUser',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {

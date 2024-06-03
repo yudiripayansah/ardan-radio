@@ -19,7 +19,7 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import analytics from '@react-native-firebase/analytics';
 const h1 = ({tintColor}) => <Text style={{color: tintColor}}>H1</Text>;
 const h2 = ({tintColor}) => <Text style={{color: tintColor}}>H2</Text>;
 const h3 = ({tintColor}) => <Text style={{color: tintColor}}>H3</Text>;
@@ -164,7 +164,14 @@ const CreateSharing = ({navigation}) => {
     }
     setSelectedCat(theCat);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Check Otp',
+      screen_class: 'CheckOtp',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getCategory();
   }, []);
   return (

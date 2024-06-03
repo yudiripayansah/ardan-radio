@@ -23,6 +23,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const SocialSharingDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 60;
@@ -244,7 +245,14 @@ const SocialSharingDetails = ({route, navigation}) => {
     };
     let share = Share.open(opt);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Social Sharing Details',
+      screen_class: 'SocialSharingDetails',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {

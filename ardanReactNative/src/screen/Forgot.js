@@ -4,6 +4,7 @@ import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import analytics from '@react-native-firebase/analytics';
 const Forgot = ({navigation}) => {
   const theme = useContext(ThemeContext)
   const {setUser} = useContext(AuthContext);
@@ -16,8 +17,14 @@ const Forgot = ({navigation}) => {
     msg: null,
     data: null
   })
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Forgot Password',
+      screen_class: 'Forgot',
+    });
+  }
   useEffect(() => {
-    
+    gAnalytics()
   },[])
   function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

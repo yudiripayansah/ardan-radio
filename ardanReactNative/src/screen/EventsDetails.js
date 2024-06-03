@@ -18,6 +18,7 @@ import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 import RenderHtml from 'react-native-render-html';
+import analytics from '@react-native-firebase/analytics';
 const EventsDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width;
@@ -81,8 +82,15 @@ const EventsDetails = ({route, navigation}) => {
       await Linking.openURL(url);
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Event Details',
+      screen_class: 'EventDetails',
+    });
+  }
   useEffect(() => {
     getEvents();
+    gAnalytics()
   }, []);
 
   return (

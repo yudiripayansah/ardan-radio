@@ -15,6 +15,7 @@ import Api from '../config/Api';
 import axios from 'axios'
 import Helper from '../config/Helper';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const Message = ({navigation}) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
@@ -95,8 +96,14 @@ const Message = ({navigation}) => {
       });
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Message',
+      screen_class: 'Message',
+    });
+  }
   useEffect(() => {
-
+    gAnalytics()
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {

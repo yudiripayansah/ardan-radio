@@ -3,10 +3,17 @@ import { View, Text, SafeAreaView, ScrollView, ImageBackground, TouchableOpacity
 import { ThemeContext } from '../context/ThemeContext';
 import Navigation from '../components/Navigation'
 import AppIntroSlider from 'react-native-app-intro-slider';
+import analytics from '@react-native-firebase/analytics';
 const Feed = ({ navigation }) => {
     const theme = useContext(ThemeContext)
+    const gAnalytics = () => {
+      analytics().logScreenView({
+        screen_name: 'Intro',
+        screen_class: 'Intro',
+      });
+    }
     useEffect(() => {
-        
+      gAnalytics()
     }, [])
     let introItems = [
       {

@@ -15,6 +15,7 @@ import Icons from '../components/Icons';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const Search = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
@@ -403,7 +404,14 @@ const Search = ({route, navigation}) => {
       </View>
     );
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Search',
+      screen_class: 'Search',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     doSearch(route.params.keyword);
   }, []);
   return (

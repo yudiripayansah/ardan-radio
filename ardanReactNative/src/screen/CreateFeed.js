@@ -4,15 +4,17 @@ import { ThemeContext } from '../context/ThemeContext';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import CreatePost from './CreatePost'
 import CreateSharing from './CreateSharing'
+import {RadioContext} from '../context/RadioContext';
 const CreateFeedTab = createMaterialTopTabNavigator();
 const CreateFeed = ({ navigation }) => {
   const theme = useContext(ThemeContext)
+  const radioState = useContext(RadioContext).state;
   useEffect(() => {
     
   }, [])
 
   return (
-    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},theme.pt60, theme.relative, theme.px25]}>
+    <KeyboardAvoidingView style={[theme.bgblack,{flexGrow: 1},(radioState && radioState.status == 'playing') ? theme.pt130 : theme.pt60, theme.relative, theme.px25]}>
       <CreateFeedTab.Navigator 
         screenOptions={{
           tabBarActiveTintColor: '#fff',

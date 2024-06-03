@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Api from '../config/Api';
 import Share from 'react-native-share';
 import Icons from '../components/Icons';
+import analytics from '@react-native-firebase/analytics';
 const Radio = ({navigation}) => {
   const scrollViewRef = useRef();
   const mainScrollViewRef = useRef();
@@ -263,7 +264,14 @@ const Radio = ({navigation}) => {
       );
     });
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Radio',
+      screen_class: 'Radio',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getChat();
     listenChat();
     getCurrentProgram();

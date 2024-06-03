@@ -5,6 +5,7 @@ import {AuthContext} from '../context/AuthContext';
 import Api from '../config/Api'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import analytics from '@react-native-firebase/analytics';
 const Login = ({navigation}) => {
   const webClientId = '543317221813-25in70mlr40laf569025fedv79n908n8.apps.googleusercontent.com'
   const theme = useContext(ThemeContext)
@@ -18,10 +19,17 @@ const Login = ({navigation}) => {
     msg: null,
     data: null
   })
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Login',
+      screen_class: 'Login',
+    });
+  }
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: webClientId, 
     })
+    gAnalytics()
   },[])
   function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

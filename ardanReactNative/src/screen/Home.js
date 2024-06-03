@@ -22,6 +22,7 @@ import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import RenderHtml from 'react-native-render-html';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const Home = ({navigation}) => {
   const data = [...new Array(6).keys()];
   const ref = React.useRef(null);
@@ -519,6 +520,12 @@ const Home = ({navigation}) => {
     };
     let share = Share.open(opt);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Home',
+      screen_class: 'Home',
+    });
+  }
   useEffect(() => {
     getBanner();
     getNews();
@@ -529,6 +536,7 @@ const Home = ({navigation}) => {
     // getYoutube();
     getIg()
     getHotSharing();
+    gAnalytics()
   }, []);
   const SlideBanner = (theAds) => {
     if (theAds.loading) {

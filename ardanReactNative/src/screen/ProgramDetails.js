@@ -19,6 +19,7 @@ import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 import RenderHtml from 'react-native-render-html';
+import analytics from '@react-native-firebase/analytics';
 const ProgramDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width;
@@ -131,7 +132,14 @@ const ProgramDetails = ({route, navigation}) => {
     };
     let share = Share.open(opt);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Program Details',
+      screen_class: 'ProgramDetails',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getPrograms();
     getLike('Program');
     getLike('RemindProgram');

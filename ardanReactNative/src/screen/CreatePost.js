@@ -18,6 +18,7 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import analytics from '@react-native-firebase/analytics';
 const CreatePost = ({navigation}) => {
   const imageWidth = useWindowDimensions().width - 20;
   const theme = useContext(ThemeContext);
@@ -106,7 +107,15 @@ const CreatePost = ({navigation}) => {
       setloading(false);
     }
   };
-  useEffect(() => {}, []);
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Create Post',
+      screen_class: 'CreatePost',
+    });
+  }
+  useEffect(() => {
+    gAnalytics()
+  }, []);
   return (
     <KeyboardAvoidingView
       style={[theme.bgblack, {flexGrow: 1}, theme.pt10, theme.relative]}>

@@ -12,6 +12,7 @@ import {
 import {ThemeContext} from '../context/ThemeContext';
 import Api from '../config/Api';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const Penyiar = ({navigation}) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
@@ -61,7 +62,14 @@ const Penyiar = ({navigation}) => {
   const goToUrl = async url => {
     await Linking.openURL(url);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Penyiar',
+      screen_class: 'Penyiar',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getPenyiar();
   }, []);
   return (

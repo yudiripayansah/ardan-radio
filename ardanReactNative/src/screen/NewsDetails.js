@@ -17,6 +17,7 @@ import Share from 'react-native-share';
 import Icons from '../components/Icons';
 import {RadioContext} from '../context/RadioContext';
 import RenderHtml from 'react-native-render-html';
+import analytics from '@react-native-firebase/analytics';
 const NewsDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 40;
@@ -75,7 +76,14 @@ const NewsDetails = ({route, navigation}) => {
     };
     let share = Share.open(opt);
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'News Details',
+      screen_class: 'NewsDetails',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getNews();
   }, []);
 

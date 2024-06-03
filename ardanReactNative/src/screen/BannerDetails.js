@@ -14,6 +14,7 @@ import {ThemeContext} from '../context/ThemeContext';
 import {RadioContext} from '../context/RadioContext';
 import Api from '../config/Api';
 import RenderHtml from 'react-native-render-html';
+import analytics from '@react-native-firebase/analytics';
 const BannerDetails = ({route, navigation}) => {
   const radioState = useContext(RadioContext).state;
   const imageWidth = useWindowDimensions().width - 40;
@@ -64,8 +65,16 @@ const BannerDetails = ({route, navigation}) => {
       });
     }
   };
+  
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Banner Details',
+      screen_class: 'BannerDetails',
+    });
+  }
   useEffect(() => {
     getBanner();
+    gAnalytics()
   }, []);
 
   return (

@@ -25,6 +25,7 @@ import Icons from '../components/Icons';
 import Share from 'react-native-share';
 import ActionSheet from 'react-native-actions-sheet';
 import AutoHeightImage from 'react-native-auto-height-image';
+import analytics from '@react-native-firebase/analytics';
 const Profile = ({route, navigation}) => {
   const acOpt = useRef(null);
   const acReport = useRef(null);
@@ -401,7 +402,14 @@ const Profile = ({route, navigation}) => {
       }
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Profile',
+      screen_class: 'Profile',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getFeeds();
     getUser();
   }, []);

@@ -11,6 +11,7 @@ import {UserContext} from '../context/UserContext';
 import Api from '../config/Api';
 import Helper from '../config/Helper';
 import {RadioContext} from '../context/RadioContext';
+import analytics from '@react-native-firebase/analytics';
 const Notifications = ({navigation}) => {
   const radioState = useContext(RadioContext).state;
   const theme = useContext(ThemeContext);
@@ -57,7 +58,14 @@ const Notifications = ({navigation}) => {
       });
     }
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Notifications',
+      screen_class: 'Notifications',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     getNotification();
   }, []);
 

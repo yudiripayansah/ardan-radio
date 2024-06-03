@@ -20,6 +20,7 @@ import Api from '../config/Api';
 import Helper from '../config/Helper';
 import RenderHtml from 'react-native-render-html';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import analytics from '@react-native-firebase/analytics';
 const SocialPostDetails = ({route, navigation}) => {
   const imageWidth = useWindowDimensions().width - 40;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -232,7 +233,14 @@ const SocialPostDetails = ({route, navigation}) => {
       }),
     ]).start();
   };
+  const gAnalytics = () => {
+    analytics().logScreenView({
+      screen_name: 'Social Post Details',
+      screen_class: 'SocialPostDetails',
+    });
+  }
   useEffect(() => {
+    gAnalytics()
     let mounted = true;
     navigation.addListener('focus', () => {
       if (mounted) {
