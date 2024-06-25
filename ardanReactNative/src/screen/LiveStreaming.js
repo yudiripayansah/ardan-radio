@@ -15,6 +15,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
+  Button
 } from 'react-native';
 import {ThemeContext} from '../context/ThemeContext';
 import {UserContext} from '../context/UserContext';
@@ -26,6 +27,8 @@ import axios from 'axios';
 import Api from '../config/Api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import analytics from '@react-native-firebase/analytics';
+import { WebView } from 'react-native-webview';
+import Video from 'react-native-video';
 const LiveStreaming = ({navigation}) => {
   const scrollViewRef = useRef();
   const theme = useContext(ThemeContext);
@@ -33,10 +36,18 @@ const LiveStreaming = ({navigation}) => {
   const [playing, setPlaying] = useState(true);
   const height = useWindowDimensions().height;
   const [liveStream, setLivestream] = useState({});
+  const [htmlContent, setHtmlContent] = useState('')
   const [livechat, setLivechat] = useState([]);
   const [livechatold, setLivechatold] = useState([]);
   const [msg, setMsg] = useState();
   const [mask, setMask] = useState(true);
+  const videoLive = 'https://live.ardangroup.fm/memfs/1b1d14c7-4945-46b6-839d-00eb3d5a5e17.m3u8'
+  const videoRef = useRef(null);
+  const [paused, setPaused] = useState(false);
+
+  const togglePlayPause = () => {
+    setPaused(!paused);
+  };
   const listenChat = () => {
     let theChat = [...livechat];
     const echo = new Echo({
@@ -164,6 +175,8 @@ const LiveStreaming = ({navigation}) => {
       let {status, data, msg} = req.data;
       if (status) {
         setLivestream(data);
+        let html = await axios.get(data.url)
+        setHtmlContent(html.data);
       }
     } catch (error) {
       console.log('Live stream error', error);
@@ -206,21 +219,18 @@ const LiveStreaming = ({navigation}) => {
       style={[theme.bgblack, {flexGrow: 1}]}>
       {liveStream.url ? (
         <>
-          <View style={[theme.mt57, theme.relative]}>
-            <YoutubePlayer
-              height={height}
-              play={playing}
-              videoId={liveStream.url}
-              onChangeState={onStateChange}
+          <View style={[theme.mt57, theme.relative, theme.wp100,theme.h220]}>
+          <Video
+              ref={videoRef}
+              source={{ uri: liveStream.url }} // Can be a URL or a local file.
+              style={[theme.wp100, theme.h220]}
+              controls={true} // Set to false if you want to create custom controls
+              paused={paused}
+              onBuffer={buffer => console.log('Buffering:', buffer)} // Callback when remote video is buffering
+              onError={error => console.error('Error:', error)} // Callback when video cannot be loaded
+              audioOnly={false}
+              ignoreSilentSwitch="ignore" // Ensure sound plays even if the silent switch is on (iOS only)
             />
-            {mask ? (
-              <View style={[theme.absolute, {right: 50, top: 175, opacity: 1}]}>
-                <Image
-                  source={require('../assets/images/radio-play-cover.png')}
-                  style={[{width: 80, height: 40, objectFit: 'contain'}]}
-                />
-              </View>
-            ) : null}
           </View>
           <View
             style={[

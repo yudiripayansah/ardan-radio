@@ -36,7 +36,8 @@ class ProgramsController extends Controller
     }
     $listData = $listData->get();
     foreach ($listData as $ld) {
-      $ld->image_url = Storage::disk('public')->url('programs/' . $ld->image);
+      $ld->image_url = ($ld->image) ? Storage::disk('public')->url('programs/' . $ld->image): null;
+      $ld->image_square_url = ($ld->image_square) ? Storage::disk('public')->url('programs/' . $ld->image_square) : null;
     }
     if ($search || $id_user || $type) {
       $total = Programs::orderBy($sortBy, $sortDir);
@@ -93,7 +94,8 @@ class ProgramsController extends Controller
       if ($getData) {
         if (is_countable($getData)) {
           foreach ($getData as $g) {
-            $g->image = Storage::disk('public')->url('programs/' . $g->image);
+            $g->image = ($g->image) ? Storage::disk('public')->url('programs/' . $g->image) : null;
+            $g->image_square = ($g->image_square) ? Storage::disk('public')->url('programs/' . $g->image_square) : null;
             $g->days_label = $this->daysLabel($g->days);
             $g->penyiar_name = $this->penyiarName($g->penyiar);
             $g->favorited = false;
@@ -102,7 +104,8 @@ class ProgramsController extends Controller
         } else {
           $getData->favorited = false;
           $getData->remind = false;
-          $getData->image = Storage::disk('public')->url('programs/' . $getData->image);
+          $getData->image = ($getData->image) ? Storage::disk('public')->url('programs/' . $getData->image) : null;
+          $getData->image_square = ($getData->image_square) ? Storage::disk('public')->url('programs/' . $getData->image_square) : null;
           $getData->days_label = $this->daysLabel($getData->days);
           $getData->penyiar_name = $this->penyiarName($getData->penyiar);
         }
@@ -135,6 +138,14 @@ class ProgramsController extends Controller
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
       unset($dataCreate['image']);
+    }
+    if ($request->image_square) {
+      $filename = uniqid() . time() . '-' . '-programs.png';
+      $filePath = 'programs/' . $filename;
+      $dataCreate['image_square'] = $filename;
+      Storage::disk('public')->put($filePath, file_get_contents($request->image_square));
+    } else {
+      unset($dataCreate['image_square']);
     }
     unset($dataCreate['time_start']);
     unset($dataCreate['time_end']);
@@ -180,6 +191,14 @@ class ProgramsController extends Controller
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
       unset($dataUpdate['image']);
+    }
+    if (basename($request->image_square) != basename($dataFind->image_square)) {
+      $filename = uniqid() . time() . '-' . '-programs.png';
+      $filePath = 'programs/' . $filename;
+      $dataUpdate['image_square'] = $filename;
+      Storage::disk('public')->put($filePath, file_get_contents($request->image_square));
+    } else {
+      unset($dataUpdate['image_square']);
     }
     unset($dataUpdate['created_at']);
     unset($dataUpdate['updated_at']);

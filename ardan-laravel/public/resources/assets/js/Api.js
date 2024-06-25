@@ -240,6 +240,15 @@ const Api = {
     };
     return defAxios.post(url, payload, config);
   },
+  contentPin(payload, token) {
+    let url = '/content/pin'
+    let config = {
+      headers: {
+        Authorization: 'Bearer '+token,
+      },
+    };
+    return defAxios.post(url, payload, config);
+  },
   // notifications
   notificationsRead(payload) {
     let url = '/notifications/read'

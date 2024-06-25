@@ -205,4 +205,32 @@ class ContentController extends Controller
     }
     return response()->json($res, 200);
   }
+  public function pin(Request $request)
+  {
+    $id = $request->id;
+    if ($id) {
+      $pinData = Content::find($id);
+      try {
+        $pin = !$pinData->pin;
+        $pinData->pin = $pin;
+        $pinData->save();
+        $res = array(
+          'pin' => $pin,
+          'status' => true,
+          'msg' => 'Data successfully Updated'
+        );
+      } catch (Exception $e) {
+        $res = array(
+          'status' => false,
+          'msg' => 'Failed to update Data'
+        );
+      }
+    } else {
+      $res = array(
+        'status' => false,
+        'msg' => 'No data selected'
+      );
+    }
+    return response()->json($res, 200);
+  }
 }

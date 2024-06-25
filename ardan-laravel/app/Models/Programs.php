@@ -11,7 +11,7 @@ class Programs extends Model
     use SoftDeletes;
     protected $table = 'programs';
     protected $fillable = [
-      'image','title','text','days','time','penyiar'
+      'image_square','image','title','text','days','time','penyiar'
     ];
     public static function validate($validate)
     {

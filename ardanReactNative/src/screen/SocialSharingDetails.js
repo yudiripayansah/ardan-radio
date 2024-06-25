@@ -436,19 +436,6 @@ const SocialSharingDetails = ({route, navigation}) => {
                       Like
                     </Text>
                   </View>
-                  {user.role != 'guest' ? (
-                    <View style={[theme.fRow, theme.faCenter]}>
-                      <Icon name="reply" size={15} color="#F8C303" />
-                      <Text
-                        style={[
-                          theme['p12-400'],
-                          {color: '#C9C9C9'},
-                          theme.ms5,
-                        ]}>
-                        Balas
-                      </Text>
-                    </View>
-                  ) : null}
                 </View>
               </View>
             );

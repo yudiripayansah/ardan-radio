@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Likes;
+use App\Models\UserToken;
+use App\Models\Feeds;
+use App\Models\User;
+use Kutia\Larafirebase\Messages\FirebaseMessage;
 
 class LikeController extends Controller
 {
@@ -129,6 +133,29 @@ class LikeController extends Controller
       if ($validate['status']) {
         try {
           $dc = Likes::create($dataCreate);
+          $userToken = false;
+          $user = User::find($dataCreate['id_user']);
+          $notif = new \stdClass();
+          if($dataCreate['type'] == 'SHARING' || $dataCreate['type'] == 'POST' || $dataCreate['type'] == 'FOLLOW'){
+            if($dataCreate['type'] == 'FOLLOW'){
+              $userToken = UserToken::where('id_user', $dataCreate['id_target'])->get();
+              $notif->title = 'New Followers';
+              $notif->message = $user->name.' is following you';
+            }
+            if($dataCreate['type'] == 'SHARING' || $dataCreate['type'] == 'POST'){
+              $feed = Feeds::find($dataCreate['id_target']);
+              $notif->title = 'New Likes';
+              $userToken = UserToken::where('id_user', $feed->id_user)->get();
+              $notif->message = $user->name.' like your SOCIAL '.$dataCreate['type'];
+            }
+            if($userToken){
+              $notif->tokens = $userToken;
+              $notif->id_user_target = 'private';
+              $notif->image = null;
+              $notif->icon = null;
+              $this->notif($notif);
+            }
+          }
           $dg = Likes::find($dc->id);
           $res = array(
             'status' => true,
@@ -224,5 +251,35 @@ class LikeController extends Controller
       );
     }
     return response()->json($res, 200);
+  }
+  function notif($data){
+    $tokens = [];
+    foreach($data->tokens as $t){
+      array_push($tokens, $t->token);
+    }
+    if($data->id_user_target == 'all') {
+      $getToken = UserToken::all();
+      foreach($getToken as $t){
+        array_push($tokens, $t->token);
+      }
+    }
+    if(count($tokens) > 0){
+      $fcm = (new FirebaseMessage);
+      $fcm = $fcm->withTitle($data->title);
+      $fcm = $fcm->withBody($data->message);
+      if($data->image){
+        $fcm = $fcm->withImage($data->image);
+      }
+      if($data->icon){
+        $fcm = $fcm->withIcon($data->icon);
+      }
+      $fcm = $fcm->withSound('default');
+      $fcm = $fcm->withPriority('high');
+      $fcm = $fcm->withAdditionalData($data);
+      $fcm = $fcm->asNotification($tokens);
+    } else {
+      $fcm = 'No token to send';
+    }
+    return $fcm;
   }
 }

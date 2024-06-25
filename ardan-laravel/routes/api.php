@@ -98,6 +98,7 @@ Route::group([
     Route::post('/create', [ContentController::class, 'create']); 
     Route::post('/update', [ContentController::class, 'update']); 
     Route::post('/delete', [ContentController::class, 'delete']); 
+    Route::post('/pin', [ContentController::class, 'pin']); 
 });
 Route::group([
     'middleware' => 'api',

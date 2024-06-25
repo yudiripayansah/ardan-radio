@@ -40,13 +40,14 @@ const Nav = ({navigation, ...props}) => {
     profile: require('../assets/images/icons/nav-profile.png'),
     bg: require('../assets/images/nav-bg.png'),
   };
+  // const url = 'https://n09.rcs.revma.com/1q762wy5a9hvv.m4a?1675997040=&rj-tok=AAABhjk-eo4Aj03-Z03mDUOA_A&rj-ttl=5'
+  const url = 'https://stream.rcs.revma.com/ugpyzu9n5k3vv'
   const track = {
     id: '1',
-    url: 'https://n09.rcs.revma.com/1q762wy5a9hvv.m4a?1675997040=&rj-tok=AAABhjk-eo4Aj03-Z03mDUOA_A&rj-ttl=5',
+    url: url,
     title: 'Ardan FM',
     artist: 'Ardan Radio',
-    artwork:
-      'https://api.radiosworld.info/files/radio/logo/1411605f0a94430b873a6d09580d02cc1c151725.jpeg',
+    artwork: 'https://api.radiosworld.info/files/radio/logo/1411605f0a94430b873a6d09580d02cc1c151725.jpeg',
   };
   const [currentProgram, setCurrentProgram] = useState({
     image: null,
@@ -103,7 +104,7 @@ const Nav = ({navigation, ...props}) => {
   const handlePlayPause = async () => {
     if((currentScreen != 'Ardan Radio' && radio == 'paused') || currentScreen == 'Ardan Radio'){
       try {
-        const playerState = await TrackPlayer.getState();
+        let playerState = await TrackPlayer.getState();
         if (playerState === 'stopped') {
           await TrackPlayer.reset();
         }
@@ -116,6 +117,8 @@ const Nav = ({navigation, ...props}) => {
           playerState === 'idle'
         ) {
           await TrackPlayer.play();
+          playerState = await TrackPlayer.getState();
+          console.log(playerState);
           setRadio('playing');
           radioAct.setRadio('playing')
           getCurrentProgram();
@@ -123,6 +126,8 @@ const Nav = ({navigation, ...props}) => {
           await TrackPlayer.pause();
           await TrackPlayer.reset();
           await TrackPlayer.add(track);
+          playerState = await TrackPlayer.getState();
+          console.log(playerState);
           setRadio('paused');
           radioAct.setRadio('paused')
         }

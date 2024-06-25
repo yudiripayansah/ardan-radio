@@ -66,7 +66,8 @@
                 <table class="table table-hover table-striped table-bordered table-no-space">
                   <thead>
                     <tr>
-                      <th scope="col" width="5%">Image</th>
+                      <th scope="col" width="5%">Thumbnail</th>
+                      <th scope="col" width="5%">Banner</th>
                       <th scope="col" width="20%">Title</th>
                       <th scope="col" width="20%">Text</th>
                       <th scope="col" width="20%">Penyiar</th>
@@ -79,9 +80,16 @@
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
                       <td>
-                        <div class="bg-dark">
+                        <div class="bg-dark" v-if="item.image_square_url">
+                          <img alt="avatar" :src="item.image_square_url" class="img-thumbnail w-100 bg-dark rounded" />
+                        </div>
+                        <span v-else>-</span>
+                      </td>
+                      <td>
+                        <div class="bg-dark" v-if="item.image_url">
                           <img alt="avatar" :src="item.image_url" class="img-thumbnail w-100 bg-dark rounded" />
                         </div>
+                        <span v-else>-</span>
                       </td>
                       <td>
                         <span v-text="(item.title) ? item.title : '-'"></span>
@@ -206,7 +214,18 @@
           <div class="row">
             <div class="col-12">
               <div class="form-group">
-                <label for="programsImage" class="control-label">Image</label>
+                <label for="programsImageSquare" class="control-label">Thumbnail</label>
+                <label class="w-100 bg-dark">
+                  <img :src="(form.data.image_square) ? form.data.image_square : 'https://placehold.co/300x300'" alt=""
+                    class="img-fluid w-100">
+                  <input type="file" id="image_square" class="d-none" @change="previewImage($event)">
+                </label>
+                <input type="hidden" class="form-control" v-model="form.data.image" id="programsImageSquare">
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="programsImage" class="control-label">Banner</label>
                 <label class="w-100 bg-dark">
                   <img :src="(form.data.image) ? form.data.image : 'https://placehold.co/500x300'" alt=""
                     class="img-fluid w-100">
@@ -306,13 +325,25 @@
 @section('customScript')
 <script>
   Vue.use( CKEditor );
-const vueDashboard = new Vue( {
+  const vueDashboard = new Vue( {
   el: '#programsPage',
   data: {
         ckeditor: {
           editor: ClassicEditor,
           editorConfig: {
-            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'strikethrough', 'code', '|',
+                'bulletedList', 'numberedList', 'todoList', '|',
+                'link', 'unlink', 'linkImage', '|',
+                'insertTable', 'mediaEmbed', '|',
+            ],
+            image: {
+                toolbar: [
+                    'imageStyle:block', 'imageStyle:side', '|',
+                    'imageTextAlternative', 'imageCaption', 'imageResize'
+                ]
+            },
             heading: {
               options: [
                   { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -329,6 +360,7 @@ const vueDashboard = new Vue( {
         },
       form: {
           data: {
+            image_square: null,
             image: null,
             title: null,
             text: null,
@@ -593,6 +625,7 @@ const vueDashboard = new Vue( {
       },
       clearForm() {
         this.form.data = {
+          image_square: null,
           image: null,
           title: null,
           text: null,
@@ -613,11 +646,12 @@ const vueDashboard = new Vue( {
         let vm = this
         let inp = e.target
         let files = e.target.files
+        let trg = inp.getAttribute('id')
         for(let i = 0; i < files.length; i++) {
           let reader = new FileReader();
           reader.readAsDataURL(files[i]);
           reader.onload = function () {
-            vm.form.data.image = reader.result
+            vm.form.data[trg] = reader.result
             inp.type = 'text';
             inp.type = 'file';
           };

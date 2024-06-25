@@ -464,7 +464,7 @@ const Home = ({navigation}) => {
         page: 1,
         perPage: 10,
         sortDir: 'DESC',
-        sortBy: 'id',
+        sortBy: 'pin',
         type: 'Instagram',
       };
       let req = await Api.contentRead(payload);
@@ -824,7 +824,7 @@ const Home = ({navigation}) => {
                     goToProgram(item.id);
                   }}>
                   <Image
-                    source={{uri: item.image_url}}
+                    source={{uri: (item.image_square_url) ? item.image_square_url : item.image_url}}
                     style={[
                       theme.w140,
                       theme.h140,

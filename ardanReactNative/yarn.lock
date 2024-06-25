@@ -7040,6 +7040,11 @@ react-native-vector-icons@^10.0.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
+react-native-video@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.3.0.tgz#c195ef4c0a6d9ad19bfca40700f1f72dccf26cf3"
+  integrity sha512-lyLjWOdw/jgVpMSrprgKVwhT0KUlGzQRBVTDGyQSYDJ0I5ZkZKcmDE32rWCOyAtWhel+GtJjIyFqgT6xIXuxgg==
+
 react-native-websocket@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-websocket/-/react-native-websocket-1.0.2.tgz#5f9f57c6adcfd6163e4480207302d161bb602315"

@@ -97,7 +97,7 @@ const ArdanContent = ({navigation}) => {
         page: 1,
         perPage: 10,
         sortDir: 'DESC',
-        sortBy: 'id',
+        sortBy: 'pin',
         type: 'Instagram',
       };
       if (search) {
@@ -133,7 +133,7 @@ const ArdanContent = ({navigation}) => {
         page: 1,
         perPage: 10,
         sortDir: 'DESC',
-        sortBy: 'id',
+        sortBy: 'pin',
         type: 'Youtube',
       };
       if (search) {
@@ -169,7 +169,7 @@ const ArdanContent = ({navigation}) => {
         page: 1,
         perPage: 10,
         sortDir: 'DESC',
-        sortBy: 'id',
+        sortBy: 'pin',
         type: 'Tiktok',
       };
       if (search) {

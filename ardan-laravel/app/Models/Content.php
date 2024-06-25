@@ -11,7 +11,7 @@ class Content extends Model
     use SoftDeletes;
     protected $table = 'content';
     protected $fillable = [
-      'image','title','url','type'
+      'image','title','url','type','pin'
     ];
     public static function validate($validate)
     {
