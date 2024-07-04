@@ -146,12 +146,32 @@ const Login = ({navigation}) => {
       }
     } catch (error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            console.log(error)
+          setLogin({
+            status: false,
+            msg: 'Sign In Canceled',
+            data: null
+          })
+          console.log(error)
         } else if (error.code === statusCodes.IN_PROGRESS) {
-            console.log(error)
+          setLogin({
+            status: false,
+            msg: 'Sign In Inprogress',
+            data: null
+          })
+          console.log(error)
         } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            console.log(error)
+          setLogin({
+            status: false,
+            msg: 'Play services not available',
+            data: null
+          })
+          console.log(error)
         } else {
+          setLogin({
+            status: false,
+            msg: 'Sign In by google failed',
+            data: null
+          })
           console.log(error)
         }
     }

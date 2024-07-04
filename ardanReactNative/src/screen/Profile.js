@@ -741,7 +741,12 @@ const Profile = ({route, navigation}) => {
   const AcsProfile = () => {
     return (
       <ActionSheet ref={acProfile} isModal={true}>
-        <View style={[theme.px20, theme.py15, theme.bgblack]}>
+        <View style={[theme.px20, theme.py15, theme.bgblack,theme.hp100,theme.fjCenter,theme.faCenter]}>
+          <View style={[theme.absolute,theme.top15,theme.right15]}>
+            <TouchableOpacity onPress={() => {hideAcp()}}>
+              <Icon name="close" size={30} color="#F8C303" />
+            </TouchableOpacity>
+          </View>
           <AutoHeightImage
             contentWidth={profileImageWidth}
             width={profileImageWidth}

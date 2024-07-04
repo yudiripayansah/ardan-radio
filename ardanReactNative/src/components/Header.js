@@ -13,6 +13,8 @@ import {ThemeContext} from '../context/ThemeContext';
 import {AuthContext} from '../context/AuthContext';
 import {UserContext} from '../context/UserContext';
 import {useRoute} from '@react-navigation/native';
+import ActionSheet from 'react-native-actions-sheet';
+import AutoHeightImage from 'react-native-auto-height-image';
 import usePushNotification from '../hook/usePushNotification';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SvgUri from 'react-native-svg-uri';
@@ -21,6 +23,8 @@ import Api from '../config/Api';
 import Icons from './Icons';
 import messaging from '@react-native-firebase/messaging';
 const Header = ({navigation, ...props}) => {
+  const profileImageWidth = useWindowDimensions().width - 40;
+  const acProfile = useRef(null);
   const {
     requestUserPermission,
     getFCMToken,
@@ -146,6 +150,7 @@ const Header = ({navigation, ...props}) => {
   const HeaderHome = () => {
     return (
       <View style={[theme.wp100]}>
+        <AcsProfile/>
         <View
           style={[
             // {backgroundColor: '#28353b'},
@@ -159,7 +164,14 @@ const Header = ({navigation, ...props}) => {
             theme.relative,
           ]}>
           <View style={[theme.fRow, theme.faCenter]}>
-            <View
+            <TouchableOpacity
+              onPress={()=>{
+                if (user.role == 'guest') {
+                  removeUser();
+                } else {
+                  navigation.navigate('MyProfile');
+                }
+              }}
               style={[
                 theme.faCenter,
                 theme.fjCenter,
@@ -175,14 +187,18 @@ const Header = ({navigation, ...props}) => {
                 source={user.image_url ? {uri:user.image_url} : Icons.user}
                 style={[{objectFit: 'contain', width: user.image_url ? 35: 20,height: user.image_url ? 35: 20}]}
               />
-            </View>
+            </TouchableOpacity>
             <View>
               <Text style={[theme['h15-700'], {color: '#28353b'}]}>
                 Welcome back!
               </Text>
               <TouchableOpacity
                 onPress={() => {
-                  doLogout();
+                  if (user.role == 'guest') {
+                    removeUser();
+                  } else {
+                    navigation.navigate('MyProfile');
+                  }
                 }}>
                 <Text
                   style={[
@@ -299,6 +315,36 @@ const Header = ({navigation, ...props}) => {
         </View>
       </>
     );
+  };
+  const AcsProfile = () => {
+    return (
+      <ActionSheet ref={acProfile} isModal={true}>
+        <View style={[theme.px20, theme.py15, theme.bgblack,theme.hp100,theme.fjCenter,theme.faCenter]}>
+          <View style={[theme.absolute,theme.top15,theme.right15]}>
+            <TouchableOpacity onPress={() => {hideAcp()}}>
+              <Icon name="close" size={30} color="#F8C303" />
+            </TouchableOpacity>
+          </View>
+          <AutoHeightImage
+            contentWidth={profileImageWidth}
+            width={profileImageWidth}
+            source={
+              dUser.image
+                ? {uri: dUser.image_url}
+                : {
+                    uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+                  }
+            }
+          />
+        </View>
+      </ActionSheet>
+    );
+  };
+  const hideAcp = () => {
+    acProfile.current?.hide();
+  };
+  const showAcp = item => {
+    acProfile.current?.show();
   };
   const getHeader = () => {
     if (currentScreen == 'Home') {

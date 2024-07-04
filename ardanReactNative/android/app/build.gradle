@@ -99,8 +99,8 @@ android {
         applicationId "com.ardanreactnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "2.5"
+        versionCode 18
+        versionName "2.7"
         multiDexEnabled true
     }
 

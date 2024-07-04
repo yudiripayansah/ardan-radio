@@ -203,6 +203,7 @@ Route::group([
 ], function ($router) {
     Route::post('/read', [PublicChatControllers::class, 'read']); 
     Route::post('/send', [PublicChatControllers::class, 'send']);
+    Route::post('/delete', [PublicChatControllers::class, 'delete']);
 });
 Route::group([
     'prefix' => 'privatechat'
