@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "543317221813-jt988n67n3c940m95rq2fhn95bia5v05.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ardanreactnative",
+            "certificate_hash": "d1431077bf47067a9ffab537066b5a1c3612e81f"
+          }
+        },
+        {
           "client_id": "543317221813-kd6a45hqtg8luumcuj1ud7tn9guoh0kg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

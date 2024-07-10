@@ -99,8 +99,8 @@ android {
         applicationId "com.ardanreactnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 18
-        versionName "2.7"
+        versionCode 21
+        versionName "3.0"
         multiDexEnabled true
     }
 
@@ -175,6 +175,10 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    implementation platform('com.google.firebase:firebase-bom:26.3.0')
+
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.facebook.android:facebook-login:latest.release'
 }
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

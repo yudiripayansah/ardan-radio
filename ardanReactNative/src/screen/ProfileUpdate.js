@@ -30,6 +30,7 @@ const ProfileUpdate = ({route, navigation}) => {
   const {setUser} = useContext(AuthContext);
   const [image, setimage] = useState(user.image_url);
   const [name, setname] = useState(user.name);
+  const [email, setemail] = useState(user.email);
   const [phone, setphone] = useState(user.phone);
   const [address, setaddress] = useState(user.address);
   const [gender, setgender] = useState(user.gender);
@@ -111,6 +112,7 @@ const ProfileUpdate = ({route, navigation}) => {
         email: user.email,
         image: image,
         name: name,
+        email: email,
         phone: phone,
         address: address,
         gender: gender,
@@ -135,7 +137,10 @@ const ProfileUpdate = ({route, navigation}) => {
               navigation.navigate('Profile');
             }, 1000);
           } else {
-            console.log(req.data);
+            if(req.data.errors && req.data.errors.length > 0){
+              setMsg(req.data.errors[0])
+            }
+            console.log(req.data.errors[0]);
           }
         }
       } else {
@@ -201,6 +206,25 @@ const ProfileUpdate = ({route, navigation}) => {
             onChangeText={setname}
             value={name}
           />
+          {(!user.email) && (
+            <TextInput
+              multiline={true}
+              style={[
+                theme.wp100,
+                theme.cwhite,
+                theme['h14-400'],
+                {textAlignVertical: 'top'},
+                theme.bbw1,
+                theme.bsolid,
+                theme.byellow,
+                theme.mt10,
+              ]}
+              placeholder="Email"
+              placeholderTextColor={'#fff'}
+              onChangeText={setemail}
+              value={email}
+            />
+          )}
           <TextInput
             multiline={true}
             style={[
@@ -294,7 +318,7 @@ const ProfileUpdate = ({route, navigation}) => {
               style={[
                 theme.cwhite,
                 theme['h14-400'],
-                {marginLeft: -13, marginRight: -13},
+                {marginLeft: 0, marginRight: -13},
               ]}
               dropdownIconColor="white">
               <Picker.Item label="Laki-Laki" value="Laki-Laki" />
