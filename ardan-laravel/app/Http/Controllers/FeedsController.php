@@ -50,7 +50,9 @@ class FeedsController extends Controller
     $listData = $listData->get();
     foreach($listData as $ld) {
       $ld->image_url = ($ld->image) ? Storage::disk('public')->url('feeds/'.$ld->image) : null;
-      $ld->user->image_url = ($ld->user && $ld->user->image) ? Storage::disk('public')->url('user/'.$ld->user->image) : null;
+      if($ld->user) {
+        $ld->user->image_url = ($ld->user && $ld->user->image) ? Storage::disk('public')->url('user/'.$ld->user->image) : null;
+      }
       $ld->comment_count = Comments::where('id_target',$ld->id)->where('target_type',$ld->type)->count();
       $ld->like_count = Likes::where('id_target',$ld->id)->where('type',$ld->type)->count();
     }
@@ -212,9 +214,13 @@ class FeedsController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = Feeds::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Feeds::destroy($id);
+        } else {
+          $delData = Feeds::find($id);
+          $delData->delete();
+        }
         $res = array(
             'status' => true,
             'msg' => 'Data successfully deleted'

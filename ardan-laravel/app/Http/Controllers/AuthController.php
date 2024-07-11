@@ -223,7 +223,15 @@ class AuthController extends Controller
   }
   public function loginOrRegister(Request $request)
   {
-    $user = User::where('email', $request->email)->first();
+    if($request->email){
+      $user = User::where('email', $request->email)->first();
+    }
+    if($request->fbid){
+      $user = User::where('fbid', $request->fbid)->first();
+    }
+    if($request->gid){
+      $user = User::where('gid', $request->gid)->first();
+    }
     if(!$user) {
       $dataCreate = $request->all();
       if($request->image){
@@ -231,7 +239,7 @@ class AuthController extends Controller
         $filePath = 'user/' .$filename;
         $dataCreate['image'] = $filename;
         Storage::disk('public')->put($filePath, file_get_contents($request->image));
-      } else {
+      } else { 
         unset($dataCreate['image']);
       }
       $dataCreate['password'] = Hash::make(uniqid());

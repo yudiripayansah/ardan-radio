@@ -177,9 +177,13 @@ class BannerController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = Banners::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Banners::destroy($id);
+        } else {
+          $delData = Banners::find($id);
+          $delData->delete();
+        }
         $res = array(
             'status' => true,
             'msg' => 'Data successfully deleted'

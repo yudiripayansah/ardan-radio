@@ -15,7 +15,6 @@ class CreateProgramsTable extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
-            $table->text('image_square')->nullable();
             $table->text('image')->nullable();
             $table->text('title');
             $table->text('text')->nullable();;

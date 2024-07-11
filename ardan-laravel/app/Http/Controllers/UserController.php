@@ -164,7 +164,7 @@ class UserController extends Controller
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
       unset($dataUpdate['image']);
-    }
+    } 
     unset($dataUpdate['created_at']);
     unset($dataUpdate['updated_at']);
     unset($dataUpdate['deleted_at']);
@@ -217,9 +217,13 @@ class UserController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = User::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = User::destroy($id);
+        } else {
+          $delData = User::find($id);
+          $delData->delete();
+        }
         $res = array(
             'status' => true,
             'msg' => 'Data successfully deleted'

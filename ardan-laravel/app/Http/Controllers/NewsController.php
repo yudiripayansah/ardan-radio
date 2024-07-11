@@ -9,12 +9,10 @@ use App\Models\News;
 
 class NewsController extends Controller
 {
-  public function __construct()
-  {
+  public function __construct() {
     $this->middleware('auth:api', ['except' => ['read', 'get']]);
   }
-  public function read(Request $request)
-  {
+  public function read(Request $request) {
     $page = ($request->page) ? $request->page : 1;
     $perPage = ($request->perPage) ? $request->perPage : '~';
     $offset = ($page > 1) ? ($page - 1) * $perPage : 0;
@@ -28,65 +26,64 @@ class NewsController extends Controller
     $category = ($request->category) ? $request->category : null;
     $listData = News::select('news.*')->orderBy($sortBy, $sortDir);
     if ($perPage != '~') {
-      $listData->skip($offset)->take($perPage);
+        $listData->skip($offset)->take($perPage);
     }
     if ($search != null) {
-      $listData->whereRaw('(news.title LIKE "%' . $search . '%")');
+        $listData->whereRaw('(news.title LIKE "%'.$search.'%")');
     }
     if ($category != null) {
-      $listData->whereRaw('(news.category LIKE "%' . $category . '%")');
+        $listData->whereRaw('(news.category LIKE "%'.$category.'%")');
     }
     $listData = $listData->get();
-    foreach ($listData as $ld) {
-      $ld->image_url = Storage::disk('public')->url('news/' . $ld->image);
+    foreach($listData as $ld) {
+      $ld->image_url = Storage::disk('public')->url('news/'.$ld->image);
     }
     if ($search || $id_user || $type || $category) {
-      $total = News::orderBy($sortBy, $sortDir);
-      if ($search) {
-        $total->whereRaw('(news.title LIKE "%' . $search . '%")');
-      }
-      if ($category) {
-        $total->whereRaw('(news.category LIKE "%' . $category . '%")');
-      }
-      $total = $total->count();
+        $total = News::orderBy($sortBy, $sortDir);
+        if ($search) {
+            $total->whereRaw('(news.title LIKE "%'.$search.'%")');
+        }
+        if ($category) {
+            $total->whereRaw('(news.category LIKE "%'.$category.'%")');
+        }
+        $total = $total->count();
     } else {
-      $total = News::all()->count();
+        $total = News::all()->count();
     }
     if ($perPage != '~') {
-      $totalPage = ceil($total / $perPage);
+        $totalPage = ceil($total / $perPage);
     }
     $res = array(
-      'status' => true,
-      'data' => $listData,
-      'msg' => 'List data available',
-      'total' => $total,
-      'totalPage' => $totalPage,
-      'paging' => array(
-        'page' => $page,
-        'perPage' => $perPage,
-        'sortDir' => $sortDir,
-        'sortBy' => $sortBy,
-        'search' => $search
-      )
+        'status' => true,
+        'data' => $listData,
+        'msg' => 'List data available',
+        'total' => $total,
+        'totalPage' => $totalPage,
+        'paging' => array(
+          'page' => $page,
+          'perPage' => $perPage,
+          'sortDir' => $sortDir,
+          'sortBy' => $sortBy,
+          'search' => $search
+        )
     );
     return response()->json($res, 200);
   }
-  public function get(Request $request)
-  {
+  public function get(Request $request) {
     if ($request->id) {
       $getData = News::find($request->id);
-      $getData->image = Storage::disk('public')->url('news/' . $getData->image);
+      $getData->image = Storage::disk('public')->url('news/'.$getData->image);
       if ($getData) {
-        $res = array(
-          'status' => true,
-          'data' => $getData,
-          'msg' => 'Data available'
-        );
+          $res = array(
+                  'status' => true,
+                  'data' => $getData,
+                  'msg' => 'Data available'
+                );
       } else {
-        $res = array(
-          'status' => false,
-          'msg' => 'Data not found'
-        );
+          $res = array(
+                  'status' => false,
+                  'msg' => 'Data not found'
+                );
       }
     } else {
       $res = array(
@@ -96,12 +93,11 @@ class NewsController extends Controller
     }
     return response()->json($res, 200);
   }
-  public function create(Request $request)
-  {
+  public function create(Request $request) {
     $dataCreate = $request->all();
-    if ($request->image) {
-      $filename = uniqid() . time() . '-' . '-news.png';
-      $filePath = 'news/' . $filename;
+    if($request->image){
+      $filename = uniqid().time().'-'. '-news.png';
+      $filePath = 'news/' .$filename;
       $dataCreate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
@@ -114,37 +110,36 @@ class NewsController extends Controller
         $dc = News::create($dataCreate);
         $dg = News::find($dc->id);
         $res = array(
-          'status' => true,
-          'data' => $dg,
-          'msg' => 'Data successfully created'
-        );
+                'status' => true,
+                'data' => $dg,
+                'msg' => 'Data successfully created'
+              );
         DB::commit();
       } catch (Exception $e) {
         DB::rollback();
         $res = array(
-          'status' => false,
-          'data' => $dataCreate,
-          'msg' => 'Failed to create data'
-        );
+                'status' => false,
+                'data' => $dataCreate,
+                'msg' => 'Failed to create data'
+              );
       }
     } else {
       $res = array(
-        'status' => false,
-        'data' => $dataCreate,
-        'msg' => 'Validation failed',
-        'errors' => $validate['error']
-      );
+              'status' => false,
+              'data' => $dataCreate,
+              'msg' => 'Validation failed',
+              'errors' => $validate['error']
+            );
     }
     return response()->json($res, 200);
   }
-  public function update(Request $request)
-  {
+  public function update(Request $request) {
     $dataUpdate = $request->all();
     $dataFind = News::find($request->id);
     $validate = News::validate($dataUpdate);
     if (basename($request->image) != basename($dataFind->image)) {
-      $filename = uniqid() . time() . '-' . '-news.png';
-      $filePath = 'news/' . $filename;
+      $filename = uniqid().time().'-'. '-news.png';
+      $filePath = 'news/' .$filename;
       $dataUpdate['image'] = $filename;
       Storage::disk('public')->put($filePath, file_get_contents($request->image));
     } else {
@@ -156,19 +151,19 @@ class NewsController extends Controller
     DB::beginTransaction();
     if ($validate['status']) {
       try {
-        $du = News::where('id', $request->id)->update($dataUpdate);
+        $du = News::where('id',$request->id)->update($dataUpdate);
         $dg = News::find($request->id);
         $res = array(
-          'status' => true,
-          'data' => $dg,
-          'msg' => 'Data Successfully Saved'
-        );
+                'status' => true,
+                'data' => $dg,
+                'msg' => 'Data Successfully Saved'
+              );
         DB::commit();
       } catch (Exception $e) {
         $res = array(
-          'status' => false,
-          'msg' => 'Failed to Save Data'
-        );
+                'status' => false,
+                'msg' => 'Failed to Save Data'
+              );
         DB::rollback();
       }
     } else {
@@ -181,28 +176,31 @@ class NewsController extends Controller
     }
     return response()->json($res, 200);
   }
-  public function delete(Request $request)
-  {
+  public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = News::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = News::destroy($id);
+        } else {
+          $delData = News::find($id);
+          $delData->delete();
+        }
         $res = array(
-          'status' => true,
-          'msg' => 'Data successfully deleted'
+            'status' => true,
+            'msg' => 'Data successfully deleted'
         );
       } catch (Exception $e) {
         $res = array(
-          'status' => false,
-          'msg' => 'Failed to delete Data'
-        );
+                'status' => false,
+                'msg' => 'Failed to delete Data'
+              );
       }
     } else {
       $res = array(
-        'status' => false,
-        'msg' => 'No data selected'
-      );
+              'status' => false,
+              'msg' => 'No data selected'
+            );
     }
     return response()->json($res, 200);
   }

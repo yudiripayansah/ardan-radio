@@ -120,4 +120,33 @@ class PublicChatControllers extends Controller
     broadcast(new PublicChatEvents($id_user,$id_target,$target_type,$title,$chat,$penyiar,$verified,$date,$user))->toOthers();
     return response()->json([$request->all()], 200);
   }
+  public function delete(Request $request)
+  {
+    $id = $request->id;
+    if ($id) {
+      try {
+        if(is_array($id)){
+          $delData = LiveChat::destroy($id);
+        } else {
+          $delData = LiveChat::find($id);
+          $delData->delete();
+        }
+        $res = array(
+          'status' => true,
+          'msg' => 'Data successfully deleted'
+        );
+      } catch (Exception $e) {
+        $res = array(
+          'status' => false,
+          'msg' => 'Failed to delete Data'
+        );
+      }
+    } else {
+      $res = array(
+        'status' => false,
+        'msg' => 'No data selected'
+      );
+    }
+    return response()->json($res, 200);
+  }
 }

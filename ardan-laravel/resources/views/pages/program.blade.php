@@ -60,12 +60,18 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-6 mt-3 d-flex justify-content-md-end align-items-end">
+                    <button class="btn btn-danger btn-sm" type="button" @click="form.delete = checked.ids;modal.delete.show()" :disabled="checked.ids.length == 0">Delete Selected</button>
+                  </div>
                 </div>
               </div>
               <div class="table-responsive">
                 <table class="table table-hover table-striped table-bordered table-no-space">
                   <thead>
                     <tr>
+                      <th scope="col">
+                        <input type="checkbox" v-model="checked.all" @change="checkAll()">
+                      </th>
                       <th scope="col" width="5%">Thumbnail</th>
                       <th scope="col" width="5%">Banner</th>
                       <th scope="col" width="20%">Title</th>
@@ -79,6 +85,9 @@
                   </thead>
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
+                      <td>
+                        <input type="checkbox" v-model="checked.ids" :value="item.id">
+                      </td>
                       <td>
                         <div class="bg-dark" v-if="item.image_square_url">
                           <img alt="avatar" :src="item.image_square_url" class="img-thumbnail w-100 bg-dark rounded" />
@@ -241,6 +250,7 @@
               </div>
               <div class="form-group mt-3">
                 <label for="programsText" class="control-label">Text</label>
+                {{-- <textarea id="programsText" v-model="form.data.text"></textarea> --}}
                 <ckeditor :editor="ckeditor.editor" v-model="form.data.text" :config="ckeditor.editorConfig"></ckeditor>
               </div>
               <div class="form-group mt-3">
@@ -323,6 +333,7 @@
 </div>
 @endsection
 @section('customScript')
+<script src="https://cdn.tiny.cloud/1/ptev20o24av7qkz5yyml5v305ulagug2qk3ehynxb7tnfhe7/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
   Vue.use( CKEditor );
   const vueDashboard = new Vue( {
@@ -436,6 +447,10 @@
         modal: {
           form: null,
           delete: null
+        },
+        checked: {
+          all: false,
+          ids: []
         }
   },
   computed: {
@@ -454,6 +469,32 @@
     },
   },
   methods: {
+      initTinymce() {
+        tinymce.init({
+            selector: '#programsText',
+            setup: (editor) => {
+              editor.on('change', () => {
+                console.log('form data text',this.form.data.text)
+                this.form.data.text = editor.getContent();
+              });
+            },
+            plugins: [
+              'a11ychecker','advlist','advcode','advtable','autolink','checklist','markdown',
+              'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
+              'powerpaste','fullscreen','formatpainter','insertdatetime','media','table','help','wordcount'
+            ],
+            toolbar: 'undo redo | formatpainter casechange blocks | bold italic backcolor | ' +
+              'alignleft aligncenter alignright alignjustify | ' +
+              'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+          });
+      },
+      checkAll(){
+        if(this.checked.all){
+          this.checked.ids = this.table.items.map(item => item.id)
+        } else {
+          this.checked.ids = []
+        }
+      },
       async doGetPenyiar() {
         this.opt.penyiar = []
         this.form.loading = true
@@ -635,6 +676,8 @@
           time_end: null
         }
         this.form.delete = null
+          this.checked.all = false
+          this.checked.ids = []
       },
         initModal() {
           this.modal = {
@@ -692,6 +735,7 @@
     this.doGet()
     this.doGetPenyiar()
     this.initModal()
+    // this.initTinymce()
   }
 });
 </script>

@@ -16,7 +16,7 @@ class User extends Authenticatable implements JWTSubject
     use SoftDeletes;
     protected $table = 'users';
     protected $fillable = [
-      'username','email','name','password','phone','image','address','gender','dob','role','penyiar','verified','status','token','otp','online'
+      'username','email','name','password','phone','image','address','gender','dob','role','penyiar','verified','status','token','otp','fbid','gid'
     ];
     protected $hidden = [
       'password',
@@ -25,13 +25,13 @@ class User extends Authenticatable implements JWTSubject
     {
       if($validate['id']) {
         $rule = [
-          'email' => 'required',
+          'email' => 'unique:App\Models\User,email,'.$validate['id'],
           'name' => 'required',
           'role' => 'required',
         ];
       } else {
         $rule = [
-          'email' => 'required',
+          'email' => 'unique:App\Models\User,email',
           'name' => 'required',
           'password' => 'required',
           'role' => 'required',

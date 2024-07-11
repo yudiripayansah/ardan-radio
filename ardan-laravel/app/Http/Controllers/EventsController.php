@@ -179,9 +179,13 @@ class EventsController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = Events::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Events::destroy($id);
+        } else {
+          $delData = Events::find($id);
+          $delData->delete();
+        }
         $res = array(
             'status' => true,
             'msg' => 'Data successfully deleted'

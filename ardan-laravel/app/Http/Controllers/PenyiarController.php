@@ -181,9 +181,13 @@ class PenyiarController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = Penyiar::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Penyiar::destroy($id);
+        } else {
+          $delData = Penyiar::find($id);
+          $delData->delete();
+        }
         $res = array(
             'status' => true,
             'msg' => 'Data successfully deleted'

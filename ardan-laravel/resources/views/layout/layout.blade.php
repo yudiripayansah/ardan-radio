@@ -40,6 +40,7 @@
 		<script src="{{ url('/resources/assets/js/helper.js') }}"></script>
 		<script src="{{ url('/resources/assets/js/Api.js') }}"></script>
 		<script src="{{ url('node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js') }}"></script>
+		<script src="{{ url('node_modules/@ckeditor/ckeditor5-image/build/image.js') }}"></script>
 		<script src="{{ url('node_modules/@ckeditor/ckeditor5-vue2/dist/ckeditor.js') }}"></script>
 </head>
 <body class="layout-boxed">

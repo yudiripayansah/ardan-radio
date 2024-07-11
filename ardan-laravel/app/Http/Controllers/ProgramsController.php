@@ -96,7 +96,7 @@ class ProgramsController extends Controller
           foreach ($getData as $g) {
             $g->image = ($g->image) ? Storage::disk('public')->url('programs/' . $g->image) : null;
             $g->image_square = ($g->image_square) ? Storage::disk('public')->url('programs/' . $g->image_square) : null;
-            $g->days_label = $this->daysLabel($g->days);
+            $g->days_label = ($g->days) ? $this->daysLabel($g->days) : null;
             $g->penyiar_name = $this->penyiarName($g->penyiar);
             $g->favorited = false;
             $g->remind = false;
@@ -106,7 +106,7 @@ class ProgramsController extends Controller
           $getData->remind = false;
           $getData->image = ($getData->image) ? Storage::disk('public')->url('programs/' . $getData->image) : null;
           $getData->image_square = ($getData->image_square) ? Storage::disk('public')->url('programs/' . $getData->image_square) : null;
-          $getData->days_label = $this->daysLabel($getData->days);
+          $getData->days_label = ($getData->days) ? $this->daysLabel($getData->days) : null;
           $getData->penyiar_name = $this->penyiarName($getData->penyiar);
         }
         $res = array(
@@ -241,9 +241,13 @@ class ProgramsController extends Controller
   {
     $id = $request->id;
     if ($id) {
-      $delData = Programs::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Programs::destroy($id);
+        } else {
+          $delData = Programs::find($id);
+          $delData->delete();
+        }
         $res = array(
           'status' => true,
           'msg' => 'Data successfully deleted'
@@ -267,8 +271,10 @@ class ProgramsController extends Controller
     $days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
     $data = explode(",", $data);
     $theDay = [];
-    for ($i = 0; $i < count($data); $i++) {
-      array_push($theDay, $days[$data[$i] - 1]);
+    if($data){
+      for ($i = 0; $i < count($data); $i++) {
+        array_push($theDay, $days[$data[$i] - 1]);
+      }
     }
     return implode(",", $theDay);
   }

@@ -178,9 +178,13 @@ class CategoryController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = Categories::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Categories::destroy($id);
+        } else {
+          $delData = Categories::find($id);
+          $delData->delete();
+        }
         $res = array(
             'status' => true,
             'msg' => 'Data successfully deleted'

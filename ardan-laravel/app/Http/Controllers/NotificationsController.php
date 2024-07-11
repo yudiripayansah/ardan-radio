@@ -211,9 +211,13 @@ class NotificationsController extends Controller
   public function delete(Request $request) {
     $id = $request->id;
     if ($id) {
-      $delData = Notifications::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Notifications::destroy($id);
+        } else {
+          $delData = Notifications::find($id);
+          $delData->delete();
+        }
         $res = array(
             'status' => true,
             'msg' => 'Data successfully deleted'
@@ -257,6 +261,7 @@ class NotificationsController extends Controller
         $fcm = $fcm->withIcon($data->icon);
       }
       $fcm = $fcm->withSound('default');
+      $fcm = $fcm->withClickAction('https://www.google.com');
       $fcm = $fcm->withPriority('high');
       $fcm = $fcm->withAdditionalData($data);
       $fcm = $fcm->asNotification($tokens);

@@ -21,10 +21,9 @@
               <div class="dt--top-section">
                 <div class="row">
                   <div class="col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center">
-                    <div class="dt-buttons"> 
+                    <div class="dt-buttons">
                       <button class="dt-button btn btn-secondary toggle-vis mb-1" tabindex="0"
-                        aria-controls="show-hide-col"
-                        @click="clearForm();modal.form.show()">
+                        aria-controls="show-hide-col" @click="clearForm();modal.form.show()">
                         <span>Add New</span>
                       </button>
                     </div>
@@ -60,7 +59,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-6 mt-3">
+                  <div class="col-3 mt-3">
                     <div class="row">
                       <div class="col-12 control-label">Social Type</div>
                       <div class="col-12">
@@ -72,12 +71,20 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-3 mt-3 d-flex justify-content-md-end align-items-end">
+                    <button class="btn btn-danger btn-sm" type="button"
+                      @click="form.delete = checked.ids;modal.delete.show()" :disabled="checked.ids.length == 0">Delete
+                      Selected</button>
+                  </div>
                 </div>
               </div>
               <div class="table-responsive">
                 <table class="table table-hover table-striped table-bordered table-no-space">
                   <thead>
                     <tr>
+                      <th scope="col">
+                        <input type="checkbox" v-model="checked.all" @change="checkAll()">
+                      </th>
                       <th scope="col" width="5%">Created By</th>
                       <th scope="col" width="5%">Image</th>
                       <th scope="col" width="20%">Title</th>
@@ -91,6 +98,9 @@
                   </thead>
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
+                      <td>
+                        <input type="checkbox" v-model="checked.ids" :value="item.id">
+                      </td>
                       <td>
                         <span v-text="(item.user) ? item.user.name : '-'"></span>
                       </td>
@@ -110,7 +120,9 @@
                         <span v-text="(item.type) ? item.type : '-'"></span>
                       </td>
                       <td>
-                        <span class="badge badge-danger" v-text="(item.reports) ? item.reports.length : '-'" v-if="item.reports.length > 0" @click="modal.report.show();pagingReport.id_feed = item.id"></span>
+                        <span class="badge badge-danger" v-text="(item.reports) ? item.reports.length : '-'"
+                          v-if="item.reports.length > 0"
+                          @click="modal.report.show();pagingReport.id_feed = item.id"></span>
                         <span v-text="(item.reports) ? item.reports.length : '-'" v-else></span>
                       </td>
                       <td>
@@ -484,7 +496,11 @@
             form: null,
             delete: null,
             report: null
-          }
+          },
+        checked: {
+          all: false,
+          ids: []
+        }
     },
     computed: {
       users() {
@@ -506,6 +522,13 @@
       },
     },
     methods: {
+        checkAll(){
+          if(this.checked.all){
+            this.checked.ids = this.table.items.map(item => item.id)
+          } else {
+            this.checked.ids = []
+          }
+        },
         async doGetCategory() {
           this.opt.category = []
           this.form.loading = true
@@ -680,6 +703,8 @@
             status: 'PUBLISHED'
           }
           this.form.delete = null
+          this.checked.all = false
+          this.checked.ids = []
         },
           initModal() {
             this.modal = {

@@ -19,7 +19,6 @@ class CreateContentTable extends Migration
             $table->text('title');
             $table->text('url')->nullable();
             $table->text('type')->nullable();
-            $table->integer('pin')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

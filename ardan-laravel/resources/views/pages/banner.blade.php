@@ -71,12 +71,20 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-6 mt-3 d-flex justify-content-md-end align-items-end">
+                    <button class="btn btn-danger btn-sm" type="button"
+                      @click="form.delete = checked.ids;modal.delete.show()" :disabled="checked.ids.length == 0">Delete
+                      Selected</button>
+                  </div>
                 </div>
               </div>
               <div class="table-responsive">
                 <table class="table table-hover table-striped table-bordered table-no-space">
                   <thead>
                     <tr>
+                      <th scope="col">
+                        <input type="checkbox" v-model="checked.all" @change="checkAll()">
+                      </th>
                       <th scope="col" width="20%">Image</th>
                       <th scope="col" width="20%">Title</th>
                       <th scope="col" width="20%">Text</th>
@@ -87,6 +95,9 @@
                   </thead>
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
+                      <td>
+                        <input type="checkbox" v-model="checked.ids" :value="item.id">
+                      </td>
                       <td>
                         <img alt="avatar" :src="item.image_url" class="img-thumbnail w-100" />
                       </td>
@@ -356,6 +367,10 @@
         modal: {
           form: null,
           delete: null
+        },
+        checked: {
+          all: false,
+          ids: []
         }
     },
     computed: {
@@ -372,6 +387,13 @@
       },
     },
     methods: {
+        checkAll(){
+          if(this.checked.all){
+            this.checked.ids = this.table.items.map(item => item.id)
+          } else {
+            this.checked.ids = []
+          }
+        },
         async doGet() {
           this.form.loading = true
           let payload = {...this.paging}
@@ -486,6 +508,8 @@
             cta: null
           }
           this.form.delete = null
+          this.checked.all = false
+          this.checked.ids = []
         },
         previewImage(e) {
           let vm = this

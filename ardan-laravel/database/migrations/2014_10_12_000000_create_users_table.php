@@ -30,7 +30,6 @@ class CreateUsersTable extends Migration
             $table->text('status')->nullable();
             $table->text('token')->nullable();
             $table->text('otp')->nullable();
-            $table->text('online')->nullable();
             $table->softDeletes();
             $table->timestamps();
             // $table->timestamp('email_verified_at')->nullable();

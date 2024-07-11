@@ -53,12 +53,20 @@
                       </label>
                     </div>
                   </div>
+                  <div class="col-12 mt-3 d-flex justify-content-md-end align-items-end">
+                    <button class="btn btn-danger btn-sm" type="button"
+                      @click="form.delete = checked.ids;modal.delete.show()" :disabled="checked.ids.length == 0">Delete
+                      Selected</button>
+                  </div>
                 </div>
               </div>
               <div class="table-responsive">
                 <table class="table table-hover table-striped table-bordered table-no-space">
                   <thead>
                     <tr>
+                      <th scope="col">
+                        <input type="checkbox" v-model="checked.all" @change="checkAll()">
+                      </th>
                       <th scope="col" width="20%">Chat</th>
                       <th scope="col" width="20%">Chat By</th>
                       <th scope="col" width="20%">Chat On</th>
@@ -69,6 +77,9 @@
                   </thead>
                   <tbody v-if="table.items.length > 0">
                     <tr v-for="(item,index) in table.items" :key="index">
+                      <td>
+                        <input type="checkbox" v-model="checked.ids" :value="item.id">
+                      </td>
                       <td>
                         <span v-text="(item.chat) ? item.chat : '-'"></span>
                       </td>
@@ -298,6 +309,10 @@ const vueDashboard = new Vue( {
         modal: {
           form: null,
           delete: null
+        },
+        checked: {
+          all: false,
+          ids: []
         }
   },
   computed: {
@@ -314,6 +329,13 @@ const vueDashboard = new Vue( {
     },
   },
   methods: {
+        checkAll(){
+          if(this.checked.all){
+            this.checked.ids = this.table.items.map(item => item.id)
+          } else {
+            this.checked.ids = []
+          }
+        },
       async doGet() {
         this.form.loading = true
         let payload = {...this.paging}
@@ -374,6 +396,8 @@ const vueDashboard = new Vue( {
           status: null
         }
         this.form.delete = null
+          this.checked.all = false
+          this.checked.ids = []
       },
       initModal() {
         this.modal = {

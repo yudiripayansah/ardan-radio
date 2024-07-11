@@ -184,9 +184,13 @@ class ContentController extends Controller
   {
     $id = $request->id;
     if ($id) {
-      $delData = Content::find($id);
       try {
-        $delData->delete();
+        if(is_array($id)){
+          $delData = Content::destroy($id);
+        } else {
+          $delData = Content::find($id);
+          $delData->delete();
+        }
         $res = array(
           'status' => true,
           'msg' => 'Data successfully deleted'

@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Comments;
+use App\Models\UserToken;
+use App\Models\Feeds;
+use App\Models\User;
+use Kutia\Larafirebase\Messages\FirebaseMessage;
 
 class CommentController extends Controller
 {
@@ -119,6 +123,19 @@ class CommentController extends Controller
       try {
         $dc = Comments::create($dataCreate);
         $dg = Comments::find($dc->id);
+        $user = User::find($dataCreate['id_user']);
+        $feed = Feeds::find($dataCreate['id_target']);
+        $notif = new \stdClass();
+        $notif->title = 'New Comments';
+        $userToken = UserToken::where('id_user', $feed->id_user)->get();
+        $notif->message = $user->name.' comment on your SOCIAL '.$feed->type;
+        if($userToken){
+          $notif->tokens = $userToken;
+          $notif->id_user_target = 'private';
+          $notif->image = null;
+          $notif->icon = null;
+          $this->notif($notif);
+        }
         $res = array(
           'status' => true,
           'data' => $dg,
@@ -203,5 +220,36 @@ class CommentController extends Controller
       );
     }
     return response()->json($res, 200);
+  }
+  
+  function notif($data){
+    $tokens = [];
+    foreach($data->tokens as $t){
+      array_push($tokens, $t->token);
+    }
+    if($data->id_user_target == 'all') {
+      $getToken = UserToken::all();
+      foreach($getToken as $t){
+        array_push($tokens, $t->token);
+      }
+    }
+    if(count($tokens) > 0){
+      $fcm = (new FirebaseMessage);
+      $fcm = $fcm->withTitle($data->title);
+      $fcm = $fcm->withBody($data->message);
+      if($data->image){
+        $fcm = $fcm->withImage($data->image);
+      }
+      if($data->icon){
+        $fcm = $fcm->withIcon($data->icon);
+      }
+      $fcm = $fcm->withSound('default');
+      $fcm = $fcm->withPriority('high');
+      $fcm = $fcm->withAdditionalData($data);
+      $fcm = $fcm->asNotification($tokens);
+    } else {
+      $fcm = 'No token to send';
+    }
+    return $fcm;
   }
 }
