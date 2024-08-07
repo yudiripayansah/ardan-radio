@@ -1,10 +1,14 @@
-POST https://ardanmobileapps.ardangroup.fm/api/privatechat/send
+POST https://ardanmobileapps.ardangroup.fm/api/feeds/read
 Content-Type: application/json
 Accept: application/json
 
 {
-  "chat_room_id": 23,
-  "sender_id": 8,
-  "reciever_id": 4,
-  "message": "message",
+  "page": "1",
+  "perPage": "1",
+  "sortDir": "DESC",
+  "sortBy": "id",
+  "search": "null",
+  "type": "SHARING",
+  "status": "PUBLISHED",
+  "kind": "HOT",
 }

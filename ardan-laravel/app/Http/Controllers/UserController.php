@@ -219,9 +219,20 @@ class UserController extends Controller
     if ($id) {
       try {
         if(is_array($id)){
+          foreach($id as $ids){
+            $theUser = User::find($ids);
+            $theUser->email = $theUser->email.'-'.time();
+            $theUser->fbid = $theUser->fbid.'-'.time();
+            $theUser->gid = $theUser->gid.'-'.time();
+            $theUser->save();
+          }
           $delData = User::destroy($id);
         } else {
           $delData = User::find($id);
+          $delData->email = $delData->email.'-'.time();
+          $delData->fbid = $delData->fbid.'-'.time();
+          $delData->gid = $delData->gid.'-'.time();
+          $delData->save();
           $delData->delete();
         }
         $res = array(
