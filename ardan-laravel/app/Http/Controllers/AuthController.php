@@ -19,7 +19,7 @@ class AuthController extends Controller
    */
   public function __construct()
   {
-    $this->middleware('auth:api', ['except' => ['login', 'register', 'sendotp', 'checkotp', 'updatePassword','loginOrRegister']]);
+    $this->middleware('auth:api', ['except' => ['login', 'register', 'sendotp', 'checkotp', 'updatePassword', 'loginOrRegister']]);
   }
   /**
    * Get a JWT via given credentials.
@@ -223,29 +223,29 @@ class AuthController extends Controller
   }
   public function loginOrRegister(Request $request)
   {
-    if($request->email){
+    if ($request->email) {
       $user = User::where('email', $request->email)->first();
     }
-    if($request->fbid){
+    if ($request->fbid) {
       $user = User::where('fbid', $request->fbid)->first();
     }
-    if($request->gid){
+    if ($request->gid) {
       $user = User::where('gid', $request->gid)->first();
     }
-    if(!$user) {
+    if (!$user) {
       $dataCreate = $request->all();
-      if($request->image){
-        $filename = uniqid().time().'-'. '-users.png';
-        $filePath = 'user/' .$filename;
+      if ($request->image) {
+        $filename = uniqid() . time() . '-' . '-users.png';
+        $filePath = 'user/' . $filename;
         $dataCreate['image'] = $filename;
         Storage::disk('public')->put($filePath, file_get_contents($request->image));
-      } else { 
+      } else {
         unset($dataCreate['image']);
       }
       $dataCreate['password'] = Hash::make(uniqid());
       $dc = User::create($dataCreate);
       $user = User::find($dc->id);
-    } 
+    }
     $token = auth()->login($user);
     if ($token) {
       $aUser = auth()->user();
